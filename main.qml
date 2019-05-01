@@ -8,7 +8,10 @@ ApplicationWindow {
     height: 480
     title: qsTr("Stack")
 
+    property color primaryColor: "black"
+
     header: ToolBar {
+        id: toolBar
         contentHeight: toolButton.implicitHeight
 
         ToolButton {
@@ -24,19 +27,28 @@ ApplicationWindow {
             }
         }
 
-        Label {
-            text: stackView.currentItem.title
+        SearchInput {
             anchors.centerIn: parent
+            anchors.left: parent.right
+            anchors.leftMargin: 10
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 10
+            primaryColor: window.primaryColor
         }
     }
 
     Drawer {
         id: drawer
-        width: window.width * 0.66
+        width: window.width * 0.5
         height: window.height
 
         Column {
             anchors.fill: parent
+            anchors.topMargin: toolBar.height
 
             ItemDelegate {
                 text: qsTr("Page 1")
