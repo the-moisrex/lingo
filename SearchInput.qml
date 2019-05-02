@@ -6,7 +6,7 @@ Item {
     property color secondaryColor: "blue"
     property color lighterPrimaryColor: Qt.lighter(primaryColor, 1.5)
     property color darkerPriaryColor: Qt.darker(primaryColor, 1.5)
-    signal onTextChanged(string text)
+    signal onTextChanged(string t)
 
 
     Rectangle {
@@ -47,7 +47,7 @@ Item {
             selectByMouse: true
             selectionColor: secondaryColor
             font.pixelSize: Qt.application.font.pixelSize * 1.2
-            onTextChanged: rootId.onTextChanged(text)
+//            onTextChanged: rootId.onTextChanged(inputId.text)
         }
 
 

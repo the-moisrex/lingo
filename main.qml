@@ -30,7 +30,9 @@ ApplicationWindow {
 
         SearchInput {
             primaryColor: window.primaryColor
-            anchors.right: parent.right
+            secondaryColor: window.secondaryColor
+            anchors.right: parent
+//            onTextChanged: console.log(t)
             anchors.rightMargin: 20
             anchors.left: parent.left
             anchors.leftMargin: 100
