@@ -8,7 +8,8 @@ ApplicationWindow {
     height: 480
     title: qsTr("Stack")
 
-    property color primaryColor: "black"
+    property color primaryColor: "#333"
+    property color secondaryColor: "blue"
 
     header: ToolBar {
         id: toolBar
@@ -28,16 +29,13 @@ ApplicationWindow {
         }
 
         SearchInput {
-            anchors.centerIn: parent
-            anchors.left: parent.right
-            anchors.leftMargin: 10
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.top: parent.top
-            anchors.topMargin: 10
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 10
             primaryColor: window.primaryColor
+            anchors.right: parent.right
+            anchors.rightMargin: 20
+            anchors.left: parent.left
+            anchors.leftMargin: 100
+            anchors.bottom: parent.bottom
+            anchors.top: parent.top
         }
     }
 
@@ -75,3 +73,10 @@ ApplicationWindow {
         anchors.fill: parent
     }
 }
+
+
+
+/*##^## Designer {
+    D{i:3;anchors_width:0}
+}
+ ##^##*/
