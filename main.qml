@@ -9,7 +9,7 @@ ApplicationWindow {
     title: qsTr("Stack")
 
     property color primaryColor: "#333"
-    property color secondaryColor: "blue"
+    property color secondaryColor: "#06a"
 
     header: ToolBar {
         id: toolBar
@@ -31,13 +31,15 @@ ApplicationWindow {
         SearchInput {
             primaryColor: window.primaryColor
             secondaryColor: window.secondaryColor
-            anchors.right: parent
-//            onTextChanged: console.log(t)
+            anchors.right: parent.right
             anchors.rightMargin: 20
             anchors.left: parent.left
-            anchors.leftMargin: 100
+            anchors.leftMargin: 50
             anchors.bottom: parent.bottom
             anchors.top: parent.top
+            onTextChanged: {
+                stackView.push("ResultsPage.qml")
+            }
         }
     }
 
