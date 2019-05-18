@@ -38,7 +38,12 @@ ApplicationWindow {
             anchors.bottom: parent.bottom
             anchors.top: parent.top
             onTextChanged: {
-                stackView.push("ResultsPage.qml")
+                var itemData = {objectName: "results-page"};
+                if (value.trim() === "")
+                    stackView.pop();
+                else if (stackView.currentItem.objectName !== itemData.objectName)
+                    stackView.push("ResultsPage.qml", itemData)
+                stackView.currentItem.textChanged(value);
             }
         }
     }

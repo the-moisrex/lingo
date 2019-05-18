@@ -6,7 +6,7 @@ Item {
     property color secondaryColor: "blue"
     property color lighterPrimaryColor: Qt.lighter(primaryColor, 1.5)
     property color darkerPriaryColor: Qt.darker(primaryColor, 1.5)
-    signal textChanged(string t)
+    signal textChanged(string value)
 
 
     Rectangle {

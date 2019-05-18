@@ -2,16 +2,31 @@
 #define TRANSLATOR_H
 
 #include <QObject>
+#include <QtCore>
 
-class Translator : public QObject
-{
+class Translator : public QObject {
   Q_OBJECT
-public:
-  explicit Translator(QObject *parent = nullptr);
+  Q_PROPERTY(QStringListModel resultsModel READ getResultsModel NOTIFY
+                 resultsModelChanged)
+  Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged)
 
-signals:
+ private:
+  QStringListModel* resultsModel;
+  bool loading = true;
 
-public slots:
+ public:
+  explicit Translator(QObject* parent = nullptr);
+  inline QStringListModel* getResultsModel() const noexcept {
+    return resultsModel;
+  }
+  inline bool isLoading() const noexcept { return loading; }
+
+ signals:
+  void resultsModelChanged(QStringListModel* resultsModel);
+  void loadingChanged(bool loading);
+
+ public slots:
+  void onTextChanged(QString value);
 };
 
-#endif // TRANSLATOR_H
+#endif  // TRANSLATOR_H
