@@ -1,9 +1,12 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.5
+import QtQuick.Layouts 1.3
 
 Item {
   id: rootId
   signal textChanged(string value)
+
+  property color secondaryColor: "white"
 
   Component.onCompleted: {
       rootId.textChanged.connect(function(value) {
@@ -22,18 +25,26 @@ Item {
 
   ListView {
       id: resultsId
-      orientation: ListView.Horizontal
+      orientation: ListView.Vertical
       keyNavigationWraps: true
+      clip: true
       anchors.fill: parent
       //      visible: !Translator.loading
       visible: true
       model: Translator.model
+//      model: 100
       highlight: Rectangle {
-          color: "lightsteelblue"
+          color: "#666"
           radius: 5
       }
-      delegate: Text {
-          text: "fdsafds"
+      delegate: RowLayout {
+          width: parent.width
+          Text {
+              Layout.fillWidth: true
+              Layout.margins: 10
+              text: model
+              color: secondaryColor
+          }
       }
   }
 
