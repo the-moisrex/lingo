@@ -9,9 +9,7 @@ class TranslatorModel : public QAbstractListModel {
  public:
   explicit TranslatorModel(QObject* parent = nullptr);
 
-  enum roles {
-
-  };
+  enum { wordRole = Qt::UserRole };
 
   // Basic functionality:
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -19,7 +17,7 @@ class TranslatorModel : public QAbstractListModel {
   QVariant data(const QModelIndex& index,
                 int role = Qt::DisplayRole) const override;
 
- private:
+  virtual QHash<int, QByteArray> roleNames() const override;
 };
 
 #endif  // TRANSLATORMODEL_H

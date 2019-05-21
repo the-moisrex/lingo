@@ -32,4 +32,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
   translator.h \
-  translatormodel.h
+  translatormodel.h \
+  word.h
