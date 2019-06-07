@@ -43,7 +43,8 @@ ApplicationWindow {
                     stackView.pop();
                 else if (stackView.currentItem.objectName !== itemData.objectName)
                     stackView.push("ResultsPage.qml", itemData)
-                stackView.currentItem.textChanged(value);
+                if (value && value.trim() != "")
+                    stackView.currentItem.textChanged(value);
             }
         }
     }
