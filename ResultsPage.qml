@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
+import Translator 1.0
 
 Item {
   id: rootId
@@ -31,7 +32,7 @@ Item {
       anchors.fill: parent
       //      visible: !Translator.loading
       visible: true
-      model: Translator.model
+      model: TranslatorModel {}
 //      model: 100
       highlight: Rectangle {
           color: "#666"
@@ -42,7 +43,7 @@ Item {
           Text {
               Layout.fillWidth: true
               Layout.margins: 10
-              text: model
+              text: model.word
               color: secondaryColor
           }
       }

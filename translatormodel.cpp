@@ -11,11 +11,17 @@ int TranslatorModel::rowCount(const QModelIndex& parent) const {
     return 0;
 
   // FIXME: Implement me!
+  return 10;
 }
 
 QVariant TranslatorModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid())
     return QVariant();
+
+  switch (role) {
+    case wordRole:
+      return QVariant(QStringLiteral("hello world"));
+  }
 
   // FIXME: Implement me!
   return QVariant();
