@@ -69,3 +69,11 @@ std::shared_ptr<DBManager> db() {
   db = std::make_shared<DBManager>();
   return db;
 }
+
+std::shared_ptr<QSqlTableModel> favs() {
+  static std::shared_ptr<QSqlTableModel> model;
+  if (model)
+    return model;
+  model = std::make_shared<QSqlTableModel>(nullptr, db());
+  return model;
+}
