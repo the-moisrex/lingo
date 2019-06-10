@@ -11,9 +11,13 @@ void DBManager::createSchema() noexcept {
   QSqlQuery query(db);
   QVector<QString> queries;
   queries << "create table if not exists history ("
-             "   id integer primary key not null,"
-             "   "
-             ")";
+             "  id integer primary key not null,"
+             "  word text not null unique"
+             ");";
+  queries << "create table if not exists favs ("
+             "  id integer primary key not null,"
+             "  word text not null unique"
+             ");";
   for (auto& q : queries) {
     if (!query.exec(q)) {
       qDebug() << QObject::tr("Error in initilizing database templates: ")
@@ -56,4 +60,12 @@ DBManager::DBManager() : db{QSqlDatabase::addDatabase("QSQLITE", "settings")} {
 DBManager::~DBManager() noexcept {
   db.close();
   QSqlDatabase::removeDatabase("settings");
+}
+
+std::shared_ptr<DBManager> db() {
+  static std::shared_ptr<DBManager> db;
+  if (db)
+    return db;
+  db = std::make_shared<DBManager>();
+  return db;
 }

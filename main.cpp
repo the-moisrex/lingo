@@ -8,6 +8,10 @@ int main(int argc, char* argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
   QGuiApplication app(argc, argv);
+  app.setOrganizationName("Lingo");
+  app.setApplicationDisplayName("Lingo");
+  app.setApplicationName("lingo");
+  app.setOrganizationDomain("lingo");
 
   auto translator = new Translator;
 

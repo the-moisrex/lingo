@@ -1,4 +1,5 @@
 #include "translatormodel.h"
+#include <QOnlineTranslator>
 
 TranslatorModel::TranslatorModel(QObject* parent)
     : QAbstractListModel(parent) {}
@@ -31,4 +32,18 @@ QHash<int, QByteArray> TranslatorModel::roleNames() const {
   QHash<int, QByteArray> roles;
   roles[wordRole] = "word";
   return roles;
+}
+
+void TranslatorModel::search(const QString& data) {
+  static QOnlineTranslator translator(this);
+}
+void TranslatorModel::onTextChanged(QString value) {
+  // loading changes so the ui gets affected
+  loading = true;
+  emit loadingChanged(loading);
+
+  search(value);
+
+  loading = false;
+  emit loadingChanged(loading);
 }
