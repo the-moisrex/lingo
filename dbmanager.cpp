@@ -10,8 +10,9 @@
 void DBManager::createSchema() noexcept {
   QSqlQuery query(db);
   QVector<QString> queries;
-  queries << "create table if not exists words ("
-             "   id integer primary key,"
+  queries << "create table if not exists history ("
+             "   id integer primary key not null,"
+             "   "
              ")";
   for (auto& q : queries) {
     if (!query.exec(q)) {
@@ -22,7 +23,7 @@ void DBManager::createSchema() noexcept {
   }
 }
 
-DBManager::DBManager() : db{QSqlDatabase::addDatabase("QSQLITE")} {
+DBManager::DBManager() : db{QSqlDatabase::addDatabase("QSQLITE", "settings")} {
   db.setDatabaseName("lingo.sqlite");
   if (!db.open()) {
     qDebug() << QObject::tr("Error connecting to database: ") +
@@ -31,7 +32,7 @@ DBManager::DBManager() : db{QSqlDatabase::addDatabase("QSQLITE")} {
 
   // checking table names:
   QVector<QString> tableNames;
-  tableNames << "words";
+  tableNames << "history";
 
   QSqlQuery query(db);
   if (!query.exec("SELECT name FROM sqlite_master WHERE type='table';")) {
@@ -50,4 +51,9 @@ DBManager::DBManager() : db{QSqlDatabase::addDatabase("QSQLITE")} {
   if (correct_tables != tableNames.size()) {
     createSchema();
   }
+}
+
+DBManager::~DBManager() noexcept {
+  db.close();
+  QSqlDatabase::removeDatabase("settings");
 }

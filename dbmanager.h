@@ -10,6 +10,7 @@ class DBManager {
 
  public:
   DBManager();
+  ~DBManager() noexcept;
 };
 
 #endif  // DBRAII_H
