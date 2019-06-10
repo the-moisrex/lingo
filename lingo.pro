@@ -36,3 +36,6 @@ HEADERS += \
   translator.h \
   translatormodel.h \
   word.h
+
+
+include(src/third-party/qonlinetranslator/qonlinetranslator.pri)
