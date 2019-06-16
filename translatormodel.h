@@ -8,6 +8,7 @@ class TranslatorModel : public QAbstractListModel {
  private:
   QOnlineTranslator::Language from = QOnlineTranslator::Language::Auto;
   QOnlineTranslator::Language to = QOnlineTranslator::Language::English;
+  QOnlineTranslator translator;
   bool loading = false;
 
  public:
@@ -21,7 +22,7 @@ class TranslatorModel : public QAbstractListModel {
   void onTextChanged(QString value);
 
  public:
-  enum { wordRole = Qt::UserRole };
+  enum { sourceRole = Qt::UserRole, translationRole };
   explicit TranslatorModel(QObject* parent = nullptr);
   inline bool isLoading() const noexcept { return loading; }
 

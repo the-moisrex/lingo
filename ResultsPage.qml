@@ -44,7 +44,7 @@ Item {
           Text {
               Layout.fillWidth: true
               Layout.margins: 10
-              text: model.word
+              text: model.translation
               color: secondaryColor
           }
       }

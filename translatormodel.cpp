@@ -3,7 +3,7 @@
 #include <QOnlineTranslator>
 
 TranslatorModel::TranslatorModel(QObject* parent)
-    : QAbstractListModel(parent) {}
+    : QAbstractListModel(parent), translator(this) {}
 
 int TranslatorModel::rowCount(const QModelIndex& parent) const {
   // For list models only the root node (an invalid parent) should return the
@@ -21,8 +21,11 @@ QVariant TranslatorModel::data(const QModelIndex& index, int role) const {
     return QVariant();
 
   switch (role) {
-    case wordRole:
-      return QVariant(QStringLiteral("hello world"));
+    case sourceRole:
+      return QVariant(translator.source());
+
+    case translationRole:
+      return QVariant(translator.translation());
   }
 
   // FIXME: Implement me!
@@ -31,12 +34,12 @@ QVariant TranslatorModel::data(const QModelIndex& index, int role) const {
 
 QHash<int, QByteArray> TranslatorModel::roleNames() const {
   QHash<int, QByteArray> roles;
-  roles[wordRole] = "word";
+  roles[sourceRole] = "source";
+  roles[translationRole] = "translation";
   return roles;
 }
 
 void TranslatorModel::search(const QString& data) {
-  static QOnlineTranslator translator(nullptr);
   translator.translate(data, QOnlineTranslator::Google);
   if (translator.error() == QOnlineTranslator::NoError)
     qInfo() << translator.translation();
