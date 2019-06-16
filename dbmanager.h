@@ -7,10 +7,10 @@
 
 class DBManager {
  private:
-  QSqlDatabase db;
   void createSchema() noexcept;
 
  public:
+  QSqlDatabase db;
   DBManager();
   ~DBManager() noexcept;
 };

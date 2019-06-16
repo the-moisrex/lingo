@@ -1,4 +1,5 @@
 #include "translatormodel.h"
+#include <QDebug>
 #include <QOnlineTranslator>
 
 TranslatorModel::TranslatorModel(QObject* parent)
@@ -35,8 +36,15 @@ QHash<int, QByteArray> TranslatorModel::roleNames() const {
 }
 
 void TranslatorModel::search(const QString& data) {
-  static QOnlineTranslator translator(this);
+  static QOnlineTranslator translator(nullptr);
+  translator.translate(data, QOnlineTranslator::Google);
+  if (translator.error() == QOnlineTranslator::NoError)
+    qInfo() << translator.translation();
+  else
+    qCritical() << translator.errorString();
+  qInfo() << translator.translationTranslit();
 }
+
 void TranslatorModel::onTextChanged(QString value) {
   // loading changes so the ui gets affected
   loading = true;

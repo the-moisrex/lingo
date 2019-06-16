@@ -2,12 +2,17 @@
 #define TRANSLATORMODEL_H
 
 #include <QAbstractListModel>
+#include <QOnlineTranslator>
 
 class TranslatorModel : public QAbstractListModel {
+ private:
+  QOnlineTranslator::Language from = QOnlineTranslator::Language::Auto;
+  QOnlineTranslator::Language to = QOnlineTranslator::Language::English;
+  bool loading = false;
+
  public:
   Q_OBJECT
   Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged)
-  bool loading = true;
 
  signals:
   void loadingChanged(bool loading);

@@ -11,7 +11,7 @@ Item {
 
   Component.onCompleted: {
       rootId.textChanged.connect(function(value) {
-          Translator.onTextChanged(value);
+          trModel.onTextChanged(value);
       });
   }
 
@@ -20,7 +20,7 @@ Item {
       width: 50
       height: 50
       anchors.centerIn: parent
-      visible: Translator.loading
+      visible: trModel.loading
   }
 
 
@@ -30,9 +30,10 @@ Item {
       keyNavigationWraps: true
       clip: true
       anchors.fill: parent
-      //      visible: !Translator.loading
-      visible: true
-      model: TranslatorModel {}
+      visible: !trModel.loading
+      model: TranslatorModel {
+        id: trModel
+      }
 //      model: 100
       highlight: Rectangle {
           color: "#666"

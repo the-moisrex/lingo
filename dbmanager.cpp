@@ -74,6 +74,6 @@ std::shared_ptr<QSqlTableModel> favs() {
   static std::shared_ptr<QSqlTableModel> model;
   if (model)
     return model;
-  model = std::make_shared<QSqlTableModel>(nullptr, db());
+  model = std::make_shared<QSqlTableModel>(nullptr, db()->db);
   return model;
 }

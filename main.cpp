@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml>
-#include "translator.h"
+//#include "translator.h"
 #include "translatormodel.h"
 
 int main(int argc, char* argv[]) {
@@ -13,13 +13,13 @@ int main(int argc, char* argv[]) {
   app.setApplicationName("lingo");
   app.setOrganizationDomain("lingo");
 
-  auto translator = new Translator;
+  //  auto translator = new Translator;
 
   qmlRegisterType<TranslatorModel>("Translator", 1, 0, "TranslatorModel");
 
   QQmlApplicationEngine engine;
-  auto context = engine.rootContext();
-  context->setContextProperty("Translator", translator);
+  //  auto context = engine.rootContext();
+  //  context->setContextProperty("Translator", translator);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,

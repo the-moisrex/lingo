@@ -1,11 +1,11 @@
 QT += quick sql texttospeech
-CONFIG += c++11
+CONFIG += c++17
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Refer to the documentation for the
 # deprecated API to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS
+#DEFINES += QT_DEPRECATED_WARNINGS
 
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -16,7 +16,6 @@ SOURCES += \
         dbmanager.cpp \
         main.cpp \
         settings.cpp \
-        translator.cpp \
         translatormodel.cpp
 
 RESOURCES += qml.qrc
@@ -35,9 +34,31 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
   dbmanager.h \
   settings.h \
-  translator.h \
   translatormodel.h \
   word.h
 
 
 include(src/third-party/qonlinetranslator/qonlinetranslator.pri)
+
+contains(ANDROID_TARGET_ARCH,) {
+  ANDROID_PACKAGE_SOURCE_DIR = \
+    $$PWD/android
+}
+
+DISTFILES += \
+  android/AndroidManifest.xml \
+  android/build.gradle \
+  android/gradle/wrapper/gradle-wrapper.jar \
+  android/gradle/wrapper/gradle-wrapper.properties \
+  android/gradlew \
+  android/gradlew.bat \
+  android/res/values/libs.xml
+
+contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+  ANDROID_PACKAGE_SOURCE_DIR = \
+    $$PWD/android
+
+  ANDROID_EXTRA_LIBS =
+}
+
+
