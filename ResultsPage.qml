@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
-import Translator 1.0
 
 Item {
   id: rootId
@@ -11,7 +10,7 @@ Item {
 
   Component.onCompleted: {
       rootId.textChanged.connect(function(value) {
-          trModel.onTextChanged(value);
+         Translator.onTextChanged(value);
       });
   }
 
@@ -20,38 +19,62 @@ Item {
       width: 50
       height: 50
       anchors.centerIn: parent
-      visible: trModel.loading
+      visible: Translator.loading
   }
 
-
-  ListView {
-      id: resultsId
-      orientation: ListView.Vertical
-      keyNavigationWraps: true
-      clip: true
+  Item {
+      visible: !Translator.loading
       anchors.fill: parent
-      visible: !trModel.loading
-      model: TranslatorModel {
-        id: trModel
-      }
-//      model: 100
-      highlight: Rectangle {
-          color: "#666"
-          radius: 5
-      }
-      delegate: RowLayout {
-          width: parent.width
+
+      ColumnLayout {
+          id: rowLayout
+          anchors.fill: parent
+
           Text {
-              Layout.fillWidth: true
-              Layout.margins: 10
-              text: model.translation
-              color: secondaryColor
+              id: sourceId
+              text: Translator.source
+          }
+
+          Text {
+              id: translationId
+              text: Translator.translation
           }
       }
+
   }
+
+
+
+//  ListView {
+//      id: resultsId
+//      orientation: ListView.Vertical
+//      keyNavigationWraps: true
+//      clip: true
+//      anchors.fill: parent
+//      visible: !trModel.loading
+//      model: TranslatorModel {
+//        id: trModel
+//      }
+////      model: 100
+//      highlight: Rectangle {
+//          color: "#666"
+//          radius: 5
+//      }
+//      delegate: RowLayout {
+//          width: parent.width
+//          Text {
+//              Layout.fillWidth: true
+//              Layout.margins: 10
+//              text: model.translation
+//              color: secondaryColor
+//          }
+//      }
+//  }
 
 
 }
+
+
 
 
 

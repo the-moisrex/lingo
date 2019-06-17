@@ -1,8 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml>
-//#include "translator.h"
-#include "translatormodel.h"
+#include "translator.h"
 
 int main(int argc, char* argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -13,13 +12,13 @@ int main(int argc, char* argv[]) {
   app.setApplicationName("lingo");
   app.setOrganizationDomain("lingo");
 
-  //  auto translator = new Translator;
+  Translator translator;
 
-  qmlRegisterType<TranslatorModel>("Translator", 1, 0, "TranslatorModel");
+  //  qmlRegisterType<TranslatorModel>("Translator", 1, 0, "TranslatorModel");
 
   QQmlApplicationEngine engine;
-  //  auto context = engine.rootContext();
-  //  context->setContextProperty("Translator", translator);
+  auto context = engine.rootContext();
+  context->setContextProperty("Translator", &translator);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,

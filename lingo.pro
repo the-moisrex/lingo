@@ -16,7 +16,7 @@ SOURCES += \
         dbmanager.cpp \
         main.cpp \
         settings.cpp \
-        translatormodel.cpp
+        translator.cpp
 
 RESOURCES += qml.qrc
 
@@ -34,7 +34,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
   dbmanager.h \
   settings.h \
-  translatormodel.h \
+  translator.h \
   word.h
 
 
