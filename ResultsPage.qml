@@ -33,52 +33,20 @@ Item {
           Text {
               id: sourceId
               text: Translator.source
+              color: secondaryColor
           }
 
           Text {
               id: translationId
               text: Translator.translation
+              color: secondaryColor
           }
       }
 
   }
 
 
-
-//  ListView {
-//      id: resultsId
-//      orientation: ListView.Vertical
-//      keyNavigationWraps: true
-//      clip: true
-//      anchors.fill: parent
-//      visible: !trModel.loading
-//      model: TranslatorModel {
-//        id: trModel
-//      }
-////      model: 100
-//      highlight: Rectangle {
-//          color: "#666"
-//          radius: 5
-//      }
-//      delegate: RowLayout {
-//          width: parent.width
-//          Text {
-//              Layout.fillWidth: true
-//              Layout.margins: 10
-//              text: model.translation
-//              color: secondaryColor
-//          }
-//      }
-//  }
-
-
 }
-
-
-
-
-
-
 
 /*##^## Designer {
     D{i:0;autoSize:true;height:480;width:640}
