@@ -3,12 +3,15 @@
 
 #include <QAbstractListModel>
 #include <QOnlineTranslator>
+#include <mutex>
 
 class Translator : public QObject {
  private:
   QOnlineTranslator::Language from = QOnlineTranslator::Language::Auto;
   QOnlineTranslator::Language to = QOnlineTranslator::Language::English;
-  QOnlineTranslator translator;
+  std::mutex m;
+  QString _source, _translation, _translationTranslit,
+      _translationLanguageString;
   bool loading = false;
 
  public:
@@ -34,13 +37,11 @@ class Translator : public QObject {
  public:
   explicit Translator(QObject* parent = nullptr);
   bool isLoading() const noexcept { return loading; }
-  QString translation() const noexcept { return translator.translation(); }
-  QString source() const noexcept { return translator.source(); }
-  QString translationTranslit() const noexcept {
-    return translator.translationTranslit();
-  }
+  QString translation() const noexcept { return _translation; }
+  QString source() const noexcept { return _source; }
+  QString translationTranslit() const noexcept { return _translationTranslit; }
   QString translationLanguageString() const noexcept {
-    return translator.translationLanguageString();
+    return _translationLanguageString;
   }
 
   void search(QString const& data);
