@@ -4,8 +4,8 @@ import QtQuick.Controls 2.5
 ApplicationWindow {
     id: window
     visible: true
-    width: 640
-    height: 480
+    width: 480
+    height: 800
     title: qsTr("Stack")
 
     property color primaryColor: "#333"
@@ -83,6 +83,8 @@ ApplicationWindow {
         anchors.fill: parent
     }
 }
+
+
 
 
 

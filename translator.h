@@ -3,6 +3,7 @@
 
 #include <QAbstractListModel>
 #include <QOnlineTranslator>
+#include <future>
 #include <mutex>
 
 class Translator : public QObject {
@@ -13,6 +14,10 @@ class Translator : public QObject {
   QString _source, _translation, _translationTranslit,
       _translationLanguageString;
   bool loading = false;
+  std::promise<void> stopSignal;
+  std::future<void> stopFuture;
+
+  void search(QString const& data);
 
  public:
   Q_OBJECT
@@ -43,8 +48,6 @@ class Translator : public QObject {
   QString translationLanguageString() const noexcept {
     return _translationLanguageString;
   }
-
-  void search(QString const& data);
 };
 
 #endif  // TRANSLATORMODEL_H

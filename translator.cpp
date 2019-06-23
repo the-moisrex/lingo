@@ -1,17 +1,15 @@
 #include "translator.h"
 #include <QDebug>
 #include <QOnlineTranslator>
-#include <future>
-#include <mutex>
 
-Translator::Translator(QObject* parent) : QObject(parent) {}
+Translator::Translator(QObject* parent)
+    : QObject(parent), stopSignal(), stopFuture(stopSignal.get_future()) {}
 
 void Translator::search(const QString& data) {
-  std::lock_guard lock(m);
   // loading changes so the ui gets affected
   loading = true;
   emit loadingChanged(loading);
-  static thread_local QOnlineTranslator translator;
+  static QOnlineTranslator translator;
 
   translator.translate(data, QOnlineTranslator::Google);
 
@@ -33,5 +31,5 @@ void Translator::search(const QString& data) {
 }
 
 void Translator::onTextChanged(QString value) {
-  auto a = std::async(&Translator::search, this, value);
+  search(value);
 }
