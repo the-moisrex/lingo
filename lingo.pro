@@ -15,8 +15,11 @@ CONFIG += c++17
 SOURCES += \
         dbmanager.cpp \
         main.cpp \
+        onlinetranslators.cpp \
+        resource.cpp \
+        resourceoptions.cpp \
         settings.cpp \
-        translator.cpp
+        txtdictionary.cpp
 
 RESOURCES += qml.qrc
 
@@ -33,8 +36,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
   dbmanager.h \
+  onlinetranslators.h \
+  resource.h \
+  resourceoptions.h \
   settings.h \
-  translator.h \
+  txtdictionary.h \
   word.h
 
 
