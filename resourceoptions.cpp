@@ -31,7 +31,6 @@ QVariant ResourceOptionsModel::data(const QModelIndex& index, int role) const {
       return opt.value;
   }
 
-  // FIXME: Implement me!
   return QVariant();
 }
 

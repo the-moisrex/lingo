@@ -27,6 +27,7 @@ class ResourceOptionsModel : public QAbstractListModel {
 
   QVariant data(const QModelIndex& index,
                 int role = Qt::DisplayRole) const override;
+  QMap<int, QVariant> itemData(const QModelIndex& index) const override;
 
   // Editable:
   bool setData(const QModelIndex& index,
