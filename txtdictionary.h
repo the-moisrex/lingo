@@ -18,7 +18,7 @@ class txtDictionary : public Resource {
   }
   ~txtDictionary() noexcept override {}
 
-  void search(const QString& data) const override;
+  void search(const QString& data) override;
 };
 
 #endif  // TXTDICTIONARY_H

@@ -17,7 +17,6 @@ SOURCES += \
         main.cpp \
         onlinetranslators.cpp \
         resource.cpp \
-        resourceoptions.cpp \
         settings.cpp \
         txtdictionary.cpp
 
@@ -38,7 +37,6 @@ HEADERS += \
   dbmanager.h \
   onlinetranslators.h \
   resource.h \
-  resourceoptions.h \
   settings.h \
   txtdictionary.h \
   word.h

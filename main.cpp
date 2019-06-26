@@ -5,8 +5,8 @@
 #include "onlinetranslators.h"
 #include "resource.h"
 
-QVector<Resource> getDictionaries() noexcept {
-  QVector<Resource> dicts;
+QList<Resource> getDictionaries() noexcept {
+  QList<Resource> dicts;
 
   // Default online dictionaries:
   OnlineTranslator<QOnlineTranslator::Google> google;
@@ -17,6 +17,8 @@ QVector<Resource> getDictionaries() noexcept {
   // Default offline dictionaries:
 
   // Manually added dictionaries:
+
+  return dicts;
 }
 
 int main(int argc, char* argv[]) {
@@ -30,11 +32,11 @@ int main(int argc, char* argv[]) {
 
   auto dicts = getDictionaries();
 
-  //  qmlRegisterType<TranslatorModel>("Translator", 1, 0, "TranslatorModel");
+  //    qmlRegisterType<TranslatorModel>("Translator", 1, 0, "TranslatorModel");
 
   QQmlApplicationEngine engine;
   auto context = engine.rootContext();
-  context->setContextProperty("Dictionaries", &dicts);
+  context->setContextProperty("Dictionaries", dicts);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,

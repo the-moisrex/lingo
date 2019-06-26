@@ -54,7 +54,7 @@ class Resource : public QAbstractListModel {
   Qt::ItemFlags flags(const QModelIndex& index) const override;
 
  public:
-  explicit Resource(QObject* parent = nullptr) : QObject(parent) {
+  explicit Resource(QObject* parent = nullptr) : QAbstractListModel(parent) {
     // adding enabled option because it'll going to be common among all
     // dictionaries
     setOption({resource_option::CHECKBOX, "enabled", true, tr("Enabled")});
@@ -74,7 +74,7 @@ class Resource : public QAbstractListModel {
     }
     _settings->endArray();
   }
-  virtual ~Resource() noexcept;
+  virtual ~Resource() noexcept override;
   virtual void search(QString const& data);
   Q_INVOKABLE virtual QString translation() const noexcept;
 
@@ -147,15 +147,6 @@ class Resource : public QAbstractListModel {
    * @return
    */
   Q_INVOKABLE bool isInitializing() const noexcept { return initilizing; }
-
-  /**
-   * @brief returns options model so the user can edit editable options
-   * @return
-   */
-  Q_INVOKABLE virtual const ResourceOptionsModel& optionsModel() const
-      noexcept {
-    return model;
-  }
 
   /**
    * @brief get an option
