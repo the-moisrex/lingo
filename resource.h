@@ -1,14 +1,22 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
+#include <QAbstractListModel>
 #include <QObject>
 #include <QOnlineTranslator>
 #include <QString>
 #include <utility>
-#include "resourceoptions.h"
 #include "settings.h"
 
-class Resource : public QObject {
+struct resource_option {
+  enum input_t { TEXT = 1, TEXT_LONG, CHECKBOX };
+  input_t input_type;
+  QString key;
+  mutable QVariant value;
+  QString title;
+};
+
+class Resource : public QAbstractListModel {
   Q_OBJECT
   Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged)
   Q_PROPERTY(bool initStatus READ isInitializing NOTIFY initStatusChanged)
@@ -29,10 +37,42 @@ class Resource : public QObject {
   void translationChanged(QString translation);
 
  public:
-  explicit Resource(QObject* parent = nullptr) : QObject(parent), model(this) {
+  enum roles { ROLE_KEY = Qt::UserRole, ROLE_VALUE, ROLE_TITLE, ROLE_TYPE };
+
+  // Basic functionality:
+  int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+
+  QVariant data(const QModelIndex& index,
+                int role = Qt::DisplayRole) const override;
+  QMap<int, QVariant> itemData(const QModelIndex& index) const override;
+
+  // Editable:
+  bool setData(const QModelIndex& index,
+               const QVariant& value,
+               int role = Qt::EditRole) override;
+
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
+
+ public:
+  explicit Resource(QObject* parent = nullptr) : QObject(parent) {
     // adding enabled option because it'll going to be common among all
     // dictionaries
-    model.setOption({option::CHECKBOX, "enabled", true, tr("Enabled")});
+    setOption({resource_option::CHECKBOX, "enabled", true, tr("Enabled")});
+
+    // cache all the options:
+    auto _settings = settings();
+    auto size = _settings->beginReadArray("options");
+    options_cache.clear();
+    options_cache.reserve(size);
+    for (int i = 0; i < size; ++i) {
+      _settings->setArrayIndex(i);
+      options_cache.push_back({static_cast<resource_option::input_t>(
+                                   _settings->value("input_type").toInt()),
+                               _settings->value("key").toString(),
+                               _settings->value("value").toString(),
+                               _settings->value("title").toString()});
+    }
+    _settings->endArray();
   }
   virtual ~Resource() noexcept;
   virtual void search(QString const& data);
@@ -71,16 +111,14 @@ class Resource : public QObject {
    * @return
    */
   Q_INVOKABLE virtual bool isEnabled() const noexcept {
-    return option("enabled", true).toBool();
+    return optionValue("enabled", true).toBool();
   }
 
   /**
    * @brief changes the enabled option
    * @return
    */
-  Q_INVOKABLE virtual void setEnabled(bool enabled) noexcept {
-    setOption("enabled", enabled);
-  }
+  Q_INVOKABLE virtual void setEnabled(bool enabled);
 
   /**
    * @brief can provide suggestions
@@ -119,20 +157,29 @@ class Resource : public QObject {
     return model;
   }
 
- protected:
-  ResourceOptionsModel model;
-  bool loading = false;
-  bool initilizing = true;
-
   /**
    * @brief get an option
    * @param _key
    * @param defaultValue
    * @return
    */
-  virtual QVariant option(QString const& _key,
-                          QVariant const defaultValue = QVariant()) const {
-    return settings()->value(key() + "/" + _key, defaultValue);
+  virtual const resource_option& option(QString const& _key) const;
+
+  /**
+   * @brief returns a value of an option if exists
+   * @param _key
+   * @return
+   */
+  virtual const QVariant& optionValue(
+      QString const& _key,
+      const QVariant& defaultValue = QVariant()) const;
+
+  /**
+   * @brief get a reference to all the options (options are cached in memory)
+   * @return
+   */
+  virtual const QVector<resource_option>& options() const {
+    return options_cache;
   }
 
   /**
@@ -140,9 +187,12 @@ class Resource : public QObject {
    * @param _key
    * @param value
    */
-  virtual void setOption(QString const& _key, QVariant const& value) {
-    settings()->setValue(key() + "/" + _key, value);
-  }
+  virtual void setOption(resource_option const& the_option);
+
+ protected:
+  QVector<resource_option> options_cache;
+  bool loading = false;
+  bool initilizing = true;
 };
 
 #endif  // RESOURCE_H

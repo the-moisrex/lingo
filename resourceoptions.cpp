@@ -1,5 +1,6 @@
 #include "resourceoptions.h"
 #include <algorithm>
+#include "resource.h"
 
 ResourceOptionsModel::ResourceOptionsModel(QObject* parent)
     : QAbstractListModel(parent) {}
@@ -48,7 +49,15 @@ bool ResourceOptionsModel::setData(const QModelIndex& index,
                                    const QVariant& value,
                                    int role) {
   if (data(index, role) != value) {
-    // FIXME: Implement me!
+    auto const& opt = _options.at(index.row());
+    switch (role) {
+      case ROLE_VALUE:  // only value is mutable and thus makes scense to change
+        opt.value = value;
+        setOption(opt);
+        break;
+      default:
+        return false;
+    }
     emit dataChanged(index, index, QVector<int>() << role);
     return true;
   }
@@ -62,16 +71,27 @@ Qt::ItemFlags ResourceOptionsModel::flags(const QModelIndex& index) const {
   return Qt::ItemIsEditable;  // FIXME: Implement me!
 }
 
-QVector<option>::const_iterator ResourceOptionsModel::option(
+QVector<resource_option>::const_iterator ResourceOptionsModel::option(
     const QString& key) const noexcept {
   return std::find_if(_options.begin(), _options.end(),
                       [&](auto const& a) { return a.key == key; });
 }
 
-void ResourceOptionsModel::setOption(const struct option& value) {
-  _options.push_back(value);
-}
+void ResourceOptionsModel::setOption(const resource_option& value) {
+  auto opt = option(value.key);
+  auto p = parent();
+  Resource* res = nullptr;
+  if (p)
+    res = dynamic_cast<Resource*>(p);
+  if (opt == _options.end()) {
+    _options.push_back(value);
+    if (res)
+      res->setOption(value);
 
-void ResourceOptionsModel::setOption(struct option&& value) {
-  _options.push_back(std::move(value));
+  } else {
+    opt->value = value.value;
+    if (res)
+      res->setOption(*opt);
+  }
+  // TODO: I don't think we need "_options" anymore
 }
