@@ -59,7 +59,7 @@ DBManager::DBManager() : db{QSqlDatabase::addDatabase("QSQLITE", "settings")} {
 
 DBManager::~DBManager() noexcept {
   db.close();
-  QSqlDatabase::removeDatabase("settings");
+  //  QSqlDatabase::removeDatabase("settings");
 }
 
 std::shared_ptr<DBManager> db() {
@@ -68,12 +68,4 @@ std::shared_ptr<DBManager> db() {
     return db;
   db = std::make_shared<DBManager>();
   return db;
-}
-
-std::shared_ptr<QSqlTableModel> favs() {
-  static std::shared_ptr<QSqlTableModel> model;
-  if (model)
-    return model;
-  model = std::make_shared<QSqlTableModel>(nullptr, db()->db);
-  return model;
 }

@@ -15,6 +15,7 @@ CONFIG += c++17
 SOURCES += \
         dbmanager.cpp \
         dictionarieslistmodel.cpp \
+        history.cpp \
         main.cpp \
         onlinetranslators.cpp \
         resource.cpp \
@@ -37,6 +38,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
   dbmanager.h \
   dictionarieslistmodel.h \
+  history.h \
   onlinetranslators.h \
   resource.h \
   settings.h \

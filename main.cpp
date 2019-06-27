@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QtQml>
 #include "dictionarieslistmodel.h"
+#include "settings.h"
 
 int main(int argc, char* argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -12,13 +13,16 @@ int main(int argc, char* argv[]) {
   app.setApplicationName("lingo");
   app.setOrganizationDomain("lingo");
 
-  DictionariesListModel dicts;
+  //  DictionariesListModel dicts;
+  MySettings settings;
 
   //    qmlRegisterType<TranslatorModel>("Translator", 1, 0, "TranslatorModel");
+  qmlRegisterType<DictionariesListModel>("Dictionaries", 1, 0,
+                                         "DictionariesListModel");
 
   QQmlApplicationEngine engine;
   auto context = engine.rootContext();
-  context->setContextProperty("Dictionaries", &dicts);
+  context->setContextProperty("MySettings", &settings);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,

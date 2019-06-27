@@ -16,7 +16,5 @@ class DBManager {
 };
 
 std::shared_ptr<DBManager> db();
-std::shared_ptr<QSqlTableModel> favs();
-std::shared_ptr<QSqlTableModel> history();
 
 #endif  // DBRAII_H

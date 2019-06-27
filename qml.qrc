@@ -6,5 +6,6 @@
         <file>SearchInput.qml</file>
         <file>ResultsPage.qml</file>
         <file>settings.qml</file>
+        <file>dictionaries.qml</file>
     </qresource>
 </RCC>
