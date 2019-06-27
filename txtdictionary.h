@@ -6,6 +6,7 @@
 class txtDictionary : public Resource {
  public:
   QString name() const noexcept override { return tr("txt format"); }
+  QString key() const noexcept override { return "txt-dic"; }
   QString description() const noexcept override {
     return tr(
         "Plain text format.\n\n"

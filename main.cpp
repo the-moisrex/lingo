@@ -1,25 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QVector>
 #include <QtQml>
-#include "onlinetranslators.h"
-#include "resource.h"
-
-QList<Resource> getDictionaries() noexcept {
-  QList<Resource> dicts;
-
-  // Default online dictionaries:
-  OnlineTranslator<QOnlineTranslator::Google> google;
-  OnlineTranslator<QOnlineTranslator::Bing> bing;
-  OnlineTranslator<QOnlineTranslator::Yandex> yandex;
-  dicts << google << bing << yandex;
-
-  // Default offline dictionaries:
-
-  // Manually added dictionaries:
-
-  return dicts;
-}
+#include "dictionarieslistmodel.h"
 
 int main(int argc, char* argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -30,13 +12,13 @@ int main(int argc, char* argv[]) {
   app.setApplicationName("lingo");
   app.setOrganizationDomain("lingo");
 
-  auto dicts = getDictionaries();
+  DictionariesListModel dicts;
 
   //    qmlRegisterType<TranslatorModel>("Translator", 1, 0, "TranslatorModel");
 
   QQmlApplicationEngine engine;
   auto context = engine.rootContext();
-  context->setContextProperty("Dictionaries", dicts);
+  context->setContextProperty("Dictionaries", &dicts);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,

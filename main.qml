@@ -59,18 +59,19 @@ ApplicationWindow {
             anchors.topMargin: toolBar.height
 
             ItemDelegate {
-                text: qsTr("Page 1")
+                text: qsTr("Home")
                 width: parent.width
                 onClicked: {
-                    stackView.push("Page1Form.ui.qml")
+                    stackView.push("HomeForm.ui.qml")
                     drawer.close()
                 }
             }
+
             ItemDelegate {
-                text: qsTr("Page 2")
+                text: qsTr("Settings")
                 width: parent.width
                 onClicked: {
-                    stackView.push("Page2Form.ui.qml")
+                    stackView.push("settings.qml")
                     drawer.close()
                 }
             }

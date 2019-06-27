@@ -22,7 +22,6 @@ class Resource : public QAbstractListModel {
   Q_PROPERTY(bool initStatus READ isInitializing NOTIFY initStatusChanged)
   Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
   Q_PROPERTY(QString translation READ translation NOTIFY translationChanged)
-  Q_PROPERTY(ResourceOptionsModel optionsListModel READ optionsModel)
 
  public slots:
   virtual void onTextChange(QString value) {
@@ -38,6 +37,7 @@ class Resource : public QAbstractListModel {
 
  public:
   enum roles { ROLE_KEY = Qt::UserRole, ROLE_VALUE, ROLE_TITLE, ROLE_TYPE };
+  virtual ~Resource() override {}
 
   // Basic functionality:
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -54,47 +54,33 @@ class Resource : public QAbstractListModel {
   Qt::ItemFlags flags(const QModelIndex& index) const override;
 
  public:
-  explicit Resource(QObject* parent = nullptr) : QAbstractListModel(parent) {
-    // adding enabled option because it'll going to be common among all
-    // dictionaries
-    setOption({resource_option::CHECKBOX, "enabled", true, tr("Enabled")});
-
-    // cache all the options:
-    auto _settings = settings();
-    auto size = _settings->beginReadArray("options");
-    options_cache.clear();
-    options_cache.reserve(size);
-    for (int i = 0; i < size; ++i) {
-      _settings->setArrayIndex(i);
-      options_cache.push_back({static_cast<resource_option::input_t>(
-                                   _settings->value("input_type").toInt()),
-                               _settings->value("key").toString(),
-                               _settings->value("value").toString(),
-                               _settings->value("title").toString()});
-    }
-    _settings->endArray();
+  explicit Resource(QObject* parent = nullptr);
+  virtual void search(QString const& /* data */) {
+    // do nothing
   }
-  virtual ~Resource() noexcept override;
-  virtual void search(QString const& data);
-  Q_INVOKABLE virtual QString translation() const noexcept;
+  Q_INVOKABLE virtual QString translation() const noexcept {
+    return "";  // default value
+  }
 
   /**
    * @brief name of the resource in English or other languages
    * @return QString
    */
-  Q_INVOKABLE virtual QString name() const noexcept;
+  Q_INVOKABLE virtual QString name() const noexcept {
+    return tr("UnNamed Translator");
+  }
 
   /**
    * @brief key to use in options
    * @return
    */
-  Q_INVOKABLE virtual QString key() const noexcept;
+  Q_INVOKABLE virtual QString key() const noexcept { return "default"; }
 
   /**
    * @brief description of the resouce
    * @return QString
    */
-  Q_INVOKABLE virtual QString description() const noexcept;
+  Q_INVOKABLE virtual QString description() const noexcept { return ""; }
 
   /**
    * @brief checks if the specified languages supported for this resource or not
@@ -102,9 +88,11 @@ class Resource : public QAbstractListModel {
    * @param to a language
    * @return bool
    */
-  Q_INVOKABLE virtual bool isSupported(QOnlineTranslator::Language from,
-                                       QOnlineTranslator::Language to) const
-      noexcept;
+  Q_INVOKABLE virtual bool isSupported(
+      QOnlineTranslator::Language /* from */,
+      QOnlineTranslator::Language /* to */) const noexcept {
+    return false;  // default value
+  }
 
   /**
    * @brief check if the resource is enabled or not
@@ -132,7 +120,9 @@ class Resource : public QAbstractListModel {
    * @brief returns a list of suggestion words
    * @return
    */
-  Q_INVOKABLE virtual QVector<QString> suggestions() const noexcept;
+  Q_INVOKABLE virtual QVector<QString> suggestions() const noexcept {
+    return {};  // empty result
+  }
 
   /**
    * @brief is loading the resource
@@ -179,6 +169,8 @@ class Resource : public QAbstractListModel {
    * @param value
    */
   virtual void setOption(resource_option const& the_option);
+
+  virtual void reloadOptionsCache();
 
  protected:
   QVector<resource_option> options_cache;
