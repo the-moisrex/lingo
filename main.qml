@@ -6,6 +6,7 @@ ApplicationWindow {
     visible: true
     width: 480
     height: 800
+    property alias stackView: stackView
     title: qsTr("Stack")
 
     property color primaryColor: "#333"
@@ -62,6 +63,7 @@ ApplicationWindow {
                 text: qsTr("Home")
                 width: parent.width
                 onClicked: {
+                    stackView.clear();
                     stackView.push("HomeForm.ui.qml")
                     drawer.close()
                 }

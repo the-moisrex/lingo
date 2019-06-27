@@ -46,6 +46,13 @@ Page {
                 text: qsTr("Dictionaries:")
             }
 
+            Button {
+                text: "Dictionaries"
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClicked: {
+                    stackView.push("dictionaries.qml")
+                }
+            }
 
         }
     }

@@ -44,7 +44,8 @@ class Resource : public QAbstractListModel {
 
   QVariant data(const QModelIndex& index,
                 int role = Qt::DisplayRole) const override;
-  QMap<int, QVariant> itemData(const QModelIndex& index) const override;
+
+  QHash<int, QByteArray> roleNames() const override;
 
   // Editable:
   bool setData(const QModelIndex& index,

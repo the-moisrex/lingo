@@ -13,16 +13,16 @@ int main(int argc, char* argv[]) {
   app.setApplicationName("lingo");
   app.setOrganizationDomain("lingo");
 
-  //  DictionariesListModel dicts;
+  DictionariesListModel dicts;
   MySettings settings;
 
-  //    qmlRegisterType<TranslatorModel>("Translator", 1, 0, "TranslatorModel");
-  qmlRegisterType<DictionariesListModel>("Dictionaries", 1, 0,
-                                         "DictionariesListModel");
+  //  qmlRegisterType<DictionariesListModel>("Dictionaries", 1, 0,
+  //                                         "DictionariesListModel");
 
   QQmlApplicationEngine engine;
   auto context = engine.rootContext();
   context->setContextProperty("MySettings", &settings);
+  context->setContextProperty("Dictionaries", &dicts);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,

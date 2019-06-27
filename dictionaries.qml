@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
-import Dictionaries 1.0
 
 Page {
     id: root
@@ -8,14 +7,14 @@ Page {
 
     ListView {
         id: listView
-        spacing: 10
+        spacing: 20
         anchors.fill: parent
         delegate: Item {
-
+            Text {
+                text: name + "(<font color=green>" + (enabled ? qsTr("Enabled") : qsTr("Disabled")) + "</font>)"
+            }
         }
-        model: DictionariesListModel {
-
-        }
+        model: Dictionaries
     }
 
 

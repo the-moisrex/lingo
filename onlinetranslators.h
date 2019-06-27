@@ -19,6 +19,8 @@ class OnlineTranslator : public Resource {
   std::future<void> stopFuture;
 
  public:
+  explicit OnlineTranslator(QObject* parent = nullptr) : Resource(parent) {}
+
   QString translation() const noexcept override { return _translation; }
   QString source() const noexcept { return _source; }
   void search(QString const& data) override;

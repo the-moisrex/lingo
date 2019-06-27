@@ -2,14 +2,22 @@
 #define DICTIONARIESLISTMODEL_H
 
 #include <QAbstractListModel>
-//#include "resource.h"
+#include "resource.h"
 
 class DictionariesListModel : public QAbstractListModel {
   Q_OBJECT
-
-  //  QList<Resource> dicts;
+  QList<Resource*> dicts;
 
  public:
+  enum roles {
+    NAME = Qt::UserRole,
+    TRANSLATION,
+    KEY,
+    DESCRIPTION,
+    ENABLED,
+    LOADING,
+    INITIALIZING
+  };
   explicit DictionariesListModel(QObject* parent = nullptr);
 
   // Basic functionality:
@@ -17,8 +25,9 @@ class DictionariesListModel : public QAbstractListModel {
 
   QVariant data(const QModelIndex& index,
                 int role = Qt::DisplayRole) const override;
+  QHash<int, QByteArray> roleNames() const override;
 
- private:
+  Q_INVOKABLE void search(QString const& word);
 };
 
 #endif  // DICTIONARIESLISTMODEL_H

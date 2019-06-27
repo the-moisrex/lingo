@@ -30,8 +30,8 @@ QVariant Resource::data(const QModelIndex& index, int role) const {
   return QVariant();
 }
 
-QMap<int, QVariant> Resource::itemData(const QModelIndex& /* index */) const {
-  QMap<int, QVariant> data;
+QHash<int, QByteArray> Resource::roleNames() const {
+  QHash<int, QByteArray> data;
   data[ROLE_KEY] = "key";
   data[ROLE_TYPE] = "type";
   data[ROLE_TITLE] = "title";

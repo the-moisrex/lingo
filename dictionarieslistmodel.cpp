@@ -4,10 +4,10 @@
 DictionariesListModel::DictionariesListModel(QObject* parent)
     : QAbstractListModel(parent) {
   // Default online dictionaries:
-  //  OnlineTranslator<QOnlineTranslator::Google> google;
-  //  OnlineTranslator<QOnlineTranslator::Bing> bing;
-  //  OnlineTranslator<QOnlineTranslator::Yandex> yandex;
-  //  dicts << std::move(google) << std::move(bing) << std::move(yandex);
+  auto google = new OnlineTranslator<QOnlineTranslator::Google>(this);
+  auto bing = new OnlineTranslator<QOnlineTranslator::Bing>(this);
+  auto yandex = new OnlineTranslator<QOnlineTranslator::Yandex>(this);
+  dicts << google << bing << yandex;
 
   // Default offline dictionaries:
 
@@ -21,14 +21,48 @@ int DictionariesListModel::rowCount(const QModelIndex& parent) const {
   if (parent.isValid())
     return 0;
 
-  //  return dicts.size();
+  return dicts.size();
 }
 
 QVariant DictionariesListModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid())
     return QVariant();
 
-  switch (role) {}
+  auto dic = dicts.at(index.row());
+
+  switch (role) {
+    case KEY:
+      return dic->key();
+    case NAME:
+      return dic->name();
+    case TRANSLATION:
+      return dic->translation();
+    case ENABLED:
+      return dic->isEnabled();
+    case DESCRIPTION:
+      return dic->description();
+    case LOADING:
+      return dic->isLoading();
+    case INITIALIZING:
+      return dic->isInitializing();
+  }
 
   return QVariant();
+}
+
+QHash<int, QByteArray> DictionariesListModel::roleNames() const {
+  QHash<int, QByteArray> data;
+  data[KEY] = "key";
+  data[NAME] = "name";
+  data[DESCRIPTION] = "description";
+  data[TRANSLATION] = "translation";
+  data[ENABLED] = "enabled";
+  data[LOADING] = "loading";
+  data[INITIALIZING] = "initStatus";
+  return data;
+}
+
+void DictionariesListModel::search(const QString& word) {
+  for (auto& dic : dicts)
+    dic->search(word);
 }
