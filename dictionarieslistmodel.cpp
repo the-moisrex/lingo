@@ -45,6 +45,8 @@ QVariant DictionariesListModel::data(const QModelIndex& index, int role) const {
       return dic->isLoading();
     case INITIALIZING:
       return dic->isInitializing();
+    case INDEX:
+      return index.row();
   }
 
   return QVariant();

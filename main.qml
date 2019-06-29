@@ -1,4 +1,4 @@
-import QtQuick 2.12
+import QtQuick 2.9
 import QtQuick.Controls 2.5
 
 ApplicationWindow {
@@ -85,6 +85,17 @@ ApplicationWindow {
         initialItem: "HomeForm.ui.qml"
         anchors.fill: parent
     }
+
+
+    onClosing: {
+        if (Qt.platform.os == "android") {
+            if (stackView.depth > 1) {
+                close.accepted = false
+                stackView.pop()
+            }
+        }
+    }
+
 }
 
 

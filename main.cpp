@@ -1,3 +1,4 @@
+#include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml>
@@ -12,12 +13,14 @@ int main(int argc, char* argv[]) {
   app.setApplicationDisplayName("Lingo");
   app.setApplicationName("lingo");
   app.setOrganizationDomain("lingo");
+  QFontDatabase::addApplicationFont(":/materialdesignicons-webfont.ttf");
 
   DictionariesListModel dicts;
   MySettings settings;
 
   //  qmlRegisterType<DictionariesListModel>("Dictionaries", 1, 0,
   //                                         "DictionariesListModel");
+  qmlRegisterType<Resource>("Resource", 1, 0, "Resource");
 
   QQmlApplicationEngine engine;
   auto context = engine.rootContext();

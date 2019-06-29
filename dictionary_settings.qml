@@ -1,15 +1,35 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.5
-import "icon.js" as MIcons
+import Resource 1.0
 
 Page {
     id: root
-    title: qsTr("Dictionaries")
+    title: qsTr("Dictionary settings")
+    property int dictionary_index: 0
+
+    Text {
+        id: desc
+        text: "<font color=gray>" + qsTr("Key: ") + "</font>" + optionsList.model.key() + "<br><font color=gray>" + qsTr("Name: ") + "</font> "+ optionsList.model.name() + "<br><font color=gray>" + qsTr("Description: ") + "</font>" + optionsList.model.description()
+        wrapMode: Text.WordWrap
+        textFormat: Qt.RichText
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.topMargin: 10
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        lineHeight: lineHeight * 1.5
+    }
 
     ListView {
-        id: listView
+        id: optionsList
+        model: Dictionaries.optionsModel(dictionary_index)
         spacing: 10
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: desc.bottom
+        anchors.bottom: parent.bottom
+        anchors.topMargin: 10
         delegate: Item {
             anchors.right: parent.right
             anchors.left: parent.left
@@ -24,7 +44,6 @@ Page {
                 anchors.topMargin: 3
                 color: bgColor
                 radius: 4
-
             }
 
 
@@ -42,7 +61,7 @@ Page {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     font.pointSize: 17
-                    text:  name + " <small>(" + (enabled ? ("<font color=green>" + qsTr("Enabled") + "</font>") : ("<font color=red>" + qsTr("Disabled") + "</font>")) + ")</small>"
+                    text: name
                     textFormat: Qt.RichText
                 }
             }
@@ -56,32 +75,22 @@ Page {
             }
 
 
-            IconLabel {
-                id: settingsIcon
+            Switch {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 10
-                text: MIcons.Icon.settings
-                font.pixelSize: 24
-                hoverEnabled: true
+                visible: type == 3 // resource_options::input_t::CHECKBOX
+                checked: value
+                onCheckedChanged: value = checked
+            }
 
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        stackView.push(
-                            "dictionary_settings.qml",
-                            {
-                                dictionary_index: index
-                            }
-                        )
-                    }
-                }
+            Component.onCompleted: {
+                console.log(key, name, value);
             }
 
         }
-        model: Dictionaries
+
+
     }
-
-
 }

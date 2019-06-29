@@ -7,5 +7,9 @@
         <file>ResultsPage.qml</file>
         <file>settings.qml</file>
         <file>dictionaries.qml</file>
+        <file alias="icon.js">QmlBridgeForMaterialDesignIcons/Icon.js</file>
+        <file>materialdesignicons-webfont.ttf</file>
+        <file>IconLabel.qml</file>
+        <file>dictionary_settings.qml</file>
     </qresource>
 </RCC>

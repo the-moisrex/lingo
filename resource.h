@@ -4,6 +4,7 @@
 #include <QAbstractListModel>
 #include <QObject>
 #include <QOnlineTranslator>
+#include <QQmlEngine>
 #include <QString>
 #include <utility>
 #include "settings.h"
@@ -178,5 +179,8 @@ class Resource : public QAbstractListModel {
   bool loading = false;
   bool initilizing = true;
 };
+
+// registering it for the qml
+QML_DECLARE_TYPE(Resource)
 
 #endif  // RESOURCE_H

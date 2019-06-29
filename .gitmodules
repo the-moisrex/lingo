@@ -1,3 +1,6 @@
 [submodule "src/third-party/qonlinetranslator"]
 	path = src/third-party/qonlinetranslator
 	url = https://github.com/Shatur95/QOnlineTranslator.git
+[submodule "QmlBridgeForMaterialDesignIcons"]
+	path = QmlBridgeForMaterialDesignIcons
+	url = https://github.com/kevincarlson/QmlBridgeForMaterialDesignIcons.git

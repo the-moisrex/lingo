@@ -16,7 +16,8 @@ class DictionariesListModel : public QAbstractListModel {
     DESCRIPTION,
     ENABLED,
     LOADING,
-    INITIALIZING
+    INITIALIZING,
+    INDEX
   };
   explicit DictionariesListModel(QObject* parent = nullptr);
 
@@ -28,6 +29,7 @@ class DictionariesListModel : public QAbstractListModel {
   QHash<int, QByteArray> roleNames() const override;
 
   Q_INVOKABLE void search(QString const& word);
+  Q_INVOKABLE Resource* optionsModel(int index) { return dicts.at(index); }
 };
 
 #endif  // DICTIONARIESLISTMODEL_H
