@@ -18,7 +18,7 @@ Page {
         anchors.topMargin: 10
         anchors.leftMargin: 10
         anchors.rightMargin: 10
-        lineHeight: lineHeight * 1.5
+        lineHeight: 1.5
     }
 
     ListView {

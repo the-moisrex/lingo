@@ -5,7 +5,10 @@
 #include <QObject>
 #include <QOnlineTranslator>
 #include <QQmlEngine>
+#include <QReadLocker>
+#include <QReadWriteLock>
 #include <QString>
+#include <QWriteLocker>
 #include <utility>
 #include "settings.h"
 
@@ -23,6 +26,29 @@ class Resource : public QAbstractListModel {
   Q_PROPERTY(bool initStatus READ isInitializing NOTIFY initStatusChanged)
   Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
   Q_PROPERTY(QString translation READ translation NOTIFY translationChanged)
+
+ protected:
+  mutable QReadWriteLock loadingLock, translationLock, enabledLock,
+      initStatusLock;
+  QVector<resource_option> options_cache;
+  QString _translation;
+  bool loading = false;
+  bool initilizing = true;
+
+  void setLoading(bool newLoadingValue) {
+    QWriteLocker locked(&loadingLock);
+    loading = newLoadingValue;
+  }
+
+  void setInitStatus(bool newInitializingValue) {
+    QWriteLocker locker(&initStatusLock);
+    initilizing = newInitializingValue;
+  }
+
+  void setTranslation(QString newTranslation) {
+    QWriteLocker locker(&translationLock);
+    _translation = newTranslation;
+  }
 
  public slots:
   virtual void onTextChange(QString value) {
@@ -61,7 +87,8 @@ class Resource : public QAbstractListModel {
     // do nothing
   }
   Q_INVOKABLE virtual QString translation() const noexcept {
-    return "";  // default value
+    QReadLocker locker(&translationLock);
+    return _translation;
   }
 
   /**
@@ -101,6 +128,7 @@ class Resource : public QAbstractListModel {
    * @return
    */
   Q_INVOKABLE virtual bool isEnabled() const noexcept {
+    QReadLocker locker(&enabledLock);
     return optionValue("enabled", true).toBool();
   }
 
@@ -130,7 +158,10 @@ class Resource : public QAbstractListModel {
    * @brief is loading the resource
    * @return
    */
-  Q_INVOKABLE bool isLoading() const noexcept { return loading; }
+  Q_INVOKABLE bool isLoading() const noexcept {
+    QReadLocker locker(&loadingLock);
+    return loading;
+  }
 
   /**
    * @brief is the resource initializing (for example: connecting to the MySQL
@@ -138,7 +169,10 @@ class Resource : public QAbstractListModel {
    * resource is connected to the database
    * @return
    */
-  Q_INVOKABLE bool isInitializing() const noexcept { return initilizing; }
+  Q_INVOKABLE bool isInitializing() const noexcept {
+    QReadLocker locker(&initStatusLock);
+    return initilizing;
+  }
 
   /**
    * @brief get an option
@@ -173,11 +207,6 @@ class Resource : public QAbstractListModel {
   virtual void setOption(resource_option const& the_option);
 
   virtual void reloadOptionsCache();
-
- protected:
-  QVector<resource_option> options_cache;
-  bool loading = false;
-  bool initilizing = true;
 };
 
 // registering it for the qml

@@ -1,51 +1,50 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
+import QtQuick.Controls.Material 2.3
 
 Item {
   id: rootId
   signal textChanged(string value)
 
-  property color secondaryColor: "white"
 
   Component.onCompleted: {
       rootId.textChanged.connect(function(value) {
-         Translator.onTextChanged(value);
+//         Dictionaries.search(value);
       });
   }
 
-  BusyIndicator {
-      id: loadingId
-      width: 50
-      height: 50
-      anchors.centerIn: parent
-      visible: Translator.loading
-  }
 
-  Item {
-      visible: !Translator.loading
+  ListView {
+      id: dictList
       anchors.fill: parent
+      model: Dictionaries
+      spacing: 10
+      delegate: Item {
+          anchors.left: parent.left
+          anchors.right: parent.right
+          visible: enabled
 
-      ColumnLayout {
-          id: rowLayout
-          anchors.fill: parent
+          BusyIndicator {
+              id: loadingId
+              width: 50
+              height: 50
+              anchors.centerIn: parent
+              visible: loading
+          }
 
           Text {
-              id: sourceId
-              text: Translator.source
-              color: secondaryColor
+              text: name
+              font.pointSize: translationId.font.pointSize * .7
+              color: Qt.lighter(Material.foreground, 1.5)
           }
 
           Text {
               id: translationId
-              text: Translator.translation
-              color: secondaryColor
+              text: translation
           }
       }
-
   }
-
-
 }
 
 /*##^## Designer {

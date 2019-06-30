@@ -1,10 +1,11 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.5
+import QtQuick.Controls.Material 2.3
 
 Item {
     id: rootId
-    property color primaryColor: "black"
-    property color secondaryColor: "blue"
+    property color primaryColor: Material.accent
+    property color secondaryColor: Material.background
     property color lighterPrimaryColor: Qt.lighter(primaryColor, 1.5)
     property color darkerPriaryColor: Qt.darker(primaryColor, 1.5)
     signal textChanged(string value)
