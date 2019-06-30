@@ -70,7 +70,7 @@ QString formatData(const QOnlineTranslator& translator) {
     }
   }
 
-  qDebug() << tr;
+  //  qDebug() << tr;
   return tr;
 }
 
@@ -78,18 +78,15 @@ template <QOnlineTranslator::Engine Engine>
 void OnlineTranslator<Engine>::search(const QString& data) {
   // loading changes so the ui gets affected
   setLoading(true);
-  emit loadingChanged(loading);
-  static QOnlineTranslator translator;
+  static thread_local QOnlineTranslator translator;
 
-  translator.translate(data, QOnlineTranslator::Google);
+  translator.translate(data, Engine);
 
   if (translator.error() == QOnlineTranslator::NoError) {
     setTranslation(formatData(translator));
-    emit translationChanged(_translation);
   } else {
-    qCritical() << translator.errorString();
+    qCritical() << Engine << translator.errorString();
   }
 
   setLoading(false);
-  emit loadingChanged(loading);
 }

@@ -38,16 +38,19 @@ class Resource : public QAbstractListModel {
   void setLoading(bool newLoadingValue) {
     QWriteLocker locked(&loadingLock);
     loading = newLoadingValue;
+    emit loadingChanged(this, loading);
   }
 
   void setInitStatus(bool newInitializingValue) {
     QWriteLocker locker(&initStatusLock);
     initilizing = newInitializingValue;
+    emit initStatusChanged(this, initilizing);
   }
 
   void setTranslation(QString newTranslation) {
     QWriteLocker locker(&translationLock);
     _translation = newTranslation;
+    emit translationChanged(this, _translation);
   }
 
  public slots:
@@ -57,10 +60,10 @@ class Resource : public QAbstractListModel {
   }
 
  signals:
-  void loadingChanged(bool loading);
-  void initStatusChanged(bool initializationStatus);
-  void enabledChanged(bool enabled);
-  void translationChanged(QString translation);
+  void loadingChanged(Resource* self, bool loading);
+  void initStatusChanged(Resource* self, bool initializationStatus);
+  void enabledChanged(Resource* self, bool enabled);
+  void translationChanged(Resource* self, QString translation);
 
  public:
   enum roles { ROLE_KEY = Qt::UserRole, ROLE_VALUE, ROLE_TITLE, ROLE_TYPE };

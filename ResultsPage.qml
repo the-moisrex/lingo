@@ -6,11 +6,20 @@ import QtQuick.Controls.Material 2.3
 Item {
   id: rootId
   signal textChanged(string value)
+  property string lastValue: ""
 
+  Timer {
+      id: timer
+      repeat: false
+      interval: 500
+      onTriggered: Dictionaries.search(lastValue)
+  }
 
   Component.onCompleted: {
       rootId.textChanged.connect(function(value) {
-//         Dictionaries.search(value);
+          lastValue = value;
+          timer.stop();
+          timer.start(); // debouncing
       });
   }
 
@@ -23,7 +32,9 @@ Item {
       delegate: Item {
           anchors.left: parent.left
           anchors.right: parent.right
-          visible: enabled
+          height: cols.implicitHeight
+          visible: enabled && (translation != "")
+
 
           BusyIndicator {
               id: loadingId
@@ -33,15 +44,21 @@ Item {
               visible: loading
           }
 
-          Text {
-              text: name
-              font.pointSize: translationId.font.pointSize * .7
-              color: Qt.lighter(Material.foreground, 1.5)
-          }
+          Column {
+              id: cols
 
-          Text {
-              id: translationId
-              text: translation
+
+              Text {
+                  text: name
+                  font.pointSize: translationId.font.pointSize * .7
+                  color: Qt.lighter(Material.foreground, 1.5)
+              }
+
+              Text {
+                  id: translationId
+                  text: translation
+                  textFormat: Text.RichText
+              }
           }
       }
   }

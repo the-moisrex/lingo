@@ -8,6 +8,12 @@ class DictionariesListModel : public QAbstractListModel {
   Q_OBJECT
   QList<Resource*> dicts;
 
+ public slots:
+  void onTranslationChange(Resource* ptr, QString str);
+  void onLoadingChange(Resource* ptr, bool loading);
+  void onEnabledChange(Resource* ptr, bool enabled);
+  void onInitStatusChange(Resource* ptr, bool initializing);
+
  public:
   enum roles {
     NAME = Qt::UserRole,

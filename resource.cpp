@@ -78,6 +78,7 @@ void Resource::setEnabled(bool enabled) {
   resource_option opt = option("enabled");
   opt.value = enabled;
   setOption(opt);
+  emit enabledChanged(this, enabled);
 }
 
 const resource_option& Resource::option(const QString& _key) const {
