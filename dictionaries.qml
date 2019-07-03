@@ -1,6 +1,5 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.5
-import "QmlBridgeForMaterialDesignIcons/Icon.js" as MIcons
 
 Page {
     id: root
@@ -61,7 +60,7 @@ Page {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 10
-                text: MIcons.Icon.settings
+                text: Icons["settings"]
                 font.pixelSize: 24
                 hoverEnabled: true
 

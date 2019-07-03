@@ -1,6 +1,6 @@
 #include "icons.h"
 
-Icons::Icons() : QHash<QString, QString>() {
+Icons::Icons() : QVariantMap() {
   //////////////////////////////////////////////////////////////////////////////
   //
   //  QML Bridge for Material Design Icons
