@@ -1,9 +1,9 @@
 #include "dictionarieslistmodel.h"
+#include "onlinetranslators.h"
 #include <QtConcurrent/QtConcurrent>
 #include <algorithm>
-#include "onlinetranslators.h"
 
-void DictionariesListModel::onTranslationChange(Resource* ptr,
+void DictionariesListModel::onTranslationChange(Resource *ptr,
                                                 QString /* str */) {
   int index = dicts.indexOf(ptr);
   if (index < 0)
@@ -12,7 +12,7 @@ void DictionariesListModel::onTranslationChange(Resource* ptr,
                    QVector<int>() << TRANSLATION);
 }
 
-void DictionariesListModel::onLoadingChange(Resource* ptr, bool /* loading */) {
+void DictionariesListModel::onLoadingChange(Resource *ptr, bool /* loading */) {
   int index = dicts.indexOf(ptr);
   if (index < 0)
     return;
@@ -20,7 +20,7 @@ void DictionariesListModel::onLoadingChange(Resource* ptr, bool /* loading */) {
                    QVector<int>() << LOADING);
 }
 
-void DictionariesListModel::onEnabledChange(Resource* ptr, bool /* enabled */) {
+void DictionariesListModel::onEnabledChange(Resource *ptr, bool /* enabled */) {
   int index = dicts.indexOf(ptr);
   if (index < 0)
     return;
@@ -28,7 +28,7 @@ void DictionariesListModel::onEnabledChange(Resource* ptr, bool /* enabled */) {
                    QVector<int>() << ENABLED);
 }
 
-void DictionariesListModel::onInitStatusChange(Resource* ptr,
+void DictionariesListModel::onInitStatusChange(Resource *ptr,
                                                bool /* initializing */) {
   int index = dicts.indexOf(ptr);
   if (index < 0)
@@ -37,12 +37,12 @@ void DictionariesListModel::onInitStatusChange(Resource* ptr,
                    QVector<int>() << INITIALIZING);
 }
 
-DictionariesListModel::DictionariesListModel(QObject* parent)
+DictionariesListModel::DictionariesListModel(QObject *parent)
     : QAbstractListModel(parent) {
   // Default online dictionaries:
-  Resource* google = new OnlineTranslator<QOnlineTranslator::Google>(this);
-  Resource* bing = new OnlineTranslator<QOnlineTranslator::Bing>(this);
-  Resource* yandex = new OnlineTranslator<QOnlineTranslator::Yandex>(this);
+  Resource *google = new OnlineTranslator<QOnlineTranslator::Google>(this);
+  Resource *bing = new OnlineTranslator<QOnlineTranslator::Bing>(this);
+  Resource *yandex = new OnlineTranslator<QOnlineTranslator::Yandex>(this);
   if (google->isEnabled())
     dicts << google;
   if (bing->isEnabled())
@@ -55,19 +55,19 @@ DictionariesListModel::DictionariesListModel(QObject* parent)
   // Manually added dictionaries:
 
   // connect the signals to the slots
-  for (auto& dic : dicts) {
-    connect(dic, SIGNAL(translationChanged(Resource*, QString)), this,
-            SLOT(onTranslationChange(Resource*, QString)));
-    connect(dic, SIGNAL(loadingChanged(Resource*, bool)), this,
-            SLOT(onLoadingChange(Resource*, bool)));
-    connect(dic, SIGNAL(enabledChanged(Resource*, bool)), this,
-            SLOT(onLoadingChange(Resource*, bool)));
-    connect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
-            SLOT(onInitStatusChange(Resource*, bool)));
+  for (auto &dic : dicts) {
+    connect(dic, SIGNAL(translationChanged(Resource *, QString)), this,
+            SLOT(onTranslationChange(Resource *, QString)));
+    connect(dic, SIGNAL(loadingChanged(Resource *, bool)), this,
+            SLOT(onLoadingChange(Resource *, bool)));
+    connect(dic, SIGNAL(enabledChanged(Resource *, bool)), this,
+            SLOT(onLoadingChange(Resource *, bool)));
+    connect(dic, SIGNAL(initStatusChanged(Resource *, bool)), this,
+            SLOT(onInitStatusChange(Resource *, bool)));
   }
 }
 
-int DictionariesListModel::rowCount(const QModelIndex& parent) const {
+int DictionariesListModel::rowCount(const QModelIndex &parent) const {
   // For list models only the root node (an invalid parent) should return the
   // list's size. For all other (valid) parents, rowCount() should return 0 so
   // that it does not become a tree model.
@@ -77,29 +77,29 @@ int DictionariesListModel::rowCount(const QModelIndex& parent) const {
   return dicts.size();
 }
 
-QVariant DictionariesListModel::data(const QModelIndex& index, int role) const {
+QVariant DictionariesListModel::data(const QModelIndex &index, int role) const {
   if (!index.isValid())
     return QVariant();
 
   auto dic = dicts.at(index.row());
 
   switch (role) {
-    case KEY:
-      return dic->key();
-    case NAME:
-      return dic->name();
-    case TRANSLATION:
-      return dic->translation();
-    case ENABLED:
-      return dic->isEnabled();
-    case DESCRIPTION:
-      return dic->description();
-    case LOADING:
-      return dic->isLoading();
-    case INITIALIZING:
-      return dic->isInitializing();
-    case INDEX:
-      return index.row();
+  case KEY:
+    return dic->key();
+  case NAME:
+    return dic->name();
+  case TRANSLATION:
+    return dic->translation();
+  case ENABLED:
+    return dic->isEnabled();
+  case DESCRIPTION:
+    return dic->description();
+  case LOADING:
+    return dic->isLoading();
+  case INITIALIZING:
+    return dic->isInitializing();
+  case INDEX:
+    return index.row();
   }
 
   return QVariant();
@@ -117,8 +117,12 @@ QHash<int, QByteArray> DictionariesListModel::roleNames() const {
   return data;
 }
 
-void DictionariesListModel::search(const QString& word) {
-  for (auto& dic : dicts) {
+void DictionariesListModel::search(const QString &word) {
+  for (auto &dic : dicts) {
     QtConcurrent::run(dic, &Resource::search, word);
   }
+}
+
+QString DictionariesListModel::readableTranslation(QString t) {
+  return t.remove(QRegExp("<[^>]*>"));
 }

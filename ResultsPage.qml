@@ -77,8 +77,8 @@ Item {
               MouseArea {
                   anchors.fill: parent
                   onClicked: {
-                      console.log(translation);
-                      Speech.say(translation);
+                      console.log(Dictionaries.readableTranslation(translation));
+                      Speech.say(Dictionaries.readableTranslation(translation));
                   }
               }
           }
