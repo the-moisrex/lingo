@@ -30,6 +30,11 @@ Page {
         anchors.top: desc.bottom
         anchors.bottom: parent.bottom
         anchors.topMargin: 10
+        onModelChanged: {
+            model.componentComplete();
+            console.log(model.key())
+        }
+
         delegate: Item {
             anchors.right: parent.right
             anchors.left: parent.left
@@ -49,7 +54,7 @@ Page {
 
             Item {
                 id: dataParent
-                anchors.right: settingsIcon.left
+                anchors.right: parent.right
                 anchors.rightMargin: 10
                 anchors.left: parent.left
                 anchors.leftMargin: 10
@@ -61,7 +66,7 @@ Page {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     font.pointSize: 17
-                    text: name
+                    text: title
                     textFormat: Qt.RichText
                 }
             }
@@ -84,10 +89,6 @@ Page {
                 onCheckedChanged: value = checked
             }
 
-
-            Component.onCompleted: {
-                console.log(key, name, value);
-            }
 
         }
 

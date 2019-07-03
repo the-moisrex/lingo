@@ -65,13 +65,17 @@ Qt::ItemFlags Resource::flags(const QModelIndex& index) const {
   return Qt::ItemIsEditable;  // FIXME: Implement me!
 }
 
-Resource::Resource(QObject* parent) : QAbstractListModel(parent) {
+void Resource::componentComplete() {
+  reloadOptionsCache();
+
   // adding enabled option because it'll going to be common among all
   // dictionaries
   setOption({resource_option::CHECKBOX, "enabled", true, tr("Enabled")});
-
-  reloadOptionsCache();
 }
+
+void Resource::classBegin() {}
+
+Resource::Resource(QObject* parent) : QAbstractListModel(parent) {}
 
 void Resource::setEnabled(bool enabled) {
   QWriteLocker locker(&enabledLock);
@@ -136,6 +140,7 @@ void Resource::setOption(const resource_option& the_option) {
     _settings->setValue("title", the_option.title);
     _settings->endArray();
   }
+  _settings->sync();
 }
 
 void Resource::reloadOptionsCache() {

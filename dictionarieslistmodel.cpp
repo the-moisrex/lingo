@@ -1,5 +1,6 @@
 #include "dictionarieslistmodel.h"
 #include <QtConcurrent/QtConcurrent>
+#include <algorithm>
 #include "onlinetranslators.h"
 
 void DictionariesListModel::onTranslationChange(Resource* ptr,
@@ -39,10 +40,15 @@ void DictionariesListModel::onInitStatusChange(Resource* ptr,
 DictionariesListModel::DictionariesListModel(QObject* parent)
     : QAbstractListModel(parent) {
   // Default online dictionaries:
-  auto google = new OnlineTranslator<QOnlineTranslator::Google>(this);
-  auto bing = new OnlineTranslator<QOnlineTranslator::Bing>(this);
-  auto yandex = new OnlineTranslator<QOnlineTranslator::Yandex>(this);
-  dicts << google << bing << yandex;
+  Resource* google = new OnlineTranslator<QOnlineTranslator::Google>(this);
+  Resource* bing = new OnlineTranslator<QOnlineTranslator::Bing>(this);
+  Resource* yandex = new OnlineTranslator<QOnlineTranslator::Yandex>(this);
+  if (google->isEnabled())
+    dicts << google;
+  if (bing->isEnabled())
+    dicts << bing;
+  if (yandex->isEnabled())
+    dicts << yandex;
 
   // Default offline dictionaries:
 
@@ -105,7 +111,7 @@ QHash<int, QByteArray> DictionariesListModel::roleNames() const {
   data[NAME] = "name";
   data[DESCRIPTION] = "description";
   data[TRANSLATION] = "translation";
-  data[ENABLED] = "enabled";
+  data[ENABLED] = "translatorEnabled";
   data[LOADING] = "loading";
   data[INITIALIZING] = "initStatus";
   return data;

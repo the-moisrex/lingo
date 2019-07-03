@@ -20,8 +20,13 @@ struct resource_option {
   QString title;
 };
 
-class Resource : public QAbstractListModel {
+template <QOnlineTranslator::Engine Engine>
+class OnlineTranslator;
+
+class Resource : public QAbstractListModel, public QQmlParserStatus {
   Q_OBJECT
+  Q_INTERFACES(QQmlParserStatus)
+
   Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged)
   Q_PROPERTY(bool initStatus READ isInitializing NOTIFY initStatusChanged)
   Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
@@ -53,12 +58,6 @@ class Resource : public QAbstractListModel {
     emit translationChanged(this, _translation);
   }
 
- public slots:
-  virtual void onTextChange(QString value) {
-    // TODO: make this to use another thread
-    search(value);
-  }
-
  signals:
   void loadingChanged(Resource* self, bool loading);
   void initStatusChanged(Resource* self, bool initializationStatus);
@@ -84,6 +83,9 @@ class Resource : public QAbstractListModel {
 
   Qt::ItemFlags flags(const QModelIndex& index) const override;
 
+  Q_INVOKABLE virtual void componentComplete() override;
+  Q_INVOKABLE virtual void classBegin() override;
+
  public:
   explicit Resource(QObject* parent = nullptr);
   virtual void search(QString const& /* data */) {
@@ -106,7 +108,7 @@ class Resource : public QAbstractListModel {
    * @brief key to use in options
    * @return
    */
-  Q_INVOKABLE virtual QString key() const noexcept { return "default"; }
+  Q_INVOKABLE virtual QString key() const noexcept = 0;
 
   /**
    * @brief description of the resouce
@@ -161,7 +163,7 @@ class Resource : public QAbstractListModel {
    * @brief is loading the resource
    * @return
    */
-  Q_INVOKABLE bool isLoading() const noexcept {
+  Q_INVOKABLE virtual bool isLoading() const noexcept {
     QReadLocker locker(&loadingLock);
     return loading;
   }
@@ -172,7 +174,7 @@ class Resource : public QAbstractListModel {
    * resource is connected to the database
    * @return
    */
-  Q_INVOKABLE bool isInitializing() const noexcept {
+  Q_INVOKABLE virtual bool isInitializing() const noexcept {
     QReadLocker locker(&initStatusLock);
     return initilizing;
   }
@@ -210,9 +212,19 @@ class Resource : public QAbstractListModel {
   virtual void setOption(resource_option const& the_option);
 
   virtual void reloadOptionsCache();
+
+  OnlineTranslator<QOnlineTranslator::Google>* toOnlineGoogle(Resource* res) {
+    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Google>*>(res);
+  }
+  OnlineTranslator<QOnlineTranslator::Bing>* toOnlineBing(Resource* res) {
+    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Bing>*>(res);
+  }
+  OnlineTranslator<QOnlineTranslator::Yandex>* toOnlineYandex(Resource* res) {
+    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Yandex>*>(res);
+  }
 };
 
 // registering it for the qml
-QML_DECLARE_TYPE(Resource)
+// QML_DECLARE_TYPE(Resource)
 
 #endif  // RESOURCE_H

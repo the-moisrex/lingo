@@ -1,8 +1,10 @@
 #include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QTextToSpeech>
 #include <QtQml>
 #include "dictionarieslistmodel.h"
+#include "onlinetranslators.h"
 #include "settings.h"
 
 int main(int argc, char* argv[]) {
@@ -17,15 +19,25 @@ int main(int argc, char* argv[]) {
 
   DictionariesListModel dicts;
   MySettings settings;
+  QTextToSpeech speech;
 
   //  qmlRegisterType<DictionariesListModel>("Dictionaries", 1, 0,
   //                                         "DictionariesListModel");
-  qmlRegisterType<Resource>("Resource", 1, 0, "Resource");
+  qmlRegisterUncreatableType<Resource>("Resource", 1, 0, "Resource",
+                                       "Resource is not create able.");
+  //  qmlRegisterType<Resource>("Resource", 1, 0, "Resource");
+  //  qmlRegisterType<OnlineTranslator<QOnlineTranslator::Google>>(
+  //      "Resource.Online.Google", 1, 0, "OnlineTranslatorGoogle");
+  //  qmlRegisterType<OnlineTranslator<QOnlineTranslator::Bing>>(
+  //      "Resource.Online.Bing", 1, 0, "OnlineTranslatorBing");
+  //  qmlRegisterType<OnlineTranslator<QOnlineTranslator::Yandex>>(
+  //      "Resource.Online.Yandex", 1, 0, "OnlineTranslatorYandex");
 
   QQmlApplicationEngine engine;
   auto context = engine.rootContext();
   context->setContextProperty("MySettings", &settings);
   context->setContextProperty("Dictionaries", &dicts);
+  context->setContextProperty("Speech", &speech);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,

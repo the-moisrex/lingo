@@ -14,9 +14,9 @@ class OnlineTranslator : public Resource {
  public:
   explicit OnlineTranslator(QObject* parent = nullptr) : Resource(parent) {}
 
-  void search(QString const& data) override;
+  virtual void search(QString const& data) override;
 
-  QString key() const noexcept override {
+  virtual QString key() const noexcept override {
     switch (Engine) {
       case QOnlineTranslator::Google:
         return "google";
@@ -28,7 +28,7 @@ class OnlineTranslator : public Resource {
     return "";
   }
 
-  QString name() const noexcept override {
+  virtual QString name() const noexcept override {
     switch (Engine) {
       case QOnlineTranslator::Google:
         return tr("Google Translator");
@@ -40,24 +40,30 @@ class OnlineTranslator : public Resource {
     return tr("Unknown Translator");
   }
 
-  QString description() const noexcept override {
+  virtual QString description() const noexcept override {
     return tr("%1 is an online translator that requires internet connection. "
               "This translator sometimes may deny service for various reasons.")
         .arg(name());
   }
 
-  bool isSupported(QOnlineTranslator::Language from,
-                   QOnlineTranslator::Language to) const noexcept override {
+  virtual bool isSupported(QOnlineTranslator::Language from,
+                           QOnlineTranslator::Language to) const
+      noexcept override {
     return QOnlineTranslator::isSupportTranslation(Engine, to) &&
            QOnlineTranslator::isSupportTranslation(Engine, from);
   }
 
-  bool canProvideSuggestions() const noexcept override { return false; }
+  virtual bool canProvideSuggestions() const noexcept override { return false; }
 };
 
 // explicit template instanciations
 template class OnlineTranslator<QOnlineTranslator::Google>;
 template class OnlineTranslator<QOnlineTranslator::Bing>;
 template class OnlineTranslator<QOnlineTranslator::Yandex>;
+
+// registering it for the qml
+// QML_DECLARE_TYPE(OnlineTranslator<QOnlineTranslator::Google>);
+// QML_DECLARE_TYPE(OnlineTranslator<QOnlineTranslator::Bing>);
+// QML_DECLARE_TYPE(OnlineTranslator<QOnlineTranslator::Yandex>);
 
 #endif  // TRANSLATORMODEL_H

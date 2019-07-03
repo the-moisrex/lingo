@@ -2,6 +2,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Material 2.3
+import "icon.js" as MIcons
 
 Item {
   id: rootId
@@ -32,9 +33,9 @@ Item {
       delegate: Item {
           anchors.left: parent.left
           anchors.right: parent.right
+          anchors.leftMargin: 10
+          anchors.rightMargin: 10
           height: cols.implicitHeight
-          visible: enabled && (translation != "")
-
 
           BusyIndicator {
               id: loadingId
@@ -46,18 +47,40 @@ Item {
 
           Column {
               id: cols
+              anchors.fill: parent
+              anchors.topMargin: 10
 
 
               Text {
                   text: name
                   font.pointSize: translationId.font.pointSize * .7
-                  color: Qt.lighter(Material.foreground, 1.5)
+                  color: Material.accent
               }
 
               Text {
                   id: translationId
-                  text: translation
+                  text: translation == "" ? qsTr("No result") : translation
                   textFormat: Text.RichText
+                  wrapMode: Text.Wrap
+                  anchors.left: parent.left
+                  anchors.right: parent.right
+              }
+          }
+
+          IconLabel {
+              anchors.right: parent.right
+              anchors.top: parent.top
+              text: MIcons.Icon.voice
+              font.pixelSize: 24
+              hoverEnabled: true
+              visible: translation != ""
+
+              MouseArea {
+                  anchors.fill: parent
+                  onClicked: {
+                      console.log(translation);
+                      Speech.say(translation);
+                  }
               }
           }
       }
