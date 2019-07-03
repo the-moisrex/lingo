@@ -21,6 +21,7 @@ SOURCES += \
         onlinetranslators.cpp \
         resource.cpp \
         settings.cpp \
+        sqldictionary.cpp \
         txtdictionary.cpp
 
 RESOURCES += qml.qrc
@@ -44,6 +45,7 @@ HEADERS += \
   onlinetranslators.h \
   resource.h \
   settings.h \
+  sqldictionary.h \
   txtdictionary.h \
   word.h
 
