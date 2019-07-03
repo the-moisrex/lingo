@@ -4,11 +4,12 @@ import QtQuick.Controls.Material 2.3
 
 Item {
     id: rootId
-    property color primaryColor: Material.accent
+    property color primaryColor: Material.primary
     property color secondaryColor: Material.background
     property color lighterPrimaryColor: Qt.lighter(primaryColor, 1.5)
     property color darkerPriaryColor: Qt.darker(primaryColor, 1.5)
     signal textChanged(string value)
+    height: inputId.implicitHeight + 10
 
 
     Rectangle {
@@ -25,7 +26,7 @@ Item {
             GradientStop { position: 1.0; color: primaryColor }
         }
 
-        radius: 50
+        radius: 4
         anchors.bottomMargin: 3
         anchors.topMargin: 3
         anchors.right: parent.right
@@ -40,11 +41,13 @@ Item {
         TextArea {
             id: inputId
             bottomPadding: 0
+            color: Material.foreground
             placeholderText: qsTr("search...")
             background: null
+            anchors.right: parent.right;
+            anchors.left: parent.left
             anchors.rightMargin: 20
             anchors.leftMargin: 20
-            anchors.fill: parent
             selectByKeyboard: true
             selectByMouse: true
             selectionColor: secondaryColor

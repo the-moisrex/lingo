@@ -9,12 +9,10 @@ ApplicationWindow {
     property alias stackView: stackView
     title: qsTr("Stack")
 
-    property color primaryColor: "#333"
-    property color secondaryColor: "#06a"
 
     header: ToolBar {
         id: toolBar
-        contentHeight: toolButton.implicitHeight
+        contentHeight: inputId.height
 
         ToolButton {
             id: toolButton
@@ -31,13 +29,11 @@ ApplicationWindow {
         }
 
         SearchInput {
-            primaryColor: window.primaryColor
-            secondaryColor: window.secondaryColor
+            id: inputId
             anchors.right: parent.right
             anchors.rightMargin: 20
             anchors.left: parent.left
             anchors.leftMargin: 50
-            anchors.bottom: parent.bottom
             anchors.top: parent.top
             onTextChanged: {
                 var itemData = {objectName: "results-page"};
@@ -93,6 +89,9 @@ ApplicationWindow {
             if (stackView.depth > 1) {
                 close.accepted = false
                 stackView.pop()
+            } else if (stackView.empty) {
+                close.accepted = true;
+                close.destroy()
             }
         }
     }
