@@ -1,13 +1,14 @@
+#include "dictionarieslistmodel.h"
+#include "icons.h"
+#include "onlinetranslators.h"
+#include "settings.h"
 #include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QTextToSpeech>
 #include <QtQml>
-#include "dictionarieslistmodel.h"
-#include "onlinetranslators.h"
-#include "settings.h"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
   QGuiApplication app(argc, argv);
@@ -20,6 +21,7 @@ int main(int argc, char* argv[]) {
   DictionariesListModel dicts;
   MySettings settings;
   QTextToSpeech speech;
+  Icons icons;
 
   //  qmlRegisterType<DictionariesListModel>("Dictionaries", 1, 0,
   //                                         "DictionariesListModel");
@@ -38,10 +40,11 @@ int main(int argc, char* argv[]) {
   context->setContextProperty("MySettings", &settings);
   context->setContextProperty("Dictionaries", &dicts);
   context->setContextProperty("Speech", &speech);
+  context->setContextProperty("Icons", icons);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,
-      [url](QObject* obj, const QUrl& objUrl) {
+      [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
           QCoreApplication::exit(-1);
       },

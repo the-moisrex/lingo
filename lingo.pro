@@ -16,6 +16,7 @@ SOURCES += \
         dbmanager.cpp \
         dictionarieslistmodel.cpp \
         history.cpp \
+        icons.cpp \
         main.cpp \
         onlinetranslators.cpp \
         resource.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
   dbmanager.h \
   dictionarieslistmodel.h \
   history.h \
+  icons.h \
   onlinetranslators.h \
   resource.h \
   settings.h \

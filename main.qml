@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.5
+import "QmlBridgeForMaterialDesignIcons/Icon.js" as MIcons
 
 ApplicationWindow {
     id: window
@@ -18,8 +19,9 @@ ApplicationWindow {
 
         ToolButton {
             id: toolButton
-            text: stackView.depth > 1 ? "\u25C0" : "\u2630"
+            text: stackView.depth > 1 ? MIcons.Icon.arrowLeft : MIcons.Icon.formatListBulleted
             font.pixelSize: Qt.application.font.pixelSize * 1.6
+            font.family: "Material Design Icons"
             onClicked: {
                 if (stackView.depth > 1) {
                     stackView.pop()
