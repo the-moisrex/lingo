@@ -46,8 +46,7 @@ HEADERS += \
   resource.h \
   settings.h \
   sqldictionary.h \
-  txtdictionary.h \
-  word.h
+  txtdictionary.h
 
 
 include(src/third-party/qonlinetranslator/qonlinetranslator.pri)
