@@ -37,6 +37,8 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
       initStatusLock;
   QVector<resource_option> options_cache;
   QString _translation;
+  QString _id;
+  QString _name;
   bool loading = false;
   bool initilizing = true;
 
@@ -101,7 +103,11 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    * @return QString
    */
   Q_INVOKABLE virtual QString name() const noexcept {
-    return tr("UnNamed Translator");
+    return _name == "" ? tr("UnNamed Translator") : _name;
+  }
+
+  Q_INVOKABLE virtual void setName(QString newName) noexcept {
+    _name = std::move(newName);
   }
 
   /**
@@ -109,6 +115,13 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    * @return
    */
   Q_INVOKABLE virtual QString key() const noexcept = 0;
+
+  Q_INVOKABLE virtual void setId(QString newId) noexcept {
+    _id = std::move(newId);
+  }
+  Q_INVOKABLE virtual QString id() const noexcept {
+    return _id == "" ? key() : _id;
+  }
 
   /**
    * @brief description of the resouce

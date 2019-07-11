@@ -89,6 +89,14 @@ Page {
                 onCheckedChanged: value = checked
             }
 
+            TextEdit {
+                anchors.top: dataParent.bottom
+                anchors.left: dataParent.left
+                anchors.right: dataParent.right
+                text: value
+                visible: type == 1
+            }
+
 
         }
 

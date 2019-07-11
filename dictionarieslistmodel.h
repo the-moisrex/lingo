@@ -1,20 +1,28 @@
 #ifndef DICTIONARIESLISTMODEL_H
 #define DICTIONARIESLISTMODEL_H
 
-#include "resource.h"
 #include <QAbstractListModel>
+#include <memory>
+#include "resource.h"
 
 class DictionariesListModel : public QAbstractListModel {
   Q_OBJECT
-  QList<Resource *> dicts;
+  QList<Resource*> dicts;
+  Q_PROPERTY(DictionariesListModel* prototypes READ prototypes NOTIFY
+                 prototypesChanged)
 
-public slots:
-  void onTranslationChange(Resource *ptr, QString str);
-  void onLoadingChange(Resource *ptr, bool loading);
-  void onEnabledChange(Resource *ptr, bool enabled);
-  void onInitStatusChange(Resource *ptr, bool initializing);
+  DictionariesListModel* proto = nullptr;
 
-public:
+ public slots:
+  void onTranslationChange(Resource* ptr, QString str);
+  void onLoadingChange(Resource* ptr, bool loading);
+  void onEnabledChange(Resource* ptr, bool enabled);
+  void onInitStatusChange(Resource* ptr, bool initializing);
+
+ signals:
+  void prototypesChanged();
+
+ public:
   enum roles {
     NAME = Qt::UserRole,
     TRANSLATION,
@@ -25,18 +33,23 @@ public:
     INITIALIZING,
     INDEX
   };
-  explicit DictionariesListModel(QObject *parent = nullptr);
+  explicit DictionariesListModel(QObject* parent = nullptr);
 
   // Basic functionality:
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
-  QVariant data(const QModelIndex &index,
+  QVariant data(const QModelIndex& index,
                 int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
 
-  Q_INVOKABLE void search(QString const &word);
-  Q_INVOKABLE Resource *optionsModel(int index) { return dicts.at(index); }
+  Q_INVOKABLE void search(QString const& word);
+  Q_INVOKABLE Resource* optionsModel(int index) { return dicts.at(index); }
   Q_INVOKABLE static QString readableTranslation(QString t);
+
+  DictionariesListModel* prototypes();
+  void loadDefaults();
+
+  Q_INVOKABLE void create(QString name, int index);
 };
 
-#endif // DICTIONARIESLISTMODEL_H
+#endif  // DICTIONARIESLISTMODEL_H

@@ -5,9 +5,27 @@ Page {
     id: root
     title: qsTr("Dictionaries")
 
+    RoundButton {
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.rightMargin: 10
+        anchors.bottomMargin: 10
+        width: implicitHeight
+        text: "+"
+        font.pointSize: 20
+        highlighted: true
+        onClicked: {
+            stackView.push(
+                "create_dictionary.qml"
+            )
+        }
+        z: 10
+    }
+
     ListView {
         id: listView
         spacing: 10
+        z: 5
         anchors.fill: parent
         delegate: Item {
             anchors.right: parent.right
@@ -23,9 +41,7 @@ Page {
                 anchors.topMargin: 3
                 color: bgColor
                 radius: 4
-
             }
-
 
             Item {
                 id: dataParent

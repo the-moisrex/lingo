@@ -10,5 +10,7 @@
         <file>materialdesignicons-webfont.ttf</file>
         <file>IconLabel.qml</file>
         <file>dictionary_settings.qml</file>
+        <file>english-spanish-2019-06-25.txt</file>
+        <file>create_dictionary.qml</file>
     </qresource>
 </RCC>

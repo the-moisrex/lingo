@@ -4,12 +4,11 @@ import QtQuick.Controls.Material 2.3
 
 Item {
     id: rootId
-    property color primaryColor: Material.primary
-    property color secondaryColor: Material.background
+    property color primaryColor: Qt.darker(Material.primary, 1.3)
     property color lighterPrimaryColor: Qt.lighter(primaryColor, 1.5)
     property color darkerPriaryColor: Qt.darker(primaryColor, 1.5)
     signal textChanged(string value)
-    height: inputId.implicitHeight + 10
+    height: inputId.implicitHeight + 13
 
 
     Rectangle {
@@ -41,7 +40,7 @@ Item {
         TextArea {
             id: inputId
             bottomPadding: 0
-            color: Material.foreground
+            color: Qt.lighter(primaryColor, 3)
             placeholderText: qsTr("search...")
             background: null
             anchors.right: parent.right;
@@ -50,7 +49,8 @@ Item {
             anchors.leftMargin: 20
             selectByKeyboard: true
             selectByMouse: true
-            selectionColor: secondaryColor
+            placeholderTextColor: Qt.lighter(primaryColor, 2)
+            selectionColor: Qt.lighter(primaryColor, 1.8)
             font.pixelSize: Qt.application.font.pixelSize * 1.2
             onTextChanged: rootId.textChanged(inputId.text)
         }
