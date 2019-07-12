@@ -5,6 +5,63 @@
 #include "sqldictionary.h"
 #include "txtdictionary.h"
 
+std::vector<std::tuple<QString, QString, QString>>
+DictionariesListModel::getManuallyAddedDicts() {
+  auto _settings = settings();
+  auto size = _settings->beginReadArray("additional_resources");
+  std::vector<std::tuple<QString, QString, QString>> additional_resources;
+  for (decltype(size) i = 0; i < size; i++) {
+    _settings->setArrayIndex(i);
+    auto type = _settings->value("type", "").toString();
+    auto name = _settings->value("name", "").toString();
+    auto id = _settings->value("id", "").toString();
+    if (type == "" || name == "" || id == "")
+      continue;
+    additional_resources.emplace_back(type, id, name);
+  }
+  _settings->endArray();
+
+  return additional_resources;
+}
+
+void DictionariesListModel::updateManuallyAddedResources(
+    std::vector<std::tuple<QString, QString, QString>> const&
+        additional_resources) {
+  auto _settings = settings();
+
+  // re-writing the configs
+  auto size = additional_resources.size();
+  _settings->beginWriteArray("additional_resources");
+  for (decltype(size) i = 0; i < size; i++) {
+    auto item = additional_resources.at(i);
+    _settings->setArrayIndex(static_cast<int>(i));
+    _settings->setValue("type", std::get<0>(item));
+    _settings->setValue("id", std::get<1>(item));
+    _settings->setValue("name", std::get<2>(item));
+  }
+  _settings->endArray();
+  _settings->sync();
+
+  // disconnect the signals
+  for (auto& dic : dicts) {
+    disconnect(dic, SIGNAL(translationChanged(Resource*, QString)), this,
+               SLOT(onTranslationChange(Resource*, QString)));
+    disconnect(dic, SIGNAL(loadingChanged(Resource*, bool)), this,
+               SLOT(onLoadingChange(Resource*, bool)));
+    disconnect(dic, SIGNAL(enabledChanged(Resource*, bool)), this,
+               SLOT(onLoadingChange(Resource*, bool)));
+    disconnect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
+               SLOT(onInitStatusChange(Resource*, bool)));
+  }
+  dicts.clear();
+  loadDefaults();
+
+  emit dataChanged(createIndex(0, 0), createIndex(rowCount(), 0),
+                   QVector<int>()
+                       << KEY << NAME << TRANSLATION << DESCRIPTION << ENABLED
+                       << INDEX << INITIALIZING << LOADING);
+}
+
 void DictionariesListModel::loadDefaults() {
   // Default online dictionaries:
   Resource* google = new OnlineTranslator<QOnlineTranslator::Google>(this);
@@ -27,24 +84,11 @@ void DictionariesListModel::loadDefaults() {
     dicts << english2Espanol;
 
   // Manually added dictionaries:
-  auto _settings = settings();
-  auto size = _settings->beginReadArray("additional_resources");
-  std::vector<std::tuple<QString, QString, QString>> additional_resources;
-  for (decltype(size) i = 0; i < size; i++) {
-    _settings->setArrayIndex(i);
-    auto type = _settings->value("type", "").toString();
-    auto name = _settings->value("name", "").toString();
-    auto key = _settings->value("key", "").toString();
-    if (type == "" || name == "" || key == "")
-      continue;
-    additional_resources.emplace_back(type, key, name);
-  }
-  _settings->endArray();
-
+  auto additional_resources = getManuallyAddedDicts();
   for (auto& item : additional_resources) {
     Resource* res = nullptr;
     auto type = std::get<0>(item);
-    auto key = std::get<1>(item);
+    auto id = std::get<1>(item);
     auto name = std::get<2>(item);
 
     // Add your other custom dictionaries here:
@@ -52,7 +96,7 @@ void DictionariesListModel::loadDefaults() {
       res = new txtDictionary(this);
     }
     if (res) {
-      res->setId(key);
+      res->setId(id);
       res->setName(name);
 
       if (res->isEnabled())
@@ -79,20 +123,24 @@ void DictionariesListModel::create(QString name, int index) {
 
   auto item = proto->index(index);
   auto type = item.data(KEY).toString();
-  auto key =
+  auto id =
       QString(QCryptographicHash::hash((type + name).toStdString().c_str(),
                                        QCryptographicHash::Md5)
                   .toHex());
-  auto _settings = settings();
+  auto additional_resources = getManuallyAddedDicts();
+  additional_resources.emplace_back(type, id, name);
+  updateManuallyAddedResources(additional_resources);
+}
 
-  auto size = _settings->value("aadditional_resource", 0).toInt();
-  _settings->beginWriteArray("additional_resources");
-  _settings->setArrayIndex(size + 1);
-  _settings->setValue("key", key);
-  _settings->setValue("type", type);
-  _settings->setValue("name", name);
-  _settings->endArray();
-  _settings->sync();
+void DictionariesListModel::remove(QString id) {
+  auto additional_resources = getManuallyAddedDicts();
+  auto found =
+      std::find_if(additional_resources.begin(), additional_resources.end(),
+                   [&](auto const& dict) { return std::get<1>(dict) == id; });
+  if (found != additional_resources.end()) {
+    additional_resources.erase(found);
+    updateManuallyAddedResources(additional_resources);
+  }
 }
 
 void DictionariesListModel::onTranslationChange(Resource* ptr,
@@ -151,6 +199,8 @@ QVariant DictionariesListModel::data(const QModelIndex& index, int role) const {
   switch (role) {
     case KEY:
       return dic->key();
+    case ID:
+      return dic->id();
     case NAME:
       return dic->name();
     case TRANSLATION:

@@ -12,6 +12,10 @@ class DictionariesListModel : public QAbstractListModel {
                  prototypesChanged)
 
   DictionariesListModel* proto = nullptr;
+  std::vector<std::tuple<QString, QString, QString>> getManuallyAddedDicts();
+  void updateManuallyAddedResources(
+      std::vector<std::tuple<QString, QString, QString>> const&
+          additional_resources);
 
  public slots:
   void onTranslationChange(Resource* ptr, QString str);
@@ -27,6 +31,7 @@ class DictionariesListModel : public QAbstractListModel {
     NAME = Qt::UserRole,
     TRANSLATION,
     KEY,
+    ID,
     DESCRIPTION,
     ENABLED,
     LOADING,
@@ -50,6 +55,7 @@ class DictionariesListModel : public QAbstractListModel {
   void loadDefaults();
 
   Q_INVOKABLE void create(QString name, int index);
+  Q_INVOKABLE void remove(QString id);
 };
 
 #endif  // DICTIONARIESLISTMODEL_H

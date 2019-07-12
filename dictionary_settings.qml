@@ -21,10 +21,27 @@ Page {
         lineHeight: 1.5
     }
 
+    RoundButton {
+        font.family: "Material Design Icons"
+        font.pixelSize: 32
+        text: Icons["delete"]
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.bottomMargin: 10
+        anchors.rightMargin: 10
+        highlighted: true
+        z: 10
+        onClicked: {
+            Dictionaries.remove(optionsList.model.id());
+            stackView.pop();
+        }
+    }
+
     ListView {
         id: optionsList
         model: Dictionaries.optionsModel(dictionary_index)
         spacing: 10
+        z: 5
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: desc.bottom
@@ -32,7 +49,6 @@ Page {
         anchors.topMargin: 10
         onModelChanged: {
             model.componentComplete();
-            console.log(model.key())
         }
 
         delegate: Item {

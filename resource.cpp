@@ -110,7 +110,7 @@ void Resource::setOption(const resource_option& the_option) {
   for (auto it = opts.begin(); it != opts.end(); it++) {
     if (it->key == the_option.key) {
       options_cache.replace(static_cast<int>(it - opts.begin()), the_option);
-      _settings->beginWriteArray(key() + "/options", opts.size());
+      _settings->beginWriteArray(id() + "/options", opts.size());
       int i = 0;
       int size = opts.size();
       for (; i < size; i++) {
@@ -132,7 +132,7 @@ void Resource::setOption(const resource_option& the_option) {
   // "the_option" does not exists, so we have to add it
   if (should_add) {
     options_cache.push_back(the_option);
-    _settings->beginWriteArray(key() + "/options", opts.size());
+    _settings->beginWriteArray(id() + "/options", opts.size());
     _settings->setArrayIndex(opts.size());
     _settings->setValue("key", the_option.key);
     _settings->setValue("value", the_option.value);
@@ -146,7 +146,7 @@ void Resource::setOption(const resource_option& the_option) {
 void Resource::reloadOptionsCache() {
   // cache all the options:
   auto _settings = settings();
-  auto size = _settings->beginReadArray(key() + "/options");
+  auto size = _settings->beginReadArray(id() + "/options");
   options_cache.clear();
   options_cache.reserve(size);
   for (int i = 0; i < size; ++i) {
