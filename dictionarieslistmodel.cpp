@@ -49,7 +49,7 @@ void DictionariesListModel::updateManuallyAddedResources(
     disconnect(dic, SIGNAL(loadingChanged(Resource*, bool)), this,
                SLOT(onLoadingChange(Resource*, bool)));
     disconnect(dic, SIGNAL(enabledChanged(Resource*, bool)), this,
-               SLOT(onLoadingChange(Resource*, bool)));
+               SLOT(onEnabledChange(Resource*, bool)));
     disconnect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
                SLOT(onInitStatusChange(Resource*, bool)));
   }
@@ -68,20 +68,16 @@ void DictionariesListModel::loadDefaults() {
   Resource* bing = new OnlineTranslator<QOnlineTranslator::Bing>(this);
   Resource* yandex = new OnlineTranslator<QOnlineTranslator::Yandex>(this);
 
-  if (google->isEnabled())
-    dicts << google;
-  if (bing->isEnabled())
-    dicts << bing;
-  if (yandex->isEnabled())
-    dicts << yandex;
+  dicts << google;
+  dicts << bing;
+  dicts << yandex;
 
   // Default offline dictionaries:
   Resource* english2Espanol =
       new txtDictionary(this, "qrc:/english-spanish-2019-06-25.txt");
 
   english2Espanol->setName(QObject::tr("English to Spanish (built-in)"));
-  if (english2Espanol->isEnabled())
-    dicts << english2Espanol;
+  dicts << english2Espanol;
 
   // Manually added dictionaries:
   auto additional_resources = getManuallyAddedDicts();
@@ -99,8 +95,7 @@ void DictionariesListModel::loadDefaults() {
       res->setId(id);
       res->setName(name);
 
-      if (res->isEnabled())
-        dicts << res;
+      dicts << res;
     }
   }
 
@@ -111,7 +106,7 @@ void DictionariesListModel::loadDefaults() {
     connect(dic, SIGNAL(loadingChanged(Resource*, bool)), this,
             SLOT(onLoadingChange(Resource*, bool)));
     connect(dic, SIGNAL(enabledChanged(Resource*, bool)), this,
-            SLOT(onLoadingChange(Resource*, bool)));
+            SLOT(onEnabledChange(Resource*, bool)));
     connect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
             SLOT(onInitStatusChange(Resource*, bool)));
   }

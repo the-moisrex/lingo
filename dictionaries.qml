@@ -57,7 +57,7 @@ Page {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     font.pointSize: 17
-                    text:  name + " <small>(" + (enabled ? ("<font color=green>" + qsTr("Enabled") + "</font>") : ("<font color=red>" + qsTr("Disabled") + "</font>")) + ")</small>"
+                    text:  name + " <small>(" + (translatorEnabled ? ("<font color=green>" + qsTr("Enabled") + "</font>") : ("<font color=red>" + qsTr("Disabled") + "</font>")) + ")</small>"
                     textFormat: Qt.RichText
                 }
             }

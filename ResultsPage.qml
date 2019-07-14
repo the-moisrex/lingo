@@ -28,56 +28,61 @@ Item {
       id: dictList
       anchors.fill: parent
       model: Dictionaries
-      spacing: 10
       delegate: Item {
           anchors.left: parent.left
           anchors.right: parent.right
           anchors.leftMargin: 10
           anchors.rightMargin: 10
-          height: cols.implicitHeight
+          height: translatorEnabled ? cols.implicitHeight : 0
+          visible: translatorEnabled
 
-          BusyIndicator {
-              id: loadingId
-              width: 50
-              height: 50
-              anchors.centerIn: parent
-              visible: loading
-          }
-
-          Column {
-              id: cols
+          Item {
               anchors.fill: parent
-              anchors.topMargin: 10
+              anchors.topMargin: translatorEnabled ? 10 : 0
 
-
-              Text {
-                  text: name
-                  font.pointSize: translationId.font.pointSize * .7
-                  color: Material.accent
+              BusyIndicator {
+                  id: loadingId
+                  width: 50
+                  height: 50
+                  anchors.centerIn: parent
+                  visible: loading
               }
 
-              Text {
-                  id: translationId
-                  text: translation == "" ? qsTr("No result") : translation
-                  textFormat: Text.RichText
-                  wrapMode: Text.Wrap
-                  anchors.left: parent.left
-                  anchors.right: parent.right
-              }
-          }
-
-          IconLabel {
-              anchors.right: parent.right
-              anchors.top: parent.top
-              text: Icons["voice"]
-              font.pixelSize: 24
-              hoverEnabled: true
-              visible: translation != ""
-
-              MouseArea {
+              Column {
+                  id: cols
                   anchors.fill: parent
-                  onClicked: {
-                      Speech.say(Dictionaries.readableTranslation(translation));
+                  anchors.topMargin: 10
+
+
+                  Text {
+                      text: name
+                      font.pointSize: translationId.font.pointSize * .7
+                      color: Material.accent
+                  }
+
+                  Text {
+                      id: translationId
+                      text: translation == "" ? qsTr("No result") : translation
+                      textFormat: Text.RichText
+                      wrapMode: Text.Wrap
+                      anchors.left: parent.left
+                      anchors.right: parent.right
+                  }
+              }
+
+              IconLabel {
+                  anchors.right: parent.right
+                  anchors.top: parent.top
+                  text: Icons["voice"]
+                  font.pixelSize: 24
+                  hoverEnabled: true
+                  visible: translation != ""
+
+                  MouseArea {
+                      anchors.fill: parent
+                      onClicked: {
+                          Speech.say(Dictionaries.readableTranslation(translation));
+                      }
                   }
               }
           }

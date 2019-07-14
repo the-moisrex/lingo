@@ -97,21 +97,34 @@ Page {
 
 
             Switch {
+                property bool inited: false
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 visible: type == 3 // resource_options::input_t::CHECKBOX
-                checked: value
-                onCheckedChanged: value = checked
+                onCheckedChanged: {
+                    if (value !== checked && inited)
+                        value = checked
+                }
+                Component.onCompleted: {
+                    if (checked !== value)
+                        checked = value;
+                    inited = true;
+                }
             }
 
-            TextEdit {
-                anchors.top: dataParent.bottom
-                anchors.left: dataParent.left
-                anchors.right: dataParent.right
-                text: value
-                visible: type == 1
-            }
+//            TextEdit {
+//                anchors.top: dataParent.bottom
+//                anchors.left: dataParent.left
+//                anchors.right: dataParent.right
+//                visible: type == 1 // resource_options::input_t::TEXT
+//                onTextChanged: {
+//                    value = text;
+//                }
+//                Component.onCompleted: {
+//                    text = value;
+//                }
+//            }
 
 
         }

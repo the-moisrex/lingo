@@ -1,4 +1,5 @@
 #include "resource.h"
+#include <QDebug>
 
 int Resource::rowCount(const QModelIndex& parent) const {
   // For list models only the root node (an invalid parent) should return the
@@ -66,11 +67,10 @@ Qt::ItemFlags Resource::flags(const QModelIndex& index) const {
 }
 
 void Resource::componentComplete() {
-  reloadOptionsCache();
-
   // adding enabled option because it'll going to be common among all
   // dictionaries
-  setOption({resource_option::CHECKBOX, "enabled", true, tr("Enabled")});
+  if (!optionExists("enabled"))
+    setOption({resource_option::CHECKBOX, "enabled", true, tr("Enabled")});
 }
 
 void Resource::classBegin() {}
@@ -94,13 +94,28 @@ const resource_option& Resource::option(const QString& _key) const {
       "The specified key is not in the configutation file");
 }
 
+bool Resource::optionExists(const QString& _key) const {
+  auto opts = options();
+  for (auto const& opt : opts)
+    if (opt.key == _key)
+      return true;
+  return false;
+}
+
 const QVariant& Resource::optionValue(const QString& _key,
                                       const QVariant& defaultValue) const {
   auto opts = options();
   for (auto const& opt : opts)
     if (opt.key == _key)
       return opt.value;
+
   return defaultValue;
+}
+
+const QVector<resource_option>& Resource::options() const {
+  if (options_cache.empty())
+    reloadOptionsCache();
+  return options_cache;
 }
 
 void Resource::setOption(const resource_option& the_option) {
@@ -121,6 +136,10 @@ void Resource::setOption(const resource_option& the_option) {
                               static_cast<int>(the_option.input_type));
           _settings->setValue("title", the_option.title);
           should_add = false;
+
+          if (the_option.key == "enabled")
+            emit enabledChanged(this, the_option.value.toBool());
+
           break;
         }
       }
@@ -143,7 +162,7 @@ void Resource::setOption(const resource_option& the_option) {
   _settings->sync();
 }
 
-void Resource::reloadOptionsCache() {
+void Resource::reloadOptionsCache() const {
   // cache all the options:
   auto _settings = settings();
   auto size = _settings->beginReadArray(id() + "/options");

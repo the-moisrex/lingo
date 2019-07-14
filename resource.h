@@ -35,7 +35,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
  protected:
   mutable QReadWriteLock loadingLock, translationLock, enabledLock,
       initStatusLock;
-  QVector<resource_option> options_cache;
+  mutable QVector<resource_option> options_cache;
   QString _translation;
   QString _id;
   QString _name;
@@ -200,6 +200,8 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    */
   virtual const resource_option& option(QString const& _key) const;
 
+  virtual bool optionExists(QString const& _key) const;
+
   /**
    * @brief returns a value of an option if exists
    * @param _key
@@ -213,9 +215,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    * @brief get a reference to all the options (options are cached in memory)
    * @return
    */
-  virtual const QVector<resource_option>& options() const {
-    return options_cache;
-  }
+  virtual const QVector<resource_option>& options() const;
 
   /**
    * @brief set an option
@@ -224,7 +224,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    */
   virtual void setOption(resource_option const& the_option);
 
-  virtual void reloadOptionsCache();
+  virtual void reloadOptionsCache() const;
 
   OnlineTranslator<QOnlineTranslator::Google>* toOnlineGoogle(Resource* res) {
     return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Google>*>(res);
