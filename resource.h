@@ -141,6 +141,8 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
     return false;  // default value
   }
 
+  Q_INVOKABLE virtual void clearTranslation() noexcept { setTranslation(""); }
+
   /**
    * @brief check if the resource is enabled or not
    * @return

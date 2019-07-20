@@ -138,6 +138,40 @@ void DictionariesListModel::remove(QString id) {
   }
 }
 
+QStringList DictionariesListModel::toLangsModel() {
+  static QStringList to;
+  if (to.empty()) {
+    for (int lang = QOnlineTranslator::Language::Afrikaans;
+         lang != QOnlineTranslator::Language::Zulu; lang++)
+      to.push_back(QOnlineTranslator::languageString(
+          static_cast<QOnlineTranslator::Language>(lang)));
+  }
+  return to;
+}
+
+QStringList DictionariesListModel::fromLangsModel() {
+  static QStringList from;
+  if (from.empty()) {
+    for (int lang = QOnlineTranslator::Language::Auto;
+         lang != QOnlineTranslator::Language::Zulu; lang++)
+      from.push_back(QOnlineTranslator::languageString(
+          static_cast<QOnlineTranslator::Language>(lang)));
+  }
+  return from;
+}
+
+void DictionariesListModel::setFromLang(int index) {
+  index -= 1;
+  from = static_cast<QOnlineTranslator::Language>(index);
+  search(lastWord);
+}
+
+void DictionariesListModel::setToLang(int index) {
+  index -= 2;
+  to = static_cast<QOnlineTranslator::Language>(index);
+  search(lastWord);
+}
+
 void DictionariesListModel::onTranslationChange(Resource* ptr,
                                                 QString /* str */) {
   int index = dicts.indexOf(ptr);
@@ -228,8 +262,13 @@ QHash<int, QByteArray> DictionariesListModel::roleNames() const {
 }
 
 void DictionariesListModel::search(const QString& word) {
+  lastWord = word;
   for (auto& dic : dicts) {
-    QtConcurrent::run(dic, &Resource::search, word);
+    if (dic->isSupported(from, to)) {
+      QtConcurrent::run(dic, &Resource::search, word);
+    } else {
+      dic->clearTranslation();
+    }
   }
 }
 

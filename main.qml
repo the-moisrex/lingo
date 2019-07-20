@@ -12,7 +12,7 @@ ApplicationWindow {
 
     header: ToolBar {
         id: toolBar
-        contentHeight: inputId.height
+        contentHeight: inputId.implicitHeight + langSelectorId.height
 
         ToolButton {
             id: toolButton
@@ -44,6 +44,13 @@ ApplicationWindow {
                 if (value && value.trim() != "")
                     stackView.currentItem.textChanged(value);
             }
+        }
+
+        LanguageSelector {
+            id: langSelectorId
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.top: inputId.bottom
         }
     }
 

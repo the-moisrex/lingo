@@ -11,6 +11,9 @@ class DictionariesListModel : public QAbstractListModel {
   Q_PROPERTY(DictionariesListModel* prototypes READ prototypes NOTIFY
                  prototypesChanged)
 
+  QOnlineTranslator::Language from, to;
+  QString lastWord;
+
   DictionariesListModel* proto = nullptr;
   std::vector<std::tuple<QString, QString, QString>> getManuallyAddedDicts();
   void updateManuallyAddedResources(
@@ -56,6 +59,10 @@ class DictionariesListModel : public QAbstractListModel {
 
   Q_INVOKABLE void create(QString name, int index);
   Q_INVOKABLE void remove(QString id);
+  Q_INVOKABLE QStringList toLangsModel();
+  Q_INVOKABLE QStringList fromLangsModel();
+  Q_INVOKABLE void setFromLang(int index);
+  Q_INVOKABLE void setToLang(int index);
 };
 
 #endif  // DICTIONARIESLISTMODEL_H
