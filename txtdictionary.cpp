@@ -3,7 +3,7 @@
 #include <QTextStream>
 #include <algorithm>
 
-void txtDictionary::load(const QString filepath) {
+void txtDictionary::load(const QString& filepath) {
   QFile file(filepath);
   if (file.exists() && file.open(QIODevice::ReadOnly)) {
     setInitStatus(true);

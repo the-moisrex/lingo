@@ -161,15 +161,31 @@ QStringList DictionariesListModel::fromLangsModel() {
 }
 
 void DictionariesListModel::setFromLang(int index) {
-  index -= 1;
   from = static_cast<QOnlineTranslator::Language>(index);
+  auto _settings = settings();
+  _settings->setValue("from", from);
+  _settings->sync();
   search(lastWord);
 }
 
 void DictionariesListModel::setToLang(int index) {
-  index -= 2;
+  index += 1;
   to = static_cast<QOnlineTranslator::Language>(index);
+  auto _settings = settings();
+  _settings->setValue("to", to);
+  _settings->sync();
   search(lastWord);
+}
+
+int DictionariesListModel::getFromLang() {
+  auto _settings = settings();
+  return _settings->value("from", QOnlineTranslator::Language::Auto).toInt();
+}
+
+int DictionariesListModel::getToLang() {
+  auto _settings = settings();
+  return _settings->value("to", QOnlineTranslator::Language::Spanish).toInt() -
+         1;
 }
 
 void DictionariesListModel::onTranslationChange(Resource* ptr,

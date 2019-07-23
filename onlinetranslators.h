@@ -14,9 +14,9 @@ class OnlineTranslator : public Resource {
  public:
   explicit OnlineTranslator(QObject* parent = nullptr) : Resource(parent) {}
 
-  virtual void search(QString const& data) override;
+  void search(QString const& data) override;
 
-  virtual QString key() const noexcept override {
+  QString key() const noexcept override {
     switch (Engine) {
       case QOnlineTranslator::Google:
         return "google";
@@ -28,7 +28,7 @@ class OnlineTranslator : public Resource {
     return "";
   }
 
-  virtual QString name() const noexcept override {
+  QString name() const noexcept override {
     switch (Engine) {
       case QOnlineTranslator::Google:
         return tr("Google Translator");
@@ -40,20 +40,19 @@ class OnlineTranslator : public Resource {
     return tr("Unknown Translator");
   }
 
-  virtual QString description() const noexcept override {
+  QString description() const noexcept override {
     return tr("%1 is an online translator that requires internet connection. "
               "This translator sometimes may deny service for various reasons.")
         .arg(name());
   }
 
-  virtual bool isSupported(QOnlineTranslator::Language from,
-                           QOnlineTranslator::Language to) const
-      noexcept override {
+  bool isSupported(QOnlineTranslator::Language from,
+                   QOnlineTranslator::Language to) const noexcept override {
     return QOnlineTranslator::isSupportTranslation(Engine, to) &&
            QOnlineTranslator::isSupportTranslation(Engine, from);
   }
 
-  virtual bool canProvideSuggestions() const noexcept override { return false; }
+  bool canProvideSuggestions() const noexcept override { return false; }
 };
 
 // explicit template instanciations

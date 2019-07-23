@@ -63,6 +63,8 @@ class DictionariesListModel : public QAbstractListModel {
   Q_INVOKABLE QStringList fromLangsModel();
   Q_INVOKABLE void setFromLang(int index);
   Q_INVOKABLE void setToLang(int index);
+  Q_INVOKABLE int getFromLang();
+  Q_INVOKABLE int getToLang();
 };
 
 #endif  // DICTIONARIESLISTMODEL_H

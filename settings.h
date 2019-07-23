@@ -19,10 +19,10 @@ class MySettings : public QObject {
   void historyCountChanged(int);
 
  public:
-  MySettings() : QObject() {}
+  MySettings() = default;
   explicit MySettings(QObject* parent) : QObject(parent) {}
 
-  bool rememberHistory() const {
+  [[nodiscard]] bool rememberHistory() const {
     return settings()->value("remember_history", true).toBool();
   }
   void setRememberHistory(bool h) {

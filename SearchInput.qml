@@ -9,6 +9,7 @@ Item {
     property color darkerPriaryColor: Qt.darker(primaryColor, 1.5)
     signal textChanged(string value)
     height: inputId.implicitHeight + 13
+    implicitHeight: height
 
 
     Rectangle {

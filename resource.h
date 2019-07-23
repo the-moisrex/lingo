@@ -68,7 +68,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
 
  public:
   enum roles { ROLE_KEY = Qt::UserRole, ROLE_VALUE, ROLE_TITLE, ROLE_TYPE };
-  virtual ~Resource() override {}
+  ~Resource() override = default;
 
   // Basic functionality:
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -85,8 +85,8 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
 
   Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-  Q_INVOKABLE virtual void componentComplete() override;
-  Q_INVOKABLE virtual void classBegin() override;
+  Q_INVOKABLE void componentComplete() override;
+  Q_INVOKABLE void classBegin() override;
 
  public:
   explicit Resource(QObject* parent = nullptr);

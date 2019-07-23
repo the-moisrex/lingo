@@ -17,7 +17,7 @@ class txtDictionary : public Resource {
   decltype(data)::const_iterator found = data.cend();
   QString path;
 
-  void load(const QString filepath);
+  void load(const QString& filepath);
   void setTheOptions();
 
  public:
