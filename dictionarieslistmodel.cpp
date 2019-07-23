@@ -77,7 +77,7 @@ void DictionariesListModel::loadDefaults() {
       new txtDictionary(this, "qrc:/english-spanish-2019-06-25.txt");
 
   english2Espanol->setName(QObject::tr("English to Spanish (built-in)"));
-  dicts << english2Espanol;
+  //  dicts << english2Espanol;
 
   // Manually added dictionaries:
   auto additional_resources = getManuallyAddedDicts();
@@ -281,7 +281,8 @@ void DictionariesListModel::search(const QString& word) {
   lastWord = word;
   for (auto& dic : dicts) {
     if (dic->isSupported(from, to)) {
-      QtConcurrent::run(dic, &Resource::search, word);
+      //      QtConcurrent::run(dic, &Resource::search, word);
+      dic->search(word);
     } else {
       dic->clearTranslation();
     }

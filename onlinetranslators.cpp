@@ -2,7 +2,9 @@
 #include <QDebug>
 #include <QOnlineTranslator>
 
-QString formatData(const QOnlineTranslator &translator) {
+QString formatData(const QOnlineTranslator& translator) {
+  std::cout << translator.translation().toStdString() << std::endl;
+
   QString tr;
   // Translation
   tr = translator.translation().toHtmlEscaped().replace("\n", "<br>");
@@ -30,7 +32,7 @@ QString formatData(const QOnlineTranslator &translator) {
               QObject::tr("translation options:") + "</font> ");
 
     // Print words for each type of speech
-    foreach (const QOption &option, translator.translationOptions()) {
+    foreach (const QOption& option, translator.translationOptions()) {
       tr.append(" <b>" + option.typeOfSpeech() + "</b> ");
       // TODO: indent
 
@@ -51,7 +53,7 @@ QString formatData(const QOnlineTranslator &translator) {
         }
       }
 
-      tr += "<br>"; // Add a new line before the next type of speech
+      tr += "<br>";  // Add a new line before the next type of speech
     }
   }
 
@@ -59,7 +61,7 @@ QString formatData(const QOnlineTranslator &translator) {
   if (!translator.examples().isEmpty()) {
     tr.append(" <font color=\"grey\"><i>" + translator.source() + "</i> – " +
               QObject::tr("examples:") + "</font> ");
-    foreach (const QExample &example, translator.examples()) {
+    foreach (const QExample& example, translator.examples()) {
       tr.append(" <b>" + example.typeOfSpeech() + "</b> ");
       for (int i = 0; i < example.count(); ++i) {
         tr.append(example.description(i));
@@ -75,18 +77,8 @@ QString formatData(const QOnlineTranslator &translator) {
 }
 
 template <QOnlineTranslator::Engine Engine>
-void OnlineTranslator<Engine>::search(const QString &data) {
+void OnlineTranslator<Engine>::search(const QString& data) {
   // loading changes so the ui gets affected
   setLoading(true);
-  static thread_local QOnlineTranslator translator;
-
-  translator.translate(data, Engine);
-
-  if (translator.error() == QOnlineTranslator::NoError) {
-    setTranslation(formatData(translator));
-  } else {
-    qCritical() << Engine << translator.errorString();
-  }
-
-  setLoading(false);
+  translator->translate(data, Engine, to, from);
 }

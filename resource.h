@@ -9,6 +9,7 @@
 #include <QReadWriteLock>
 #include <QString>
 #include <QWriteLocker>
+#include <iostream>
 #include <utility>
 #include "settings.h"
 
@@ -43,21 +44,29 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   bool initilizing = true;
 
   void setLoading(bool newLoadingValue) {
-    QWriteLocker locked(&loadingLock);
-    loading = newLoadingValue;
+    {
+      QWriteLocker locked(&loadingLock);
+      loading = newLoadingValue;
+    }
     emit loadingChanged(this, loading);
   }
 
   void setInitStatus(bool newInitializingValue) {
-    QWriteLocker locker(&initStatusLock);
-    initilizing = newInitializingValue;
+    {
+      QWriteLocker locker(&initStatusLock);
+      initilizing = newInitializingValue;
+    }
     emit initStatusChanged(this, initilizing);
   }
 
   void setTranslation(QString newTranslation) {
-    QWriteLocker locker(&translationLock);
-    _translation = newTranslation;
+    {
+      QWriteLocker locker(&translationLock);
+      _translation = newTranslation;
+    }
     emit translationChanged(this, _translation);
+
+    std::cout << newTranslation.toStdString() << std::endl;
   }
 
  signals:
@@ -209,9 +218,8 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    * @param _key
    * @return
    */
-  virtual const QVariant& optionValue(
-      QString const& _key,
-      const QVariant& defaultValue = QVariant()) const;
+  virtual QVariant optionValue(QString const& _key,
+                               const QVariant& defaultValue = QVariant()) const;
 
   /**
    * @brief get a reference to all the options (options are cached in memory)

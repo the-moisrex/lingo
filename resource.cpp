@@ -102,8 +102,8 @@ bool Resource::optionExists(const QString& _key) const {
   return false;
 }
 
-const QVariant& Resource::optionValue(const QString& _key,
-                                      const QVariant& defaultValue) const {
+QVariant Resource::optionValue(const QString& _key,
+                               const QVariant& defaultValue) const {
   auto opts = options();
   for (auto const& opt : opts)
     if (opt.key == _key)
@@ -113,8 +113,9 @@ const QVariant& Resource::optionValue(const QString& _key,
 }
 
 const QVector<resource_option>& Resource::options() const {
-  if (options_cache.empty())
+  if (options_cache.empty()) {
     reloadOptionsCache();
+  }
   return options_cache;
 }
 

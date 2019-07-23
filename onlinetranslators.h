@@ -2,17 +2,33 @@
 #define TRANSLATORMODEL_H
 
 #include <QAbstractListModel>
+#include <QDebug>
 #include <QOnlineTranslator>
 #include "resource.h"
+
+QString formatData(const QOnlineTranslator& translator);
 
 template <QOnlineTranslator::Engine Engine>
 class OnlineTranslator : public Resource {
  private:
+  QOnlineTranslator* translator;
   QOnlineTranslator::Language from = QOnlineTranslator::Language::Auto;
   QOnlineTranslator::Language to = QOnlineTranslator::Language::English;
 
  public:
-  explicit OnlineTranslator(QObject* parent = nullptr) : Resource(parent) {}
+  explicit OnlineTranslator(QObject* parent = nullptr)
+      : Resource(parent), translator(new QOnlineTranslator(this)) {
+    QObject::connect(translator, &QOnlineTranslator::finished, [&] {
+      std::cout << "finished" << std::endl;
+      if (translator->error() == QOnlineTranslator::NoError) {
+        setTranslation(formatData(*translator));
+      } else {
+        qCritical() << Engine << translator->errorString();
+      }
+
+      setLoading(false);
+    });
+  }
 
   void search(QString const& data) override;
 

@@ -21,9 +21,8 @@ Page {
         lineHeight: 1.5
     }
 
-    RoundButton {
-        font.family: "Material Design Icons"
-        font.pixelSize: 32
+    IconLabel {
+        font.pointSize: 24
         text: Icons["delete"]
         anchors.bottom: parent.bottom
         anchors.right: parent.right
@@ -49,6 +48,7 @@ Page {
         anchors.topMargin: 10
         onModelChanged: {
             model.componentComplete();
+            update()
         }
 
         delegate: Item {
@@ -97,20 +97,31 @@ Page {
 
 
             Switch {
-                property bool inited: false
+                id: switchBtn
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 visible: type == 3 // resource_options::input_t::CHECKBOX
-                onCheckedChanged: {
-                    if (value !== checked && inited)
-                        value = checked
+//                onCheckedChanged: {
+//                    if (value !== checked)
+//                        value = checked
+//                }
+                checked: value
+                Binding {
+                    target: model
+                    property: "value"
+                    value: switchBtn.checked
                 }
-                Component.onCompleted: {
-                    if (checked !== value)
-                        checked = value;
-                    inited = true;
-                }
+
+//                Component.onCompleted:  {
+//                    if (type == 3) {
+//                        checked = value;
+//                        value = Qt.binding(function() {
+//                            return checked;
+//                        });
+//                        console.log(checked, value)
+//                    }
+//                }
             }
 
 //            TextEdit {

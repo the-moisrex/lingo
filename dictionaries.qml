@@ -57,7 +57,7 @@ Page {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     font.pointSize: 17
-                    text:  name + " <small>(" + (translatorEnabled ? ("<font color=green>" + qsTr("Enabled") + "</font>") : ("<font color=red>" + qsTr("Disabled") + "</font>")) + ")</small>"
+                    text:  name + " <small>(" + (translatorEnabled ? ("<font color=darkgreen>" + qsTr("Enabled") + "</font>") : ("<font color=darkred>" + qsTr("Disabled") + "</font>")) + ")</small>"
                     textFormat: Qt.RichText
                 }
             }
@@ -77,8 +77,9 @@ Page {
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 text: Icons["settings"]
-                font.pixelSize: 24
+                font.pointSize: 14
                 hoverEnabled: true
+                flat: true
 
 
                 MouseArea {

@@ -5,9 +5,9 @@ ApplicationWindow {
     id: window
     visible: true
     width: 480
-    height: 800
+    height: 600
     property alias stackView: stackView
-    title: qsTr("Stack")
+    title: qsTr("Lingo")
 
 
     header: ToolBar {
