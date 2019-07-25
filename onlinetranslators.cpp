@@ -3,8 +3,6 @@
 #include <QOnlineTranslator>
 
 QString formatData(const QOnlineTranslator& translator) {
-  std::cout << translator.translation().toStdString() << std::endl;
-
   QString tr;
   // Translation
   tr = translator.translation().toHtmlEscaped().replace("\n", "<br>");
@@ -80,5 +78,5 @@ template <QOnlineTranslator::Engine Engine>
 void OnlineTranslator<Engine>::search(const QString& data) {
   // loading changes so the ui gets affected
   setLoading(true);
-  translator->translate(data, Engine, to, from);
+  translator->translate(data, Engine, from, to);
 }

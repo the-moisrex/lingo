@@ -52,6 +52,8 @@ void DictionariesListModel::updateManuallyAddedResources(
                SLOT(onEnabledChange(Resource*, bool)));
     disconnect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
                SLOT(onInitStatusChange(Resource*, bool)));
+    disconnect(dic, SIGNAL(tempEnabledChanged(Resource*, bool)), this,
+               SLOT(onTempEnabledChange(Resource*, bool)));
   }
   dicts.clear();
   loadDefaults();
@@ -74,10 +76,10 @@ void DictionariesListModel::loadDefaults() {
 
   // Default offline dictionaries:
   Resource* english2Espanol =
-      new txtDictionary(this, "qrc:/english-spanish-2019-06-25.txt");
+      new txtDictionary(this, "://english-spanish-2019-06-25.txt");
 
   english2Espanol->setName(QObject::tr("English to Spanish (built-in)"));
-  //  dicts << english2Espanol;
+  dicts << english2Espanol;
 
   // Manually added dictionaries:
   auto additional_resources = getManuallyAddedDicts();
@@ -109,6 +111,8 @@ void DictionariesListModel::loadDefaults() {
             SLOT(onEnabledChange(Resource*, bool)));
     connect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
             SLOT(onInitStatusChange(Resource*, bool)));
+    connect(dic, SIGNAL(tempEnabledChanged(Resource*, bool)), this,
+            SLOT(onTempEnabledChange(Resource*, bool)));
   }
 }
 
@@ -222,6 +226,15 @@ void DictionariesListModel::onInitStatusChange(Resource* ptr,
                    QVector<int>() << INITIALIZING);
 }
 
+void DictionariesListModel::onTempEnabledChange(Resource* ptr,
+                                                bool /* tempEnabled */) {
+  int index = dicts.indexOf(ptr);
+  if (index < 0)
+    return;
+  emit dataChanged(createIndex(index, 0), createIndex(index, 0),
+                   QVector<int>() << TEMP_ENABLED);
+}
+
 DictionariesListModel::DictionariesListModel(QObject* parent)
     : QAbstractListModel(parent) {}
 
@@ -278,6 +291,7 @@ QHash<int, QByteArray> DictionariesListModel::roleNames() const {
 }
 
 void DictionariesListModel::search(const QString& word) {
+  qDebug() << "Searching for word: " << word;
   lastWord = word;
   for (auto& dic : dicts) {
     if (dic->isSupported(from, to)) {

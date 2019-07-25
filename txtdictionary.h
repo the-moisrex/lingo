@@ -14,7 +14,6 @@ class txtDictionary : public Resource {
 
   bool builtin = false;
   QVector<data_t> data;
-  decltype(data)::const_iterator found = data.cend();
   QString path;
 
   void load(const QString& filepath);

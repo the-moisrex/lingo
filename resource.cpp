@@ -78,7 +78,7 @@ void Resource::classBegin() {}
 Resource::Resource(QObject* parent) : QAbstractListModel(parent) {}
 
 void Resource::setEnabled(bool enabled) {
-  QWriteLocker locker(&enabledLock);
+  // QWriteLocker locker(&enabledLock);
   resource_option opt = option("enabled");
   opt.value = enabled;
   setOption(opt);

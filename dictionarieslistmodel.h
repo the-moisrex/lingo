@@ -25,6 +25,7 @@ class DictionariesListModel : public QAbstractListModel {
   void onLoadingChange(Resource* ptr, bool loading);
   void onEnabledChange(Resource* ptr, bool enabled);
   void onInitStatusChange(Resource* ptr, bool initializing);
+  void onTempEnabledChange(Resource* ptr, bool tempEnabled);
 
  signals:
   void prototypesChanged();
@@ -39,7 +40,8 @@ class DictionariesListModel : public QAbstractListModel {
     ENABLED,
     LOADING,
     INITIALIZING,
-    INDEX
+    INDEX,
+    TEMP_ENABLED
   };
   explicit DictionariesListModel(QObject* parent = nullptr);
 

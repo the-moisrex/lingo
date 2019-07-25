@@ -19,10 +19,10 @@ class OnlineTranslator : public Resource {
   explicit OnlineTranslator(QObject* parent = nullptr)
       : Resource(parent), translator(new QOnlineTranslator(this)) {
     QObject::connect(translator, &QOnlineTranslator::finished, [&] {
-      std::cout << "finished" << std::endl;
       if (translator->error() == QOnlineTranslator::NoError) {
         setTranslation(formatData(*translator));
       } else {
+        clearTranslation();
         qCritical() << Engine << translator->errorString();
       }
 

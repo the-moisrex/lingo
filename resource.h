@@ -9,7 +9,6 @@
 #include <QReadWriteLock>
 #include <QString>
 #include <QWriteLocker>
-#include <iostream>
 #include <utility>
 #include "settings.h"
 
@@ -31,6 +30,8 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged)
   Q_PROPERTY(bool initStatus READ isInitializing NOTIFY initStatusChanged)
   Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+  Q_PROPERTY(bool tempEnabled READ isTempEnabled WRITE setTempEnabled NOTIFY
+                 tempEnabledChanged)
   Q_PROPERTY(QString translation READ translation NOTIFY translationChanged)
 
  protected:
@@ -42,6 +43,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   QString _name;
   bool loading = false;
   bool initilizing = true;
+  bool tempEnabled = true;
 
   void setLoading(bool newLoadingValue) {
     {
@@ -65,14 +67,13 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
       _translation = newTranslation;
     }
     emit translationChanged(this, _translation);
-
-    std::cout << newTranslation.toStdString() << std::endl;
   }
 
  signals:
   void loadingChanged(Resource* self, bool loading);
   void initStatusChanged(Resource* self, bool initializationStatus);
   void enabledChanged(Resource* self, bool enabled);
+  void tempEnabledChanged(Resource* self, bool tmpEnabled);
   void translationChanged(Resource* self, QString translation);
 
  public:
@@ -151,6 +152,15 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   }
 
   Q_INVOKABLE virtual void clearTranslation() noexcept { setTranslation(""); }
+
+  Q_INVOKABLE virtual bool isTempEnabled() const noexcept {
+    return tempEnabled;
+  }
+
+  Q_INVOKABLE virtual void setTempEnabled(bool value) noexcept {
+    tempEnabled = value;
+    emit tempEnabledChanged(this, value);
+  }
 
   /**
    * @brief check if the resource is enabled or not
