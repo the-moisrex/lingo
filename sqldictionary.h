@@ -1,12 +1,16 @@
 #ifndef SQLDICTIONARY_H
 #define SQLDICTIONARY_H
 
-#include "resource.h"
 #include <QObject>
+#include "resource.h"
 
 class SqlDictionary : public Resource {
-public:
-  SqlDictionary();
+  Q_OBJECT
+
+ public:
+  explicit SqlDictionary(QObject* parent) : Resource(parent) {}
+
+  void search(const QString&) override;
 };
 
-#endif // SQLDICTIONARY_H
+#endif  // SQLDICTIONARY_H
