@@ -68,7 +68,7 @@ ApplicationWindow {
                 width: parent.width
                 onClicked: {
                     stackView.clear();
-                    stackView.push("HomeForm.ui.qml")
+                    stackView.push("HomeForm.qml")
                     drawer.close()
                 }
             }
@@ -86,7 +86,7 @@ ApplicationWindow {
 
     StackView {
         id: stackView
-        initialItem: "HomeForm.ui.qml"
+        initialItem: "HomeForm.qml"
         anchors.fill: parent
     }
 

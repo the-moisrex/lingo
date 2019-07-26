@@ -10,6 +10,8 @@ class DictionariesListModel : public QAbstractListModel {
   QList<Resource*> dicts;
   Q_PROPERTY(DictionariesListModel* prototypes READ prototypes NOTIFY
                  prototypesChanged)
+  Q_PROPERTY(double initStatusPercent READ getInitStatusPercent NOTIFY
+                 initStatusPercentChanged)
 
   QOnlineTranslator::Language from, to;
   QString lastWord;
@@ -28,6 +30,7 @@ class DictionariesListModel : public QAbstractListModel {
   void onTempEnabledChange(Resource* ptr, bool tempEnabled);
 
  signals:
+  void initStatusPercentChanged();
   void prototypesChanged();
 
  public:
@@ -67,6 +70,9 @@ class DictionariesListModel : public QAbstractListModel {
   Q_INVOKABLE void setToLang(int index);
   Q_INVOKABLE int getFromLang();
   Q_INVOKABLE int getToLang();
+  Q_INVOKABLE double getInitStatusPercent() const noexcept {
+    return initPercent;
+  }
 };
 
 #endif  // DICTIONARIESLISTMODEL_H
