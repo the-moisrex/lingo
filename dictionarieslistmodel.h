@@ -15,6 +15,7 @@ class DictionariesListModel : public QAbstractListModel {
 
   QOnlineTranslator::Language from, to;
   QString lastWord;
+  double initPercent;
 
   DictionariesListModel* proto = nullptr;
   std::vector<std::tuple<QString, QString, QString>> getManuallyAddedDicts();
