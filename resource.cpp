@@ -69,8 +69,8 @@ Qt::ItemFlags Resource::flags(const QModelIndex& index) const {
 void Resource::componentComplete() {
   // adding enabled option because it'll going to be common among all
   // dictionaries
-  if (!optionExists("enabled"))
-    setOption({resource_option::CHECKBOX, "enabled", true, tr("Enabled")});
+  setOptionIfNotExists(
+      {resource_option::CHECKBOX, "enabled", true, tr("Enabled")});
 }
 
 void Resource::classBegin() {}
@@ -120,6 +120,8 @@ const QVector<resource_option>& Resource::options() const {
 }
 
 void Resource::setOption(const resource_option& the_option) {
+  default_options.insert(the_option);
+
   auto _settings = settings();
   auto opts = options();
   bool should_add = true;
@@ -133,13 +135,10 @@ void Resource::setOption(const resource_option& the_option) {
         _settings->setArrayIndex(i);
         if (_settings->value("key", "").toString() == the_option.key) {
           _settings->setValue("value", the_option.value);
-          _settings->setValue("input_type",
-                              static_cast<int>(the_option.input_type));
-          _settings->setValue("title", the_option.title);
+          //          _settings->setValue("input_type",
+          //                              static_cast<int>(the_option.input_type));
+          //          _settings->setValue("title", the_option.title);
           should_add = false;
-
-          if (the_option.key == "enabled")
-            emit enabledChanged(this, the_option.value.toBool());
 
           break;
         }
@@ -156,22 +155,36 @@ void Resource::setOption(const resource_option& the_option) {
     _settings->setArrayIndex(opts.size());
     _settings->setValue("key", the_option.key);
     _settings->setValue("value", the_option.value);
-    _settings->setValue("input_type", static_cast<int>(the_option.input_type));
-    _settings->setValue("title", the_option.title);
+    //    _settings->setValue("input_type",
+    //    static_cast<int>(the_option.input_type)); _settings->setValue("title",
+    //    the_option.title); if (the_option.input_type ==
+    //    resource_option::MULTICHOICE) {
+    //      // Stringify the choises
+    //      QString choices;
+    //      for (auto it = the_option.choices.cbegin();
+    //           it != the_option.choices.cend(); it++) {
+    //        if (it != the_option.choices.cbegin())
+    //          choices.append("|");
+    //        choices.append(*it);
+    //      }
+    //      _settings->setValue("choices", std::move(choices));
+    //    }
+    //    if (the_option.input_type == resource_option::OPTIONS_SWITCHER) {
+    //    }
     _settings->endArray();
   }
   _settings->sync();
+
+  reloadOptionsCache();
+
+  if (the_option.key == "enabled")
+    emit enabledChanged(this, the_option.value.toBool());
 }
 
 void Resource::setOptionIfNotExists(const resource_option& the_option) {
-  // search and see if we find it or not
-  auto opts = options();
-  for (auto const& opt : opts)
-    if (opt.key == the_option.key)
-      return;
-
   // put it there if it's not there:
-  setOption(the_option);
+  if (!optionExists(the_option.key))
+    setOption(the_option);
 }
 
 void Resource::reloadOptionsCache() const {
@@ -182,11 +195,21 @@ void Resource::reloadOptionsCache() const {
   options_cache.reserve(size);
   for (int i = 0; i < size; ++i) {
     _settings->setArrayIndex(i);
-    options_cache.push_back({static_cast<resource_option::input_t>(
-                                 _settings->value("input_type").toInt()),
-                             _settings->value("key").toString(),
-                             _settings->value("value").toString(),
-                             _settings->value("title").toString()});
+    auto key = _settings->value("key").toString();
+    auto value = _settings->value("value");
+    if (auto found =
+            std::find_if(default_options.cbegin(), default_options.cend(),
+                         [&](auto const& opt) { return opt.key == key; });
+        found != default_options.cend()) {
+      resource_option new_opt = *found;
+      new_opt.value = std::move(value);
+      options_cache.push_back(new_opt);
+    }
+    //    options_cache.push_back({static_cast<resource_option::input_t>(
+    //                                 _settings->value("input_type").toInt()),
+    //                             _settings->value("key").toString(),
+    //                             _settings->value("value").toString(),
+    //                             _settings->value("title").toString()});
   }
   _settings->endArray();
 }

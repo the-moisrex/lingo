@@ -13,11 +13,14 @@
 #include "settings.h"
 
 struct resource_option {
-  enum input_t { TEXT = 1, TEXT_LONG, CHECKBOX };
+  enum input_t { TEXT = 1, TEXT_LONG, CHECKBOX, MULTICHOICE, OPTIONS_SWITCHER };
   input_t input_type;
   QString key;
   mutable QVariant value;
   QString title;
+  QVector<QString> choices = {};  // for multichoice
+  QMap<QString, QVector<resource_option>> available_options =
+      {};  // for options_switcher
 };
 
 template <QOnlineTranslator::Engine Engine>
@@ -38,6 +41,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   mutable QReadWriteLock loadingLock, translationLock, enabledLock,
       initStatusLock;
   mutable QVector<resource_option> options_cache;
+  mutable QSet<resource_option> default_options;
   QString _translation;
   QString _id;
   QString _name;
@@ -116,6 +120,9 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
     return _name == "" ? tr("UnNamed Translator") : _name;
   }
 
+  /**
+   * @brief set name
+   */
   Q_INVOKABLE virtual void setName(QString newName) noexcept {
     _name = std::move(newName);
   }
@@ -126,9 +133,16 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    */
   Q_INVOKABLE virtual QString key() const noexcept = 0;
 
+  /**
+   * @brief Set Id
+   */
   Q_INVOKABLE virtual void setId(QString newId) noexcept {
     _id = std::move(newId);
   }
+
+  /**
+   * @brief get id
+   */
   Q_INVOKABLE virtual QString id() const noexcept {
     return _id == "" ? key() : _id;
   }
@@ -250,6 +264,9 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    */
   virtual void setOptionIfNotExists(resource_option const& the_option);
 
+  /**
+   * @brief reloadOptionsCache
+   */
   virtual void reloadOptionsCache() const;
 
   OnlineTranslator<QOnlineTranslator::Google>* toOnlineGoogle(Resource* res) {

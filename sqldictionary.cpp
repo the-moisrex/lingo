@@ -69,8 +69,66 @@ void SqlDictionary::componentComplete() {
   Resource::componentComplete();
 
   // Setting the options
-  setOptionIfNotExists({resource_option::TEXT, "hostname", "", "Host name"});
-  // TODO: add more options
+  setOptionIfNotExists({
+      resource_option::MULTICHOICE,
+      "database_type",  // key
+      7,                // value
+      tr("Driver"),     // title
+      {tr("QDB2"), tr("QIBASE"), tr("QMYSQL"), tr("QOCI"), tr("QODBC"),
+       tr("QPSQL"), tr("QSQLITE2"), tr("QSQLITE"), tr("QTDS")},  // choices
+      {}  // options_switcher
+  });
+  setOptionIfNotExists({
+      resource_option::TEXT,
+      "hostname",       // key
+      "localhost",      // default value
+      tr("Host Name"),  // title
+  });
+  setOptionIfNotExists({
+      resource_option::TEXT,
+      "username",     // key
+      "root",         // default value
+      tr("Username")  // title
+  });
+  setOptionIfNotExists({
+      resource_option::TEXT,
+      "password",     // key
+      "",             // default value
+      tr("Password")  // title
+  });
+  setOptionIfNotExists({
+      resource_option::OPTIONS_SWITCHER,
+      "query_type",  // key
+      0,             // value
+      "Query Type",  // Title
+      {},            // choices
+      {{tr("Simple Table"),
+        {{
+             resource_option::TEXT,
+             "table_name",     // key
+             "",               // default value
+             tr("Table Name")  // title
+         },
+         {
+             resource_option::TEXT,
+             "col1",         // key
+             "",             // default value
+             tr("Column 1")  // title
+         },
+         {
+             resource_option::TEXT,
+             "col2",         // key
+             "",             // default value
+             tr("Column 2")  // title
+         }}},
+       {tr("Custom Query"),
+        {{
+            resource_option::TEXT_LONG,
+            "custom_query",                        // key
+            "select es from words where en = ?;",  // default query
+            tr("Custom Query")                     // title
+        }}}},                                      // options_switcher
+  });
 
   // init
   setInitStatus(true);
