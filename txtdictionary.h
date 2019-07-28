@@ -1,6 +1,7 @@
 #ifndef TXTDICTIONARY_H
 #define TXTDICTIONARY_H
 
+#include <QReadWriteLock>
 #include "resource.h"
 
 class txtDictionary : public Resource {
@@ -13,11 +14,13 @@ class txtDictionary : public Resource {
   };
 
   bool builtin = false;
+  QReadWriteLock data_lock;
   QVector<data_t> data;
   QString path;
 
   void load(const QString& filepath);
   void setTheOptions();
+  void async_search(QString const& word);
 
  public:
   explicit txtDictionary(QObject* parent);

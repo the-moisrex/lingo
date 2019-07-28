@@ -310,7 +310,7 @@ QString DictionariesListModel::readableTranslation(QString t) {
 DictionariesListModel* DictionariesListModel::prototypes() {
   if (!proto) {
     proto = new DictionariesListModel(this);
-    proto->dicts << new txtDictionary(proto);
+    proto->dicts << new txtDictionary(proto) << new SqlDictionary(proto);
   }
   return proto;
 }

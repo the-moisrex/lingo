@@ -8,6 +8,7 @@
 struct DatabaseInfo {
   QString type;
   QString hostname;
+  int port;
   QString dbname;
   QString username;
   QString password;
@@ -21,6 +22,7 @@ struct DatabaseInfo {
 
 class SqlDictionary : public Resource {
   Q_OBJECT
+
   DatabaseInfo dbinfo;
   QSqlDatabase db;
 
@@ -31,9 +33,10 @@ class SqlDictionary : public Resource {
 
  public:
   explicit SqlDictionary(QObject* parent) : Resource(parent) {}
-  explicit SqlDictionary(QObject* parent, DatabaseInfo const& info)
-      : Resource(parent), dbinfo(info) {}
+  SqlDictionary(QObject* parent, DatabaseInfo const& info);
+  ~SqlDictionary() override = default;
 
+  QString name() const noexcept override { return tr("SQL Database"); }
   QString key() const noexcept override { return "sql-dic"; }
 
   QString description() const noexcept override {

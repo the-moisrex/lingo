@@ -1,4 +1,5 @@
 #include "sqldictionary.h"
+#include <QCryptographicHash>
 #include <QReadLocker>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -7,6 +8,8 @@
 
 void SqlDictionary::concurentSearch(QString word) {
   QString result;
+  setLoading(true);
+
   QSqlQuery query(db);
   if (dbinfo.customSql.size() == 0 && dbinfo.tableName.size() != 0 &&
       dbinfo.langOne.size() != 0 && dbinfo.langTwo.size() != 0) {
@@ -50,6 +53,42 @@ void SqlDictionary::concurentSearch(QString word) {
   setLoading(false);
 }
 
+void SqlDictionary::init() {
+  setInitStatus(true);
+
+  if (db.isValid() && db.isOpen()) {
+    setInitStatus(false);
+    return;
+  }
+
+  db.setHostName(dbinfo.hostname);
+  db.setPort(dbinfo.port);
+  db.setUserName(dbinfo.username);
+  db.setPassword(dbinfo.password);
+  db.setDatabaseName(dbinfo.dbname);
+
+  if (!db.open()) {
+    setTempEnabled(false);
+    qDebug() << "Could not open database connection.";
+  }
+
+  setInitStatus(false);
+}
+
+SqlDictionary::SqlDictionary(QObject* parent, const DatabaseInfo& info)
+    : Resource(parent), dbinfo(info) {
+  //  QString allinfo;
+  //  allinfo.append(dbinfo.type);
+  //  allinfo.append(dbinfo.dbname);
+  //  allinfo.append(dbinfo.username);
+  //  allinfo.append(dbinfo.port);
+  //  allinfo.append(dbinfo.hostname);
+  //  // TODO: I probably should change this above part. and for txtDictionary
+  //  too setId(QString(QCryptographicHash::hash(allinfo.toStdString().c_str(),
+  //                                         QCryptographicHash::Md5)
+  //                    .toHex()));
+}
+
 void SqlDictionary::search(const QString& word) {
   QString _word = word.trimmed().toLower();
   {
@@ -61,7 +100,6 @@ void SqlDictionary::search(const QString& word) {
     QWriteLocker locked(&currentWordLock);
     currentWord = _word;
   }
-  setLoading(true);
   QtConcurrent::run(this, &SqlDictionary::concurentSearch, _word);
 }
 
@@ -83,6 +121,12 @@ void SqlDictionary::componentComplete() {
       "hostname",       // key
       "localhost",      // default value
       tr("Host Name"),  // title
+  });
+  setOptionIfNotExists({
+      resource_option::TEXT,
+      "port",     // key
+      0,          // value
+      tr("Port")  // title
   });
   setOptionIfNotExists({
       resource_option::TEXT,
@@ -131,6 +175,5 @@ void SqlDictionary::componentComplete() {
   });
 
   // init
-  setInitStatus(true);
   QtConcurrent::run(this, &SqlDictionary::init);
 }

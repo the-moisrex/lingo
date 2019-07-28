@@ -21,7 +21,27 @@ struct resource_option {
   QVector<QString> choices = {};  // for multichoice
   QMap<QString, QVector<resource_option>> available_options =
       {};  // for options_switcher
+
+  inline bool operator==(resource_option const& opt) const noexcept {
+    return this->input_type == opt.input_type && key == opt.key &&
+           value == opt.value && title == opt.title && choices == opt.choices &&
+           available_options == opt.available_options;
+  }
 };
+
+inline uint qHash(const resource_option& key, uint seed) {
+  return qHash(key.input_type, seed) ^ qHash(key.key, seed) ^
+         qHash(key.value.toString(), seed) ^ qHash(key.title, seed) ^
+         qHash(key.choices, seed) ^ [&]() {
+           auto hashed = seed;
+           for (auto const& item : key.available_options) {
+             for (auto const& item2 : item) {
+               hashed ^= qHash(item2, seed);
+             }
+           }
+           return hashed;
+         }.operator()();
+}
 
 template <QOnlineTranslator::Engine Engine>
 class OnlineTranslator;
