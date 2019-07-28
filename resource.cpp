@@ -163,6 +163,17 @@ void Resource::setOption(const resource_option& the_option) {
   _settings->sync();
 }
 
+void Resource::setOptionIfNotExists(const resource_option& the_option) {
+  // search and see if we find it or not
+  auto opts = options();
+  for (auto const& opt : opts)
+    if (opt.key == the_option.key)
+      return;
+
+  // put it there if it's not there:
+  setOption(the_option);
+}
+
 void Resource::reloadOptionsCache() const {
   // cache all the options:
   auto _settings = settings();

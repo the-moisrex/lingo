@@ -244,6 +244,12 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    */
   virtual void setOption(resource_option const& the_option);
 
+  /**
+   * @brief setOptionIfNotExists
+   * @param the_option
+   */
+  virtual void setOptionIfNotExists(resource_option const& the_option);
+
   virtual void reloadOptionsCache() const;
 
   OnlineTranslator<QOnlineTranslator::Google>* toOnlineGoogle(Resource* res) {
