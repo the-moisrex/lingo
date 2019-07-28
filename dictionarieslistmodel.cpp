@@ -54,6 +54,8 @@ void DictionariesListModel::updateManuallyAddedResources(
                SLOT(onInitStatusChange(Resource*, bool)));
     disconnect(dic, SIGNAL(tempEnabledChanged(Resource*, bool)), this,
                SLOT(onTempEnabledChange(Resource*, bool)));
+    disconnect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
+               SLOT(onInitPercentChange(Resource*, bool)));
   }
   dicts.clear();
   loadDefaults();
@@ -113,6 +115,8 @@ void DictionariesListModel::loadDefaults() {
             SLOT(onInitStatusChange(Resource*, bool)));
     connect(dic, SIGNAL(tempEnabledChanged(Resource*, bool)), this,
             SLOT(onTempEnabledChange(Resource*, bool)));
+    connect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
+            SLOT(onInitPercentChange(Resource*, bool)));
   }
 }
 
@@ -192,6 +196,22 @@ int DictionariesListModel::getToLang() {
          1;
 }
 
+double DictionariesListModel::getInitStatusPercent() const noexcept {
+  double percent = 0;
+  double step = 1.0 / static_cast<double>(dicts.size());
+  for (auto const& dic : dicts) {
+    if (dictsInited.find(dic) != dictsInited.cend() && !dictsInited[dic])
+      percent += step;
+  }
+  return percent;
+}
+
+void DictionariesListModel::init() {
+  for (auto& dict : dicts) {
+    dict->componentComplete();
+  }
+}
+
 void DictionariesListModel::onTranslationChange(Resource* ptr,
                                                 QString /* str */) {
   int index = dicts.indexOf(ptr);
@@ -233,6 +253,13 @@ void DictionariesListModel::onTempEnabledChange(Resource* ptr,
     return;
   emit dataChanged(createIndex(index, 0), createIndex(index, 0),
                    QVector<int>() << TEMP_ENABLED);
+}
+
+void DictionariesListModel::onInitPercentChange(Resource* ptr,
+                                                bool initStatus) {
+  //  qDebug() << ptr->key() << initStatus;
+  dictsInited.insert(ptr, initStatus);
+  emit initStatusPercentChanged();
 }
 
 DictionariesListModel::DictionariesListModel(QObject* parent)

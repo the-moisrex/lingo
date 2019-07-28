@@ -19,6 +19,13 @@ Page {
         anchors.left: info.left
         anchors.right: info.right
         value: Dictionaries.initStatusPercent
-        visible: Dictionaries.initStatusPercent === 1
+        onValueChanged: {
+            if (value >= 1)
+                visible = false;
+            else
+                visible = true;
+        }
+
+        Component.onCompleted: Dictionaries.init()
     }
 }

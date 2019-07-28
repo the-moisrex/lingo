@@ -8,18 +8,18 @@
 #include <algorithm>
 
 void txtDictionary::load(const QString& filepath) {
-  qDebug() << "Starting loading " << filepath;
+  //  qDebug() << "Starting loading " << filepath;
 
   QFile file(filepath);
   if (file.exists() && file.open(QIODevice::ReadOnly | QFile::Text)) {
     setInitStatus(true);
-    qDebug() << "Start reading file " << filepath;
+    //    qDebug() << "Start reading file " << filepath;
     QTextStream in(&file);
     {
       QWriteLocker locked(&data_lock);
       while (!in.atEnd()) {
         QString line = in.readLine().trimmed();
-        qDebug() << line;
+        //        qDebug() << line;
 
         // it's a comment
         if (!line.size() || line[0] == '#')
@@ -43,7 +43,7 @@ void txtDictionary::load(const QString& filepath) {
       }
     }
     file.close();
-    qDebug() << "Loading of " << filepath << "is done";
+    //    qDebug() << "Loading of " << filepath << "is done";
     setInitStatus(false);
   } else {
     qDebug() << "Couldn't load file " << filepath;

@@ -8,6 +8,7 @@
 class DictionariesListModel : public QAbstractListModel {
   Q_OBJECT
   QList<Resource*> dicts;
+  QMap<Resource*, int> dictsInited;
   Q_PROPERTY(DictionariesListModel* prototypes READ prototypes NOTIFY
                  prototypesChanged)
   Q_PROPERTY(double initStatusPercent READ getInitStatusPercent NOTIFY
@@ -15,7 +16,6 @@ class DictionariesListModel : public QAbstractListModel {
 
   QOnlineTranslator::Language from, to;
   QString lastWord;
-  double initPercent;
 
   DictionariesListModel* proto = nullptr;
   std::vector<std::tuple<QString, QString, QString>> getManuallyAddedDicts();
@@ -29,6 +29,7 @@ class DictionariesListModel : public QAbstractListModel {
   void onEnabledChange(Resource* ptr, bool enabled);
   void onInitStatusChange(Resource* ptr, bool initializing);
   void onTempEnabledChange(Resource* ptr, bool tempEnabled);
+  void onInitPercentChange(Resource* ptr, bool initStatus);
 
  signals:
   void initStatusPercentChanged();
@@ -71,9 +72,8 @@ class DictionariesListModel : public QAbstractListModel {
   Q_INVOKABLE void setToLang(int index);
   Q_INVOKABLE int getFromLang();
   Q_INVOKABLE int getToLang();
-  Q_INVOKABLE double getInitStatusPercent() const noexcept {
-    return initPercent;
-  }
+  Q_INVOKABLE double getInitStatusPercent() const noexcept;
+  Q_INVOKABLE void init();
 };
 
 #endif  // DICTIONARIESLISTMODEL_H

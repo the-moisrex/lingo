@@ -22,16 +22,16 @@ class MySettings : public QObject {
   MySettings() = default;
   explicit MySettings(QObject* parent) : QObject(parent) {}
 
-  [[nodiscard]] bool rememberHistory() const {
+  Q_INVOKABLE [[nodiscard]] bool rememberHistory() const {
     return settings()->value("remember_history", true).toBool();
   }
-  void setRememberHistory(bool h) {
+  Q_INVOKABLE void setRememberHistory(bool h) {
     auto s = settings();
     s->setValue("remember_history", h);
     s->sync();
   }
 
-  int historyCount() { return history_count(); }
+  Q_INVOKABLE [[nodiscard]] int historyCount() { return history_count(); }
 
   Q_INVOKABLE void clearHistory() {
     clear_history();
