@@ -33,12 +33,15 @@ Item {
           anchors.right: parent.right
           anchors.leftMargin: 10
           anchors.rightMargin: 10
-          height: translatorEnabled ? cols.implicitHeight : 0
-          visible: translatorEnabled
+
+          property bool isThisEnabled: translatorEnabled && tempEnabled
+
+          height: isThisEnabled ? cols.implicitHeight : 0
+          visible: isThisEnabled
 
           Item {
               anchors.fill: parent
-              anchors.topMargin: translatorEnabled ? 10 : 0
+              anchors.topMargin: isThisEnabled ? 10 : 0
 
               BusyIndicator {
                   id: loadingId

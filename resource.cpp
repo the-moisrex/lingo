@@ -213,3 +213,13 @@ void Resource::reloadOptionsCache() const {
   }
   _settings->endArray();
 }
+
+QOnlineTranslator::Language Resource::getFromLang() {
+  return static_cast<QOnlineTranslator::Language>(
+      settings()->value("from", QOnlineTranslator::Language::Auto).toInt());
+}
+
+QOnlineTranslator::Language Resource::getToLang() {
+  return static_cast<QOnlineTranslator::Language>(
+      settings()->value("to", QOnlineTranslator::Language::Spanish).toInt());
+}

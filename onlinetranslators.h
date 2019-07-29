@@ -12,15 +12,15 @@ template <QOnlineTranslator::Engine Engine>
 class OnlineTranslator : public Resource {
  private:
   QOnlineTranslator* translator;
-  QOnlineTranslator::Language from = QOnlineTranslator::Language::Auto;
-  QOnlineTranslator::Language to = QOnlineTranslator::Language::English;
 
  public:
   explicit OnlineTranslator(QObject* parent = nullptr)
       : Resource(parent), translator(new QOnlineTranslator(this)) {
     QObject::connect(translator, &QOnlineTranslator::finished, [&] {
       if (translator->error() == QOnlineTranslator::NoError) {
-        setTranslation(formatData(*translator));
+        auto t = formatData(*translator);
+        //        qDebug() << t;
+        setTranslation(t);
       } else {
         clearTranslation();
         qCritical() << Engine << translator->errorString();
@@ -30,7 +30,13 @@ class OnlineTranslator : public Resource {
     });
   }
 
-  void search(QString const& data) override;
+  void search(QString const& data) override {
+    // loading changes so the ui gets affected
+    setLoading(true);
+    qDebug() << QOnlineTranslator::languageCode(getFromLang())
+             << QOnlineTranslator::languageCode(getToLang());
+    translator->translate(data, Engine, getToLang(), getFromLang());
+  }
 
   QString key() const noexcept override {
     switch (Engine) {
@@ -74,9 +80,9 @@ class OnlineTranslator : public Resource {
 };
 
 // explicit template instanciations
-template class OnlineTranslator<QOnlineTranslator::Google>;
-template class OnlineTranslator<QOnlineTranslator::Bing>;
-template class OnlineTranslator<QOnlineTranslator::Yandex>;
+// template class OnlineTranslator<QOnlineTranslator::Google>;
+// template class OnlineTranslator<QOnlineTranslator::Bing>;
+// template class OnlineTranslator<QOnlineTranslator::Yandex>;
 
 // registering it for the qml
 // QML_DECLARE_TYPE(OnlineTranslator<QOnlineTranslator::Google>);

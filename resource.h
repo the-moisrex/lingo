@@ -289,6 +289,10 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    */
   virtual void reloadOptionsCache() const;
 
+  virtual QOnlineTranslator::Language getFromLang();
+
+  virtual QOnlineTranslator::Language getToLang();
+
   OnlineTranslator<QOnlineTranslator::Google>* toOnlineGoogle(Resource* res) {
     return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Google>*>(res);
   }

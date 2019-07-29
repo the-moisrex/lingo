@@ -63,7 +63,7 @@ void DictionariesListModel::updateManuallyAddedResources(
   emit dataChanged(createIndex(0, 0), createIndex(rowCount(), 0),
                    QVector<int>()
                        << KEY << NAME << TRANSLATION << DESCRIPTION << ENABLED
-                       << INDEX << INITIALIZING << LOADING);
+                       << INDEX << INITIALIZING << LOADING << TEMP_ENABLED);
 }
 
 void DictionariesListModel::loadDefaults() {
@@ -126,10 +126,10 @@ void DictionariesListModel::create(QString name, int index) {
 
   auto item = proto->index(index);
   auto type = item.data(KEY).toString();
-  auto id =
-      QString(QCryptographicHash::hash((type + name).toStdString().c_str(),
-                                       QCryptographicHash::Md5)
-                  .toHex());
+  auto id = QString(QCryptographicHash::hash(
+                        (type + name + QString(qrand())).toStdString().c_str(),
+                        QCryptographicHash::Md5)
+                        .toHex());
   auto additional_resources = getManuallyAddedDicts();
   additional_resources.emplace_back(type, id, name);
   updateManuallyAddedResources(additional_resources);
@@ -200,9 +200,14 @@ double DictionariesListModel::getInitStatusPercent() const noexcept {
   double percent = 0;
   double step = 1.0 / static_cast<double>(dicts.size());
   for (auto const& dic : dicts) {
-    if (dictsInited.find(dic) != dictsInited.cend() && !dictsInited[dic])
-      percent += step;
+    //    qDebug() << dic->name() << dic->isTempEnabled() << dic->isEnabled();
+    if (dictsInited.find(dic) != dictsInited.cend()) {
+      if (!dictsInited[dic] ||
+          (dictsInited[dic] && (!dic->isTempEnabled() || !dic->isEnabled())))
+        percent += step;
+    }
   }
+  //  qDebug() << dicts.size() << dictsInited.size() << step << percent;
   return percent;
 }
 
@@ -257,7 +262,7 @@ void DictionariesListModel::onTempEnabledChange(Resource* ptr,
 
 void DictionariesListModel::onInitPercentChange(Resource* ptr,
                                                 bool initStatus) {
-  //  qDebug() << ptr->key() << initStatus;
+  //  qDebug() << ptr->key() << ptr->name() << ptr->id() << initStatus;
   dictsInited.insert(ptr, initStatus);
   emit initStatusPercentChanged();
 }
@@ -300,6 +305,8 @@ QVariant DictionariesListModel::data(const QModelIndex& index, int role) const {
       return dic->isInitializing();
     case INDEX:
       return index.row();
+    case TEMP_ENABLED:
+      return dic->isTempEnabled();
   }
 
   return QVariant();
@@ -314,14 +321,16 @@ QHash<int, QByteArray> DictionariesListModel::roleNames() const {
   data[ENABLED] = "translatorEnabled";
   data[LOADING] = "loading";
   data[INITIALIZING] = "initStatus";
+  data[TEMP_ENABLED] = "tempEnabled";
   return data;
 }
 
 void DictionariesListModel::search(const QString& word) {
-  qDebug() << "Searching for word: " << word;
+  //  qDebug() << "Searching for word: " << word;
   lastWord = word;
   for (auto& dic : dicts) {
-    if (dic->isSupported(from, to)) {
+    if (dic->isSupported(from, to) && dic->isEnabled() &&
+        dic->isTempEnabled()) {
       //      QtConcurrent::run(dic, &Resource::search, word);
       dic->search(word);
     } else {

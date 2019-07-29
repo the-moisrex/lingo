@@ -73,10 +73,3 @@ QString formatData(const QOnlineTranslator& translator) {
   //  qDebug() << tr;
   return tr;
 }
-
-template <QOnlineTranslator::Engine Engine>
-void OnlineTranslator<Engine>::search(const QString& data) {
-  // loading changes so the ui gets affected
-  setLoading(true);
-  translator->translate(data, Engine, from, to);
-}

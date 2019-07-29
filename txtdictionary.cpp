@@ -44,6 +44,7 @@ void txtDictionary::load(const QString& filepath) {
     }
     file.close();
     //    qDebug() << "Loading of " << filepath << "is done";
+    setTempEnabled(true);
     setInitStatus(false);
   } else {
     qDebug() << "Couldn't load file " << filepath;
@@ -61,8 +62,6 @@ void txtDictionary::async_search(const QString& word) {
   {
     QReadLocker locked(&data_lock);
     auto found = std::find_if(data.cbegin(), data.cend(), [&](auto const& a) {
-      for (auto c : a.words)
-        qDebug() << c;
       return a.words.end() != std::find(a.words.begin(), a.words.end(), word);
     });
 
@@ -80,8 +79,8 @@ void txtDictionary::async_search(const QString& word) {
       }
 
       setTranslation(t);
-      qDebug() << "Translation found for word '" << word
-               << "' in txtDictionary";
+      //      qDebug() << "Translation found for word '" << word
+      //               << "' in txtDictionary";
     } else {
       clearTranslation();
       qDebug() << "Search for word '" << word << "' found no results.";
@@ -127,8 +126,8 @@ bool txtDictionary::isSupported(QOnlineTranslator::Language,
 void txtDictionary::search(const QString& word) {
   auto _word = word.toLower().trimmed();
 
-  qDebug() << "Searching for word '" << word << "' in txtDictionary ("
-           << data.size() << " words)";
+  //  qDebug() << "Searching for word '" << word << "' in txtDictionary ("
+  //           << data.size() << " words)";
 
   QtConcurrent::run(this, &txtDictionary::async_search, _word);
 }
