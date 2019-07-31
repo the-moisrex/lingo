@@ -76,6 +76,10 @@ void DictionariesListModel::loadDefaults() {
   bing->setDeletable(false);
   yandex->setDeletable(false);
 
+  google->setId("google");
+  bing->setId("bing");
+  yandex->setId("yandex");
+
   dicts << google;
   dicts << bing;
   dicts << yandex;
@@ -84,6 +88,7 @@ void DictionariesListModel::loadDefaults() {
   Resource* english2Espanol =
       new txtDictionary(this, "://english-spanish-2019-06-25.txt");
 
+  english2Espanol->setId("english2spanish");
   english2Espanol->setDeletable(false);
   english2Espanol->setName(QObject::tr("English to Spanish (built-in)"));
   dicts << english2Espanol;
