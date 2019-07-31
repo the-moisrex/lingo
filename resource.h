@@ -68,6 +68,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   bool loading = false;
   bool initilizing = true;
   bool tempEnabled = true;
+  bool deletable = true;
 
   void setLoading(bool newLoadingValue) {
     {
@@ -130,6 +131,12 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   Q_INVOKABLE virtual QString translation() const noexcept {
     QReadLocker locker(&translationLock);
     return _translation;
+  }
+
+  Q_INVOKABLE virtual bool isDeletable() const noexcept { return deletable; }
+
+  Q_INVOKABLE virtual void setDeletable(bool value) noexcept {
+    deletable = value;
   }
 
   /**

@@ -30,6 +30,7 @@ Page {
         anchors.rightMargin: 10
         highlighted: true
         z: 10
+        visible: optionsList.model.isDeletable()
         onClicked: {
             Dictionaries.remove(optionsList.model.id());
             stackView.pop();
@@ -57,6 +58,10 @@ Page {
             anchors.rightMargin: 10
             anchors.leftMargin: 10
             height: dataParent.height
+
+            Component.onCompleted: {
+                console.log("aaa")
+            }
 
             Rectangle {
                 property color bgColor: "#eee"

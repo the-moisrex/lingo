@@ -2,6 +2,7 @@
 #define DICTIONARIESLISTMODEL_H
 
 #include <QAbstractListModel>
+#include <QDebug>
 #include <memory>
 #include "resource.h"
 

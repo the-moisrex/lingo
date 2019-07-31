@@ -151,7 +151,7 @@ void Resource::setOption(const resource_option& the_option) {
   // "the_option" does not exists, so we have to add it
   if (should_add) {
     options_cache.push_back(the_option);
-    _settings->beginWriteArray(id() + "/options", opts.size());
+    _settings->beginWriteArray(id() + "/options", opts.size() + 1);
     _settings->setArrayIndex(opts.size());
     _settings->setValue("key", the_option.key);
     _settings->setValue("value", the_option.value);
@@ -212,6 +212,7 @@ void Resource::reloadOptionsCache() const {
     //                             _settings->value("title").toString()});
   }
   _settings->endArray();
+  qDebug() << options_cache.size();
 }
 
 QOnlineTranslator::Language Resource::getFromLang() {

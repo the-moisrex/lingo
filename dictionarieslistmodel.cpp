@@ -72,6 +72,10 @@ void DictionariesListModel::loadDefaults() {
   Resource* bing = new OnlineTranslator<QOnlineTranslator::Bing>(this);
   Resource* yandex = new OnlineTranslator<QOnlineTranslator::Yandex>(this);
 
+  google->setDeletable(false);
+  bing->setDeletable(false);
+  yandex->setDeletable(false);
+
   dicts << google;
   dicts << bing;
   dicts << yandex;
@@ -80,6 +84,7 @@ void DictionariesListModel::loadDefaults() {
   Resource* english2Espanol =
       new txtDictionary(this, "://english-spanish-2019-06-25.txt");
 
+  english2Espanol->setDeletable(false);
   english2Espanol->setName(QObject::tr("English to Spanish (built-in)"));
   dicts << english2Espanol;
 
@@ -98,6 +103,7 @@ void DictionariesListModel::loadDefaults() {
     if (res) {
       res->setId(id);
       res->setName(name);
+      res->setDeletable(true);
 
       dicts << res;
     }
