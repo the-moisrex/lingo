@@ -141,5 +141,6 @@ void txtDictionary::componentComplete() {
     QtConcurrent::run(this, &txtDictionary::load, path);
   } else {
     setTempEnabled(false);
+    setInitStatus(false);
   }
 }

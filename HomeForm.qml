@@ -20,7 +20,7 @@ Page {
         anchors.right: info.right
         value: Dictionaries.initStatusPercent
         onValueChanged: {
-            if (value >= 1)
+            if (value >= .98)
                 visible = false;
             else
                 visible = true;
