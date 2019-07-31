@@ -23,6 +23,7 @@ class OnlineTranslator : public Resource {
         setTranslation(t);
       } else {
         clearTranslation();
+        hide(true);
         qCritical() << Engine << translator->errorString();
       }
 
@@ -33,8 +34,8 @@ class OnlineTranslator : public Resource {
   void search(QString const& data) override {
     // loading changes so the ui gets affected
     setLoading(true);
-    qDebug() << QOnlineTranslator::languageCode(getFromLang())
-             << QOnlineTranslator::languageCode(getToLang());
+    //    qDebug() << QOnlineTranslator::languageCode(getFromLang())
+    //             << QOnlineTranslator::languageCode(getToLang());
     translator->translate(data, Engine, getToLang(), getFromLang());
   }
 
@@ -70,6 +71,10 @@ class OnlineTranslator : public Resource {
 
   bool isSupported(QOnlineTranslator::Language from,
                    QOnlineTranslator::Language to) const noexcept override {
+    //    qDebug() << QOnlineTranslator::languageString(from)
+    //             << QOnlineTranslator::languageString(to)
+    //             << QOnlineTranslator::isSupportTranslation(Engine, from)
+    //             << QOnlineTranslator::isSupportTranslation(Engine, to);
     return QOnlineTranslator::isSupportTranslation(Engine, to) &&
            QOnlineTranslator::isSupportTranslation(Engine, from);
   }

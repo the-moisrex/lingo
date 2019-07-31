@@ -15,7 +15,6 @@ class DictionariesListModel : public QAbstractListModel {
   Q_PROPERTY(double initStatusPercent READ getInitStatusPercent NOTIFY
                  initStatusPercentChanged)
 
-  QOnlineTranslator::Language from, to;
   QString lastWord;
 
   DictionariesListModel* proto = nullptr;
@@ -31,6 +30,7 @@ class DictionariesListModel : public QAbstractListModel {
   void onInitStatusChange(Resource* ptr, bool initializing);
   void onTempEnabledChange(Resource* ptr, bool tempEnabled);
   void onInitPercentChange(Resource* ptr, bool initStatus);
+  void onHiddenChange(Resource* ptr, bool ishidden);
 
  signals:
   void initStatusPercentChanged();
@@ -47,7 +47,8 @@ class DictionariesListModel : public QAbstractListModel {
     LOADING,
     INITIALIZING,
     INDEX,
-    TEMP_ENABLED
+    TEMP_ENABLED,
+    HIDDEN
   };
   explicit DictionariesListModel(QObject* parent = nullptr);
 

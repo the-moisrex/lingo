@@ -139,5 +139,7 @@ void txtDictionary::componentComplete() {
     path = optionValue("path", "").toString();
   if (path != "") {
     QtConcurrent::run(this, &txtDictionary::load, path);
+  } else {
+    setTempEnabled(false);
   }
 }

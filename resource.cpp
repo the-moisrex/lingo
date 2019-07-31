@@ -212,7 +212,6 @@ void Resource::reloadOptionsCache() const {
     //                             _settings->value("title").toString()});
   }
   _settings->endArray();
-  qDebug() << options_cache.size();
 }
 
 QOnlineTranslator::Language Resource::getFromLang() {

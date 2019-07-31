@@ -56,6 +56,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   Q_PROPERTY(bool tempEnabled READ isTempEnabled WRITE setTempEnabled NOTIFY
                  tempEnabledChanged)
   Q_PROPERTY(QString translation READ translation NOTIFY translationChanged)
+  Q_PROPERTY(bool hidden READ isHidden WRITE hide NOTIFY hideChanged)
 
  protected:
   mutable QReadWriteLock loadingLock, translationLock, enabledLock,
@@ -69,6 +70,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   bool initilizing = true;
   bool tempEnabled = true;
   bool deletable = true;
+  bool ishidden = false;
 
   void setLoading(bool newLoadingValue) {
     {
@@ -100,6 +102,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   void enabledChanged(Resource* self, bool enabled);
   void tempEnabledChanged(Resource* self, bool tmpEnabled);
   void translationChanged(Resource* self, QString translation);
+  void hideChanged(Resource* self, bool ishidden);
 
  public:
   enum roles { ROLE_KEY = Qt::UserRole, ROLE_VALUE, ROLE_TITLE, ROLE_TYPE };
@@ -131,6 +134,13 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   Q_INVOKABLE virtual QString translation() const noexcept {
     QReadLocker locker(&translationLock);
     return _translation;
+  }
+
+  Q_INVOKABLE virtual bool isHidden() const noexcept { return ishidden; }
+
+  Q_INVOKABLE virtual void hide(bool val) noexcept {
+    ishidden = val;
+    emit hideChanged(this, val);
   }
 
   Q_INVOKABLE virtual bool isDeletable() const noexcept { return deletable; }

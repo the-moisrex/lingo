@@ -56,6 +56,8 @@ void DictionariesListModel::updateManuallyAddedResources(
                SLOT(onTempEnabledChange(Resource*, bool)));
     disconnect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
                SLOT(onInitPercentChange(Resource*, bool)));
+    disconnect(dic, SIGNAL(hideChanged(Resource*, bool)), this,
+               SLOT(onHiddenChange(Resource*, bool)));
   }
   dicts.clear();
   loadDefaults();
@@ -128,6 +130,8 @@ void DictionariesListModel::loadDefaults() {
             SLOT(onTempEnabledChange(Resource*, bool)));
     connect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
             SLOT(onInitPercentChange(Resource*, bool)));
+    connect(dic, SIGNAL(hideChanged(Resource*, bool)), this,
+            SLOT(onHiddenChange(Resource*, bool)));
   }
 }
 
@@ -186,7 +190,7 @@ QStringList DictionariesListModel::fromLangsModel() {
 }
 
 void DictionariesListModel::setFromLang(int index) {
-  from = static_cast<QOnlineTranslator::Language>(index);
+  auto from = static_cast<QOnlineTranslator::Language>(index);
   auto _settings = settings();
   _settings->setValue("from", from);
   _settings->sync();
@@ -195,7 +199,7 @@ void DictionariesListModel::setFromLang(int index) {
 
 void DictionariesListModel::setToLang(int index) {
   index += 1;
-  to = static_cast<QOnlineTranslator::Language>(index);
+  auto to = static_cast<QOnlineTranslator::Language>(index);
   auto _settings = settings();
   _settings->setValue("to", to);
   _settings->sync();
@@ -284,6 +288,14 @@ void DictionariesListModel::onInitPercentChange(Resource* ptr,
   emit initStatusPercentChanged();
 }
 
+void DictionariesListModel::onHiddenChange(Resource* ptr, bool /* ishidden */) {
+  int index = dicts.indexOf(ptr);
+  if (index < 0)
+    return;
+  emit dataChanged(createIndex(index, 0), createIndex(index, 0),
+                   QVector<int>() << HIDDEN);
+}
+
 DictionariesListModel::DictionariesListModel(QObject* parent)
     : QAbstractListModel(parent) {}
 
@@ -324,6 +336,8 @@ QVariant DictionariesListModel::data(const QModelIndex& index, int role) const {
       return index.row();
     case TEMP_ENABLED:
       return dic->isTempEnabled();
+    case HIDDEN:
+      return dic->isHidden();
   }
 
   return QVariant();
@@ -339,6 +353,7 @@ QHash<int, QByteArray> DictionariesListModel::roleNames() const {
   data[LOADING] = "loading";
   data[INITIALIZING] = "initStatus";
   data[TEMP_ENABLED] = "tempEnabled";
+  data[HIDDEN] = "hidden";
   return data;
 }
 
@@ -346,12 +361,16 @@ void DictionariesListModel::search(const QString& word) {
   //  qDebug() << "Searching for word: " << word;
   lastWord = word;
   for (auto& dic : dicts) {
-    if (dic->isSupported(from, to) && dic->isEnabled() &&
-        dic->isTempEnabled()) {
+    if (dic->isSupported(
+            static_cast<QOnlineTranslator::Language>(getFromLang()),
+            static_cast<QOnlineTranslator::Language>(getToLang() + 1)) &&
+        dic->isEnabled() && dic->isTempEnabled()) {
       //      QtConcurrent::run(dic, &Resource::search, word);
+      dic->hide(false);
       dic->search(word);
     } else {
       dic->clearTranslation();
+      dic->hide(true);
     }
   }
 }

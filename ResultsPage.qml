@@ -34,7 +34,7 @@ Item {
           anchors.leftMargin: 10
           anchors.rightMargin: 10
 
-          property bool isThisEnabled: translatorEnabled && tempEnabled
+          property bool isThisEnabled: translatorEnabled && tempEnabled && !hidden
 
           height: isThisEnabled ? cols.implicitHeight : 0
           visible: isThisEnabled
