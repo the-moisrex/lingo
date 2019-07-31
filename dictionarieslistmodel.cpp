@@ -144,6 +144,12 @@ void DictionariesListModel::create(QString name, int index) {
   auto additional_resources = getManuallyAddedDicts();
   additional_resources.emplace_back(type, id, name);
   updateManuallyAddedResources(additional_resources);
+  //  emit dataChanged(createIndex(0, 0), createIndex(dicts.size(), 0),
+  //                   QVector<int>()
+  //                       << NAME << ENABLED << TEMP_ENABLED << INDEX
+  //                       << INITIALIZING << ID << KEY << TRANSLATION <<
+  //                       LOADING);
+  emit layoutChanged();
 }
 
 void DictionariesListModel::remove(QString id) {
