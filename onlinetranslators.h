@@ -76,7 +76,10 @@ class OnlineTranslator : public Resource {
 
   bool canProvideSuggestions() const noexcept override { return false; }
 
-  void componentComplete() override { setInitStatus(false); }
+  void componentComplete() override {
+    Resource::componentComplete();
+    setInitStatus(false);
+  }
 };
 
 // explicit template instanciations
