@@ -45,20 +45,29 @@ Page {
 
             Item {
                 id: dataParent
-                anchors.right: settingsIcon.left
+                anchors.right: parent.right
                 anchors.rightMargin: 10
                 anchors.left: parent.left
                 anchors.leftMargin: 10
-                height: data.implicitHeight * 3
+                height: data.implicitHeight * 2
 
                 Label {
                     id: data
                     anchors.verticalCenter: parent.verticalCenter
+                    anchors.verticalCenterOffset: -10
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    font.pointSize: 17
-                    text:  name + " <small>(" + (translatorEnabled ? ("<font color=darkgreen>" + qsTr("Enabled") + "</font>") : ("<font color=darkred>" + qsTr("Disabled") + "</font>")) + ")</small>"
+                    font.pointSize: 16
+                    text:  name
                     textFormat: Qt.RichText
+                }
+
+                Label {
+                    anchors.top: data.bottom
+                    anchors.left: data.left
+                    font.pointSize: data.font.pointSize * 0.6
+                    textFormat: Qt.RichText
+                    text:  (translatorEnabled ? ("<font color=darkgreen>" + qsTr("Enabled") + "</font>") : ("<font color=darkred>" + qsTr("Disabled") + "</font>"))
                 }
             }
 
@@ -71,15 +80,15 @@ Page {
             }
 
 
-            IconLabel {
-                id: settingsIcon
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                anchors.rightMargin: 10
-                text: Icons["settings"]
-                font.pointSize: 14
-                hoverEnabled: true
-                flat: true
+//            IconLabel {
+//                id: settingsIcon
+//                anchors.verticalCenter: parent.verticalCenter
+//                anchors.right: parent.right
+//                anchors.rightMargin: 10
+//                text: Icons["settings"]
+//                font.pointSize: 14
+//                hoverEnabled: true
+//                flat: true
 
 
                 MouseArea {
@@ -93,7 +102,7 @@ Page {
                         )
                     }
                 }
-            }
+//            }
 
         }
         model: Dictionaries

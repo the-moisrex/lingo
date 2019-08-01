@@ -59,9 +59,6 @@ Page {
             anchors.leftMargin: 10
             height: dataParent.height
 
-            Component.onCompleted: {
-                console.log("aaa")
-            }
 
             Rectangle {
                 property color bgColor: "#eee"
@@ -129,18 +126,19 @@ Page {
 //                }
             }
 
-//            TextEdit {
-//                anchors.top: dataParent.bottom
-//                anchors.left: dataParent.left
-//                anchors.right: dataParent.right
-//                visible: type == 1 // resource_options::input_t::TEXT
-//                onTextChanged: {
-//                    value = text;
-//                }
-//                Component.onCompleted: {
-//                    text = value;
-//                }
-//            }
+            TextEdit {
+                id: txtInpt
+                anchors.top: dataParent.bottom
+                anchors.left: dataParent.left
+                anchors.right: dataParent.right
+                visible: type == 1 // resource_options::input_t::TEXT
+                text: value
+                Binding {
+                    target: model
+                    property: "value"
+                    value: txtInpt.text
+                }
+            }
 
 
         }
