@@ -107,6 +107,8 @@ void DictionariesListModel::loadDefaults() {
     // Add your other custom dictionaries here:
     if ("txt-dic" == type) {
       res = new txtDictionary(this);
+    } else if ("sql-dic" == type) {
+      res = new SqlDictionary(this);
     }
     if (res) {
       res->setId(id);

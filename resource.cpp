@@ -8,14 +8,24 @@ int Resource::rowCount(const QModelIndex& parent) const {
   if (parent.isValid())
     return 0;
 
-  return options_cache.size();
+  return options_cache.size() + 1;
 }
 
 QVariant Resource::data(const QModelIndex& index, int role) const {
   if (!index.isValid())
     return QVariant();
 
-  auto const& opt = options_cache.at(index.row());
+  if (index.row() == 0) {
+    if (role == ROLE_VALUE)
+      return /*"<font color=gray>" + tr("Key: ") + "</font>" + key() + "<br>" +
+              */
+          "<font color=gray>" + tr("Name: ") + "</font> " + name() +
+          "<br><font color=gray>" + tr("Description: ") + "</font>" +
+          description();
+    return QVariant();
+  }
+
+  auto const& opt = options_cache.at(index.row() - 1);
 
   switch (role) {
     case ROLE_KEY:
@@ -43,8 +53,10 @@ QHash<int, QByteArray> Resource::roleNames() const {
 bool Resource::setData(const QModelIndex& index,
                        const QVariant& value,
                        int role) {
+  if (index.row() == 0)
+    return false;
   if (data(index, role) != value) {
-    auto const& opt = options_cache.at(index.row());
+    auto const& opt = options_cache.at(index.row() - 1);
     switch (role) {
       case ROLE_VALUE:  // only value is mutable and thus makes scense to change
         opt.value = value;

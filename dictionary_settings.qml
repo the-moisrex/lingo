@@ -7,19 +7,19 @@ Page {
     title: qsTr("Dictionary settings")
     property int dictionary_index: 0
 
-    Text {
-        id: desc
-        text: "<font color=gray>" + qsTr("Key: ") + "</font>" + optionsList.model.key() + "<br><font color=gray>" + qsTr("Name: ") + "</font> "+ optionsList.model.name() + "<br><font color=gray>" + qsTr("Description: ") + "</font>" + optionsList.model.description()
-        wrapMode: Text.WordWrap
-        textFormat: Qt.RichText
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.topMargin: 10
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        lineHeight: 1.5
-    }
+//    Text {
+//        id: desc
+//        text: "<font color=gray>" + qsTr("Key: ") + "</font>" + optionsList.model.key() + "<br><font color=gray>" + qsTr("Name: ") + "</font> "+ optionsList.model.name() + "<br><font color=gray>" + qsTr("Description: ") + "</font>" + optionsList.model.description()
+//        wrapMode: Text.WordWrap
+//        textFormat: Qt.RichText
+//        anchors.top: parent.top
+//        anchors.left: parent.left
+//        anchors.right: parent.right
+//        anchors.topMargin: 10
+//        anchors.leftMargin: 10
+//        anchors.rightMargin: 10
+//        lineHeight: 1.5
+//    }
 
     IconLabel {
         font.pointSize: 24
@@ -42,11 +42,7 @@ Page {
         model: Dictionaries.optionsModel(dictionary_index)
         spacing: 10
         z: 5
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: desc.bottom
-        anchors.bottom: parent.bottom
-        anchors.topMargin: 10
+        anchors.fill: parent
         onModelChanged: {
             model.componentComplete();
             update()
@@ -76,7 +72,7 @@ Page {
                 anchors.leftMargin: 10
                 anchors.rightMargin: 10
                 font.pointSize: 15
-                text: title
+                text: title ? title : ""
                 textFormat: Qt.RichText
             }
 
@@ -88,9 +84,16 @@ Page {
                 case 1:
                     item = a_text;
                     break;
+                case 2:
+                    item = a_long_text;
+                    break;
                 case 3:
                     item = a_switch;
                     break;
+                default:
+                    item = a_simple_text;
+                    titleLabel.visible = false;
+                    titleLabel.height = 0;
                 }
                 if (!item)
                     return;
@@ -178,6 +181,60 @@ Page {
 
 
         }
+    }
+
+
+
+    ///////////////////////////////////////////////////////////////////
+
+    Component {
+        id: a_long_text
+
+        TextArea {
+            property var model: 0
+            property var title: 0
+            property var value: 0
+            property var type: 0
+
+            id: txtInpt
+            anchors.left: parent.left
+            anchors.right: parent.right
+            text: value
+            selectByMouse: true
+            Binding {
+                target: model
+                property: "value"
+                value: txtInpt.text
+            }
+
+
+
+        }
+    }
+
+
+    Component {
+        id: a_simple_text
+
+        Text {
+            property var model: 0
+            property var title: 0
+            property var value: 0
+            property var type: 0
+
+            id: desc
+            text: value
+            wrapMode: Text.WordWrap
+            textFormat: Qt.RichText
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.topMargin: 10
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+            lineHeight: 1.2
+      }
+
     }
 
 }

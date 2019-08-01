@@ -36,7 +36,6 @@ class SqlDictionary : public Resource {
   SqlDictionary(QObject* parent, DatabaseInfo const& info);
   ~SqlDictionary() override = default;
 
-  QString name() const noexcept override { return tr("SQL Database"); }
   QString key() const noexcept override { return "sql-dic"; }
 
   QString description() const noexcept override {
