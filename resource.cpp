@@ -184,6 +184,8 @@ void Resource::setOption(const resource_option& the_option) {
 }
 
 void Resource::setOptionIfNotExists(const resource_option& the_option) {
+  default_options.insert(the_option);
+
   // put it there if it's not there:
   if (!optionExists(the_option.key))
     setOption(the_option);

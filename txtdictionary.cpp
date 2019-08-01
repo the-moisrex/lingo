@@ -54,7 +54,8 @@ void txtDictionary::load(const QString& filepath) {
 
 void txtDictionary::setTheOptions() {
   if (!builtin) {
-    setOptionIfNotExists({resource_option::TEXT, "filepath", "", "File Path"});
+    setOptionIfNotExists(
+        {resource_option::TEXT, "filepath", QVariant(), "File Path"});
   }
 }
 
