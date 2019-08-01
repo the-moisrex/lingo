@@ -56,6 +56,31 @@ Page {
             id: childMaster
             anchors.right: parent.right
             anchors.left: parent.left
+            anchors.leftMargin: 5
+            anchors.rightMargin: 5
+
+            Rectangle {
+                property color bgColor: "#eee"
+                id: bg
+                anchors.fill: parent
+                anchors.topMargin: 3
+                color: bgColor
+                radius: 4
+            }
+
+            Label {
+                id: titleLabel
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.topMargin: 10
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+                font.pointSize: 15
+                text: title
+                textFormat: Qt.RichText
+            }
+
+
 
             Component.onCompleted: {
                 let item = null;
@@ -73,9 +98,22 @@ Page {
                    let ref = item.createObject(childMaster, {
                                                 title, model, type, value
                                             });
-                    childMaster.height = Qt.binding(() => {
-                                                        return ref.height;
-                                                    });
+                    switch (type) {
+                    case 3: // checkbox
+                        childMaster.implicitHeight = Qt.binding(() => {
+                            return Math.max(titleLabel.implicitHeight, ref.implicitHeight, ref.height) + 10;
+                        });
+                        titleLabel.anchors.verticalCenter = Qt.binding(() => {
+                            return childMaster.verticalCenter;
+                        });
+                        break;
+                    default:
+                        ref.anchors.top = titleLabel.bottom;
+                        titleLabel.anchors.top = Qt.binding(() => childMaster.top);
+                        childMaster.height = Qt.binding(() => {
+                            return Math.max(ref.implicitHeight, ref.height)  + titleLabel.implicitHeight + 10;
+                        });
+                    }
                 }
             }
 
@@ -89,63 +127,21 @@ Page {
     Component {
         id: a_switch
 
-        Item {
-            anchors.right: parent.right
-            anchors.left: parent.left
-            anchors.rightMargin: 10
-            anchors.leftMargin: 10
-            height: data.implicitHeight * 3
-
+        Switch{
             property var model: 0
             property var title: 0
             property var value: 0
             property var type: 0
 
-            Rectangle {
-                property color bgColor: "#eee"
-                id: bg
-                anchors.fill: parent
-                anchors.topMargin: 3
-                color: bgColor
-                radius: 4
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
-                onHoveredChanged: {
-                    bg.bgColor = containsMouse ? "#e0e0e0" : "#eee"
-                }
-                z: 100
-            }
-
-
-            Label {
-                id: data
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.leftMargin: 10
-                anchors.rightMargin: 10
-                font.pointSize: 16
-                text: title
-                textFormat: Qt.RichText
-                z: 90
-            }
-
-            Switch {
-                id: switchBtn
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                anchors.rightMargin: 10
-                z: 200
-                checked: value
-                Binding {
-                    target: model
-                    property: "value"
-                    value: switchBtn.checked
-                }
-
+            id: switchBtn
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            checked: value
+            Binding {
+                target: model
+                property: "value"
+                value: switchBtn.checked
             }
 
         }
@@ -162,65 +158,21 @@ Page {
     Component {
         id: a_text
 
-        Item {
-            anchors.right: parent.right
-            anchors.left: parent.left
-            anchors.rightMargin: 10
-            anchors.leftMargin: 10
-            height: data.implicitHeight * 3
-
+        TextField {
             property var model: 0
             property var title: 0
             property var value: 0
             property var type: 0
 
-
-            Rectangle {
-                property color bgColor: "#eee"
-                id: bg
-                anchors.fill: parent
-                anchors.topMargin: 3
-                color: bgColor
-                radius: 4
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
-                z: 100
-                onHoveredChanged: {
-                    bg.bgColor = containsMouse ? "#e0e0e0" : "#eee"
-                }
-            }
-
-
-            Label {
-                id: data
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -15
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.leftMargin: 10
-                anchors.rightMargin: 10
-                font.pointSize: 16
-                text: title
-                textFormat: Qt.RichText
-                z: 90
-            }
-
-            TextField {
-                id: txtInpt
-                anchors.top: data.bottom
-                anchors.left: data.left
-                anchors.right: data.right
-                text: value
-                selectByMouse: true
-                z: 200
-                Binding {
-                    target: model
-                    property: "value"
-                    value: txtInpt.text
-                }
+            id: txtInpt
+            anchors.left: parent.left
+            anchors.right: parent.right
+            text: value
+            selectByMouse: true
+            Binding {
+                target: model
+                property: "value"
+                value: txtInpt.text
             }
 
 
