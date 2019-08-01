@@ -53,11 +53,126 @@ Page {
         }
 
         delegate: Item {
+            id: childMaster
+            anchors.right: parent.right
+            anchors.left: parent.left
+
+            Component.onCompleted: {
+                let item = null;
+                switch (type) {
+                case 1:
+                    item = a_text;
+                    break;
+                case 3:
+                    item = a_switch;
+                    break;
+                }
+                if (!item)
+                    return;
+                if (item.status === Component.Ready) {
+                   let ref = item.createObject(childMaster, {
+                                                title, model, type, value
+                                            });
+                    childMaster.height = Qt.binding(() => {
+                                                        return ref.height;
+                                                    });
+                }
+            }
+
+        }
+
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////
+
+    Component {
+        id: a_switch
+
+        Item {
             anchors.right: parent.right
             anchors.left: parent.left
             anchors.rightMargin: 10
             anchors.leftMargin: 10
-            height: dataParent.height
+            height: data.implicitHeight * 3
+
+            property var model: 0
+            property var title: 0
+            property var value: 0
+            property var type: 0
+
+            Rectangle {
+                property color bgColor: "#eee"
+                id: bg
+                anchors.fill: parent
+                anchors.topMargin: 3
+                color: bgColor
+                radius: 4
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onHoveredChanged: {
+                    bg.bgColor = containsMouse ? "#e0e0e0" : "#eee"
+                }
+                z: 100
+            }
+
+
+            Label {
+                id: data
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+                font.pointSize: 16
+                text: title
+                textFormat: Qt.RichText
+                z: 90
+            }
+
+            Switch {
+                id: switchBtn
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                anchors.rightMargin: 10
+                z: 200
+                checked: value
+                Binding {
+                    target: model
+                    property: "value"
+                    value: switchBtn.checked
+                }
+
+            }
+
+        }
+
+    }
+
+
+
+
+
+    /////////////////////////////////////////////////////////////////
+
+
+    Component {
+        id: a_text
+
+        Item {
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.rightMargin: 10
+            anchors.leftMargin: 10
+            height: data.implicitHeight * 3
+
+            property var model: 0
+            property var title: 0
+            property var value: 0
+            property var type: 0
 
 
             Rectangle {
@@ -69,70 +184,38 @@ Page {
                 radius: 4
             }
 
-
-            Item {
-                id: dataParent
-                anchors.right: parent.right
-                anchors.rightMargin: 10
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                height: data.implicitHeight * 3
-
-                Label {
-                    id: data
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    font.pointSize: 17
-                    text: title
-                    textFormat: Qt.RichText
-                }
-            }
-
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
+                z: 100
                 onHoveredChanged: {
                     bg.bgColor = containsMouse ? "#e0e0e0" : "#eee"
                 }
             }
 
 
-            Switch {
-                id: switchBtn
+            Label {
+                id: data
                 anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: -15
+                anchors.left: parent.left
                 anchors.right: parent.right
+                anchors.leftMargin: 10
                 anchors.rightMargin: 10
-                visible: type == 3 // resource_options::input_t::CHECKBOX
-//                onCheckedChanged: {
-//                    if (value !== checked)
-//                        value = checked
-//                }
-                checked: value
-                Binding {
-                    target: model
-                    property: "value"
-                    value: switchBtn.checked
-                }
-
-//                Component.onCompleted:  {
-//                    if (type == 3) {
-//                        checked = value;
-//                        value = Qt.binding(function() {
-//                            return checked;
-//                        });
-//                        console.log(checked, value)
-//                    }
-//                }
+                font.pointSize: 16
+                text: title
+                textFormat: Qt.RichText
+                z: 90
             }
 
-            TextEdit {
+            TextField {
                 id: txtInpt
-                anchors.top: dataParent.bottom
-                anchors.left: dataParent.left
-                anchors.right: dataParent.right
-                visible: type == 1 // resource_options::input_t::TEXT
+                anchors.top: data.bottom
+                anchors.left: data.left
+                anchors.right: data.right
                 text: value
+                selectByMouse: true
+                z: 200
                 Binding {
                     target: model
                     property: "value"
@@ -141,8 +224,8 @@ Page {
             }
 
 
+
         }
-
-
     }
+
 }

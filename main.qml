@@ -21,6 +21,7 @@ ApplicationWindow {
             font.family: "Material Design Icons"
             onClicked: {
                 if (stackView.depth > 1) {
+                    inputId.clear()
                     stackView.pop()
                 } else {
                     drawer.open()

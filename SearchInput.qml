@@ -11,6 +11,10 @@ Item {
     height: inputId.implicitHeight + 13
     implicitHeight: height
 
+    function clear() {
+        inputId.text = "";
+    }
+
 
     Rectangle {
 //        color: inputId.activeFocus ? primaryColor : Qt.lighter(primaryColor, 1.2)

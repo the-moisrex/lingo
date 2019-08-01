@@ -133,7 +133,8 @@ void Resource::setOption(const resource_option& the_option) {
       int size = opts.size();
       for (; i < size; i++) {
         _settings->setArrayIndex(i);
-        if (_settings->value("key", "").toString() == the_option.key) {
+        if (!the_option.value.isNull() &&
+            _settings->value("key", "").toString() == the_option.key) {
           _settings->setValue("value", the_option.value);
           //          _settings->setValue("input_type",
           //                              static_cast<int>(the_option.input_type));
@@ -154,7 +155,8 @@ void Resource::setOption(const resource_option& the_option) {
     _settings->beginWriteArray(id() + "/options", opts.size() + 1);
     _settings->setArrayIndex(opts.size());
     _settings->setValue("key", the_option.key);
-    _settings->setValue("value", the_option.value);
+    if (!the_option.value.isNull())
+      _settings->setValue("value", the_option.value);
     //    _settings->setValue("input_type",
     //    static_cast<int>(the_option.input_type)); _settings->setValue("title",
     //    the_option.title); if (the_option.input_type ==

@@ -53,8 +53,9 @@ void txtDictionary::load(const QString& filepath) {
 }
 
 void txtDictionary::setTheOptions() {
-  if (path == "" && optionValue("filepath").toString() != "")
-    setOption({resource_option::TEXT, "filepath", "", "File Path"});
+  if (!builtin) {
+    setOptionIfNotExists({resource_option::TEXT, "filepath", "", "File Path"});
+  }
 }
 
 void txtDictionary::async_search(const QString& word) {
@@ -136,7 +137,7 @@ void txtDictionary::componentComplete() {
   Resource::componentComplete();
   setTheOptions();
   if (!builtin)
-    path = optionValue("path", "").toString();
+    path = optionValue("filepath", "").toString();
   if (path != "") {
     QtConcurrent::run(this, &txtDictionary::load, path);
   } else {

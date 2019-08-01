@@ -70,9 +70,9 @@ void DictionariesListModel::updateManuallyAddedResources(
 
 void DictionariesListModel::loadDefaults() {
   // Default online dictionaries:
-  Resource* google = new OnlineTranslator<QOnlineTranslator::Google>(this);
-  Resource* bing = new OnlineTranslator<QOnlineTranslator::Bing>(this);
-  Resource* yandex = new OnlineTranslator<QOnlineTranslator::Yandex>(this);
+  auto google = new OnlineTranslator<QOnlineTranslator::Google>(this);
+  auto bing = new OnlineTranslator<QOnlineTranslator::Bing>(this);
+  auto yandex = new OnlineTranslator<QOnlineTranslator::Yandex>(this);
 
   google->setDeletable(false);
   bing->setDeletable(false);
@@ -87,12 +87,13 @@ void DictionariesListModel::loadDefaults() {
   dicts << yandex;
 
   // Default offline dictionaries:
-  Resource* english2Espanol =
+  auto english2Espanol =
       new txtDictionary(this, "://english-spanish-2019-06-25.txt");
 
   english2Espanol->setId("english2spanish");
   english2Espanol->setDeletable(false);
   english2Espanol->setName(QObject::tr("English to Spanish (built-in)"));
+  english2Espanol->setBuiltin(true);
   dicts << english2Espanol;
 
   // Manually added dictionaries:
@@ -141,10 +142,11 @@ void DictionariesListModel::create(QString name, int index) {
 
   auto item = proto->index(index);
   auto type = item.data(KEY).toString();
-  auto id = QString(QCryptographicHash::hash(
-                        (type + name + QString(qrand())).toStdString().c_str(),
-                        QCryptographicHash::Md5)
-                        .toHex());
+  auto id = QString(
+      QCryptographicHash::hash(
+          (type + name + QString::number(qrand())).toStdString().c_str(),
+          QCryptographicHash::Md5)
+          .toHex());
   auto additional_resources = getManuallyAddedDicts();
   additional_resources.emplace_back(type, id, name);
   updateManuallyAddedResources(additional_resources);
