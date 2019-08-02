@@ -90,6 +90,12 @@ Page {
                 case 3:
                     item = a_switch;
                     break;
+                case 4:
+                    item = a_multichoice;
+                    break;
+                case 5:
+                    item = a_options_switcher;
+                    break;
                 default:
                     item = a_simple_text;
                     titleLabel.visible = false;
@@ -99,7 +105,7 @@ Page {
                     return;
                 if (item.status === Component.Ready) {
                    let ref = item.createObject(childMaster, {
-                                                title, model, type, value
+                                                title, model, type, value, choices
                                             });
                     switch (type) {
                     case 3: // checkbox
@@ -170,6 +176,8 @@ Page {
             id: txtInpt
             anchors.left: parent.left
             anchors.right: parent.right
+            anchors.rightMargin: 20
+            anchors.leftMargin: 20
             text: value
             selectByMouse: true
             Binding {
@@ -212,6 +220,7 @@ Page {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////
 
     Component {
         id: a_simple_text
@@ -237,4 +246,63 @@ Page {
 
     }
 
+
+    //////////////////////////////////////////////////////////////////
+
+    Component {
+        id: a_multichoice
+
+        ComboBox {
+            id: comboId
+
+            property var model: 0
+            property var title: 0
+            property var value: 0
+            property var type: 0
+            property var choices: 0
+
+            model: choices
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.rightMargin: 20
+            anchors.leftMargin: 20
+            currentIndex: value
+            Binding {
+                target: model
+                property: "value"
+                value: comboId.currentIndex
+            }
+        }
+    }
+
+
+
+    ///////////////////////////////////////////////////////////////////
+
+
+    Component {
+        id: a_options_switcher
+
+        ComboBox {
+            id: comboOptionsId
+
+            property var model: 0
+            property var title: 0
+            property var value: 0
+            property var type: 0
+            property var choices: 0
+
+            model: choices
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.rightMargin: 20
+            anchors.leftMargin: 20
+            currentIndex: value
+            Binding {
+                target: model
+                property: "value"
+                value: comboOptionsId.currentIndex
+            }
+        }
+    }
 }

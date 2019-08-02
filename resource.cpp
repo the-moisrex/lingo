@@ -36,6 +36,13 @@ QVariant Resource::data(const QModelIndex& index, int role) const {
       return opt.title;
     case ROLE_VALUE:
       return opt.value;
+    case ROLE_CHOICES:
+      return opt.choices;
+    case ROLE_OPTIONS_SWITCHER:
+      QStringList list;
+      for (auto& item : opt.available_options.keys())
+        list.push_back(item);
+      return list;
   }
 
   return QVariant();
@@ -47,6 +54,8 @@ QHash<int, QByteArray> Resource::roleNames() const {
   data[ROLE_TYPE] = "type";
   data[ROLE_TITLE] = "title";
   data[ROLE_VALUE] = "value";
+  data[ROLE_CHOICES] = "choices";
+  data[ROLE_OPTIONS_SWITCHER] = "available_options";
   return data;
 }
 

@@ -18,7 +18,7 @@ struct resource_option {
   QString key;
   mutable QVariant value;
   QString title;
-  QVector<QString> choices = {};  // for multichoice
+  QStringList choices = {};  // for multichoice
   QMap<QString, QVector<resource_option>> available_options =
       {};  // for options_switcher
 
@@ -105,7 +105,14 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   void hideChanged(Resource* self, bool ishidden);
 
  public:
-  enum roles { ROLE_KEY = Qt::UserRole, ROLE_VALUE, ROLE_TITLE, ROLE_TYPE };
+  enum roles {
+    ROLE_KEY = Qt::UserRole,
+    ROLE_VALUE,
+    ROLE_TITLE,
+    ROLE_TYPE,
+    ROLE_CHOICES,
+    ROLE_OPTIONS_SWITCHER
+  };
   ~Resource() override = default;
 
   // Basic functionality:
