@@ -252,8 +252,11 @@ Page {
     Component {
         id: a_multichoice
 
-        ComboBox {
-            id: comboId
+        Item {
+            anchors.right: parent.right
+            anchors.left: parent.left
+            implicitHeight: comboId.implicitHeight
+            height: comboId.height
 
             property var model: 0
             property var title: 0
@@ -261,17 +264,20 @@ Page {
             property var type: 0
             property var choices: 0
 
-            model: choices
-            anchors.right: parent.right
-            anchors.left: parent.left
-            anchors.rightMargin: 20
-            anchors.leftMargin: 20
-            currentIndex: value
-            Binding {
-                target: model
-                property: "value"
-                value: comboId.currentIndex
-            }
+                ComboBox {
+                    id: comboId
+                    model: choices
+                    anchors.right: parent.right
+                    anchors.left: parent.left
+                    anchors.rightMargin: 20
+                    anchors.leftMargin: 20
+                    currentIndex: value
+                    Binding {
+                        target: model
+                        property: "value"
+                        value: comboId.currentIndex
+                    }
+                }
         }
     }
 
@@ -283,26 +289,33 @@ Page {
     Component {
         id: a_options_switcher
 
-        ComboBox {
-            id: comboOptionsId
-
+        Item {
             property var model: 0
             property var title: 0
             property var value: 0
             property var type: 0
             property var choices: 0
 
-            model: choices
-            anchors.right: parent.right
-            anchors.left: parent.left
-            anchors.rightMargin: 20
-            anchors.leftMargin: 20
-            currentIndex: value
-            Binding {
-                target: model
-                property: "value"
-                value: comboOptionsId.currentIndex
+            ComboBox {
+                id: comboOptionsId
+
+                model: choices
+                anchors.right: parent.right
+                anchors.left: parent.left
+                anchors.rightMargin: 20
+                anchors.leftMargin: 20
+                currentIndex: value
+                Binding {
+                    target: model
+                    property: "value"
+                    value: comboOptionsId.currentIndex
+                }
             }
+
+
+
         }
+
+
     }
 }

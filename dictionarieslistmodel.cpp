@@ -1,9 +1,9 @@
 #include "dictionarieslistmodel.h"
-#include <QtConcurrent/QtConcurrent>
-#include <algorithm>
 #include "onlinetranslators.h"
 #include "sqldictionary.h"
 #include "txtdictionary.h"
+#include <QtConcurrent/QtConcurrent>
+#include <algorithm>
 
 std::vector<std::tuple<QString, QString, QString>>
 DictionariesListModel::getManuallyAddedDicts() {
@@ -25,8 +25,8 @@ DictionariesListModel::getManuallyAddedDicts() {
 }
 
 void DictionariesListModel::updateManuallyAddedResources(
-    std::vector<std::tuple<QString, QString, QString>> const&
-        additional_resources) {
+    std::vector<std::tuple<QString, QString, QString>> const
+        &additional_resources) {
   auto _settings = settings();
 
   // re-writing the configs
@@ -43,21 +43,21 @@ void DictionariesListModel::updateManuallyAddedResources(
   _settings->sync();
 
   // disconnect the signals
-  for (auto& dic : dicts) {
-    disconnect(dic, SIGNAL(translationChanged(Resource*, QString)), this,
-               SLOT(onTranslationChange(Resource*, QString)));
-    disconnect(dic, SIGNAL(loadingChanged(Resource*, bool)), this,
-               SLOT(onLoadingChange(Resource*, bool)));
-    disconnect(dic, SIGNAL(enabledChanged(Resource*, bool)), this,
-               SLOT(onEnabledChange(Resource*, bool)));
-    disconnect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
-               SLOT(onInitStatusChange(Resource*, bool)));
-    disconnect(dic, SIGNAL(tempEnabledChanged(Resource*, bool)), this,
-               SLOT(onTempEnabledChange(Resource*, bool)));
-    disconnect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
-               SLOT(onInitPercentChange(Resource*, bool)));
-    disconnect(dic, SIGNAL(hideChanged(Resource*, bool)), this,
-               SLOT(onHiddenChange(Resource*, bool)));
+  for (auto &dic : dicts) {
+    disconnect(dic, SIGNAL(translationChanged(Resource *, QString)), this,
+               SLOT(onTranslationChange(Resource *, QString)));
+    disconnect(dic, SIGNAL(loadingChanged(Resource *, bool)), this,
+               SLOT(onLoadingChange(Resource *, bool)));
+    disconnect(dic, SIGNAL(enabledChanged(Resource *, bool)), this,
+               SLOT(onEnabledChange(Resource *, bool)));
+    disconnect(dic, SIGNAL(initStatusChanged(Resource *, bool)), this,
+               SLOT(onInitStatusChange(Resource *, bool)));
+    disconnect(dic, SIGNAL(tempEnabledChanged(Resource *, bool)), this,
+               SLOT(onTempEnabledChange(Resource *, bool)));
+    disconnect(dic, SIGNAL(initStatusChanged(Resource *, bool)), this,
+               SLOT(onInitPercentChange(Resource *, bool)));
+    disconnect(dic, SIGNAL(hideChanged(Resource *, bool)), this,
+               SLOT(onHiddenChange(Resource *, bool)));
   }
   dicts.clear();
   loadDefaults();
@@ -98,8 +98,8 @@ void DictionariesListModel::loadDefaults() {
 
   // Manually added dictionaries:
   auto additional_resources = getManuallyAddedDicts();
-  for (auto& item : additional_resources) {
-    Resource* res = nullptr;
+  for (auto &item : additional_resources) {
+    Resource *res = nullptr;
     auto type = std::get<0>(item);
     auto id = std::get<1>(item);
     auto name = std::get<2>(item);
@@ -120,21 +120,21 @@ void DictionariesListModel::loadDefaults() {
   }
 
   // connect the signals to the slots
-  for (auto& dic : dicts) {
-    connect(dic, SIGNAL(translationChanged(Resource*, QString)), this,
-            SLOT(onTranslationChange(Resource*, QString)));
-    connect(dic, SIGNAL(loadingChanged(Resource*, bool)), this,
-            SLOT(onLoadingChange(Resource*, bool)));
-    connect(dic, SIGNAL(enabledChanged(Resource*, bool)), this,
-            SLOT(onEnabledChange(Resource*, bool)));
-    connect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
-            SLOT(onInitStatusChange(Resource*, bool)));
-    connect(dic, SIGNAL(tempEnabledChanged(Resource*, bool)), this,
-            SLOT(onTempEnabledChange(Resource*, bool)));
-    connect(dic, SIGNAL(initStatusChanged(Resource*, bool)), this,
-            SLOT(onInitPercentChange(Resource*, bool)));
-    connect(dic, SIGNAL(hideChanged(Resource*, bool)), this,
-            SLOT(onHiddenChange(Resource*, bool)));
+  for (auto &dic : dicts) {
+    connect(dic, SIGNAL(translationChanged(Resource *, QString)), this,
+            SLOT(onTranslationChange(Resource *, QString)));
+    connect(dic, SIGNAL(loadingChanged(Resource *, bool)), this,
+            SLOT(onLoadingChange(Resource *, bool)));
+    connect(dic, SIGNAL(enabledChanged(Resource *, bool)), this,
+            SLOT(onEnabledChange(Resource *, bool)));
+    connect(dic, SIGNAL(initStatusChanged(Resource *, bool)), this,
+            SLOT(onInitStatusChange(Resource *, bool)));
+    connect(dic, SIGNAL(tempEnabledChanged(Resource *, bool)), this,
+            SLOT(onTempEnabledChange(Resource *, bool)));
+    connect(dic, SIGNAL(initStatusChanged(Resource *, bool)), this,
+            SLOT(onInitPercentChange(Resource *, bool)));
+    connect(dic, SIGNAL(hideChanged(Resource *, bool)), this,
+            SLOT(onHiddenChange(Resource *, bool)));
   }
 }
 
@@ -164,7 +164,7 @@ void DictionariesListModel::remove(QString id) {
   auto additional_resources = getManuallyAddedDicts();
   auto found =
       std::find_if(additional_resources.begin(), additional_resources.end(),
-                   [&](auto const& dict) { return std::get<1>(dict) == id; });
+                   [&](auto const &dict) { return std::get<1>(dict) == id; });
   if (found != additional_resources.end()) {
     additional_resources.erase(found);
     updateManuallyAddedResources(additional_resources);
@@ -224,7 +224,7 @@ int DictionariesListModel::getToLang() {
 double DictionariesListModel::getInitStatusPercent() const noexcept {
   double percent = 0;
   double step = 1.0 / static_cast<double>(dicts.size());
-  for (auto const& dic : dicts) {
+  for (auto const &dic : dicts) {
     //    qDebug() << dic->name() << dic->isTempEnabled() << dic->isEnabled();
     if (dictsInited.find(dic) != dictsInited.cend()) {
       if (!dictsInited[dic] ||
@@ -237,12 +237,12 @@ double DictionariesListModel::getInitStatusPercent() const noexcept {
 }
 
 void DictionariesListModel::init() {
-  for (auto& dict : dicts) {
+  for (auto &dict : dicts) {
     dict->componentComplete();
   }
 }
 
-void DictionariesListModel::onTranslationChange(Resource* ptr,
+void DictionariesListModel::onTranslationChange(Resource *ptr,
                                                 QString /* str */) {
   int index = dicts.indexOf(ptr);
   if (index < 0)
@@ -251,7 +251,7 @@ void DictionariesListModel::onTranslationChange(Resource* ptr,
                    QVector<int>() << TRANSLATION);
 }
 
-void DictionariesListModel::onLoadingChange(Resource* ptr, bool /* loading */) {
+void DictionariesListModel::onLoadingChange(Resource *ptr, bool /* loading */) {
   int index = dicts.indexOf(ptr);
   if (index < 0)
     return;
@@ -259,7 +259,7 @@ void DictionariesListModel::onLoadingChange(Resource* ptr, bool /* loading */) {
                    QVector<int>() << LOADING);
 }
 
-void DictionariesListModel::onEnabledChange(Resource* ptr, bool /* enabled */) {
+void DictionariesListModel::onEnabledChange(Resource *ptr, bool /* enabled */) {
   int index = dicts.indexOf(ptr);
   if (index < 0)
     return;
@@ -267,7 +267,7 @@ void DictionariesListModel::onEnabledChange(Resource* ptr, bool /* enabled */) {
                    QVector<int>() << ENABLED);
 }
 
-void DictionariesListModel::onInitStatusChange(Resource* ptr,
+void DictionariesListModel::onInitStatusChange(Resource *ptr,
                                                bool /* initializing */) {
   int index = dicts.indexOf(ptr);
   if (index < 0)
@@ -276,7 +276,7 @@ void DictionariesListModel::onInitStatusChange(Resource* ptr,
                    QVector<int>() << INITIALIZING);
 }
 
-void DictionariesListModel::onTempEnabledChange(Resource* ptr,
+void DictionariesListModel::onTempEnabledChange(Resource *ptr,
                                                 bool /* tempEnabled */) {
   int index = dicts.indexOf(ptr);
   if (index < 0)
@@ -285,14 +285,14 @@ void DictionariesListModel::onTempEnabledChange(Resource* ptr,
                    QVector<int>() << TEMP_ENABLED);
 }
 
-void DictionariesListModel::onInitPercentChange(Resource* ptr,
+void DictionariesListModel::onInitPercentChange(Resource *ptr,
                                                 bool initStatus) {
   //  qDebug() << ptr->key() << ptr->name() << ptr->id() << initStatus;
   dictsInited.insert(ptr, initStatus);
   emit initStatusPercentChanged();
 }
 
-void DictionariesListModel::onHiddenChange(Resource* ptr, bool /* ishidden */) {
+void DictionariesListModel::onHiddenChange(Resource *ptr, bool /* ishidden */) {
   int index = dicts.indexOf(ptr);
   if (index < 0)
     return;
@@ -300,10 +300,10 @@ void DictionariesListModel::onHiddenChange(Resource* ptr, bool /* ishidden */) {
                    QVector<int>() << HIDDEN);
 }
 
-DictionariesListModel::DictionariesListModel(QObject* parent)
+DictionariesListModel::DictionariesListModel(QObject *parent)
     : QAbstractListModel(parent) {}
 
-int DictionariesListModel::rowCount(const QModelIndex& parent) const {
+int DictionariesListModel::rowCount(const QModelIndex &parent) const {
   // For list models only the root node (an invalid parent) should return the
   // list's size. For all other (valid) parents, rowCount() should return 0 so
   // that it does not become a tree model.
@@ -313,35 +313,35 @@ int DictionariesListModel::rowCount(const QModelIndex& parent) const {
   return dicts.size();
 }
 
-QVariant DictionariesListModel::data(const QModelIndex& index, int role) const {
+QVariant DictionariesListModel::data(const QModelIndex &index, int role) const {
   if (!index.isValid())
     return QVariant();
 
   auto dic = dicts.at(index.row());
 
   switch (role) {
-    case KEY:
-      return dic->key();
-    case ID:
-      return dic->id();
-    case NAME:
-      return dic->name();
-    case TRANSLATION:
-      return dic->translation();
-    case ENABLED:
-      return dic->isEnabled();
-    case DESCRIPTION:
-      return dic->description();
-    case LOADING:
-      return dic->isLoading();
-    case INITIALIZING:
-      return dic->isInitializing();
-    case INDEX:
-      return index.row();
-    case TEMP_ENABLED:
-      return dic->isTempEnabled();
-    case HIDDEN:
-      return dic->isHidden();
+  case KEY:
+    return dic->key();
+  case ID:
+    return dic->id();
+  case NAME:
+    return dic->name();
+  case TRANSLATION:
+    return dic->translation();
+  case ENABLED:
+    return dic->isEnabled();
+  case DESCRIPTION:
+    return dic->description();
+  case LOADING:
+    return dic->isLoading();
+  case INITIALIZING:
+    return dic->isInitializing();
+  case INDEX:
+    return index.row();
+  case TEMP_ENABLED:
+    return dic->isTempEnabled();
+  case HIDDEN:
+    return dic->isHidden();
   }
 
   return QVariant();
@@ -361,10 +361,10 @@ QHash<int, QByteArray> DictionariesListModel::roleNames() const {
   return data;
 }
 
-void DictionariesListModel::search(const QString& word) {
+void DictionariesListModel::search(const QString &word) {
   //  qDebug() << "Searching for word: " << word;
   lastWord = word;
-  for (auto& dic : dicts) {
+  for (auto &dic : dicts) {
     if (dic->isSupported(
             static_cast<QOnlineTranslator::Language>(getFromLang()),
             static_cast<QOnlineTranslator::Language>(getToLang() + 1)) &&
@@ -383,10 +383,15 @@ QString DictionariesListModel::readableTranslation(QString t) {
   return t.remove(QRegExp("<[^>]*>"));
 }
 
-DictionariesListModel* DictionariesListModel::prototypes() {
+DictionariesListModel *DictionariesListModel::prototypes() {
   if (!proto) {
     proto = new DictionariesListModel(this);
-    proto->dicts << new txtDictionary(proto) << new SqlDictionary(proto);
+    auto txt = new txtDictionary(proto);
+    auto sql = new SqlDictionary(proto);
+    txt->setName(tr("Text format"));
+    sql->setName(tr("Sql database format"));
+
+    proto->dicts << txt << sql;
   }
   return proto;
 }

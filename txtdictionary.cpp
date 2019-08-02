@@ -7,7 +7,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <algorithm>
 
-void txtDictionary::load(const QString& filepath) {
+void txtDictionary::load(const QString &filepath) {
   //  qDebug() << "Starting loading " << filepath;
 
   QFile file(filepath);
@@ -34,10 +34,10 @@ void txtDictionary::load(const QString& filepath) {
 
         // remove unneeded spaces and convert to lowercase:
         std::transform(words.begin(), words.end(), words.begin(),
-                       [](auto& word) { return word.toLower().trimmed(); });
+                       [](auto &word) { return word.toLower().trimmed(); });
         std::transform(translations.begin(), translations.end(),
                        translations.begin(),
-                       [](auto& translation) { return translation.trimmed(); });
+                       [](auto &translation) { return translation.trimmed(); });
 
         data.push_back(data_t{words, translations, category});
       }
@@ -59,17 +59,17 @@ void txtDictionary::setTheOptions() {
   }
 }
 
-void txtDictionary::async_search(const QString& word) {
+void txtDictionary::async_search(const QString &word) {
   setLoading(true);
   {
     QReadLocker locked(&data_lock);
-    auto found = std::find_if(data.cbegin(), data.cend(), [&](auto const& a) {
+    auto found = std::find_if(data.cbegin(), data.cend(), [&](auto const &a) {
       return a.words.end() != std::find(a.words.begin(), a.words.end(), word);
     });
 
     if (found != data.cend()) {
       QString t = "";
-      for (auto const& trans : found->translations) {
+      for (auto const &trans : found->translations) {
         t.append(trans);
         t.append("<br>");
       }
@@ -92,40 +92,35 @@ void txtDictionary::async_search(const QString& word) {
   setLoading(false);
 }
 
-txtDictionary::txtDictionary(QObject* parent) : Resource(parent) {
-  setName("TXT Format");
-}
+txtDictionary::txtDictionary(QObject *parent) : Resource(parent) {}
 
-txtDictionary::txtDictionary(QObject* parent, QString builtinpath)
+txtDictionary::txtDictionary(QObject *parent, QString builtinpath)
     : Resource(parent), builtin(true), path(std::move(builtinpath)) {
   // setId(QString(QCryptographicHash::hash(path.toStdString().c_str(),
   //                                        QCryptographicHash::Md5)
   //                   .toHex()));
 }
 
-QString txtDictionary::key() const noexcept {
-  return "txt-dic";
-}
+QString txtDictionary::key() const noexcept { return "txt-dic"; }
 
 QString txtDictionary::description() const noexcept {
   if (!builtin)
-    return tr(
-        "Plain text format.\n\n"
-        "Comments format: line that starts with # sign.\n"
-        "Each word in a separated line.\n"
-        "Alternative words are seperated with semi-colon.\n"
-        "Separator between translation and the word is a tab character.\n"
-        "\n"
-        "Examples can be found at: https://www.dicts.info/uddl.php");
+    return tr("Plain text format.\n\n"
+              "Comments format: line that starts with # sign.\n"
+              "Each word in a separated line.\n"
+              "Alternative words are seperated with semi-colon.\n"
+              "Separator between translation and the word is a tab character.\n"
+              "\n"
+              "Examples can be found at: https://www.dicts.info/uddl.php");
   return name();
 }
 
 bool txtDictionary::isSupported(QOnlineTranslator::Language,
                                 QOnlineTranslator::Language) const noexcept {
-  return true;  // TODO: chagne this
+  return true; // TODO: chagne this
 }
 
-void txtDictionary::search(const QString& word) {
+void txtDictionary::search(const QString &word) {
   auto _word = word.toLower().trimmed();
 
   //  qDebug() << "Searching for word '" << word << "' in txtDictionary ("
