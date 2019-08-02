@@ -1,6 +1,7 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
+#include "settings.h"
 #include <QAbstractListModel>
 #include <QObject>
 #include <QOnlineTranslator>
@@ -10,32 +11,16 @@
 #include <QString>
 #include <QWriteLocker>
 #include <utility>
-#include "settings.h"
 
-struct resource_option {
-  enum input_t { TEXT = 1, TEXT_LONG, CHECKBOX, MULTICHOICE, OPTIONS_SWITCHER };
-  input_t input_type;
-  QString key;
-  mutable QVariant value;
-  QString title;
-  QStringList choices = {};  // for multichoice
-  QMap<QString, QVector<resource_option>> available_options =
-      {};  // for options_switcher
+#include "resource_options_model.h"
 
-  inline bool operator==(resource_option const& opt) const noexcept {
-    return this->input_type == opt.input_type && key == opt.key &&
-           value == opt.value && title == opt.title && choices == opt.choices &&
-           available_options == opt.available_options;
-  }
-};
-
-inline uint qHash(const resource_option& key, uint seed) {
+inline uint qHash(const resource_option &key, uint seed) {
   return qHash(key.input_type, seed) ^ qHash(key.key, seed) ^
          qHash(key.value.toString(), seed) ^ qHash(key.title, seed) ^
          qHash(key.choices, seed) ^ [&]() {
            auto hashed = seed;
-           for (auto const& item : key.available_options) {
-             for (auto const& item2 : item) {
+           for (auto const &item : key.available_options) {
+             for (auto const &item2 : item) {
                hashed ^= qHash(item2, seed);
              }
            }
@@ -43,8 +28,7 @@ inline uint qHash(const resource_option& key, uint seed) {
          }.operator()();
 }
 
-template <QOnlineTranslator::Engine Engine>
-class OnlineTranslator;
+template <QOnlineTranslator::Engine Engine> class OnlineTranslator;
 
 class Resource : public QAbstractListModel, public QQmlParserStatus {
   Q_OBJECT
@@ -58,7 +42,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
   Q_PROPERTY(QString translation READ translation NOTIFY translationChanged)
   Q_PROPERTY(bool hidden READ isHidden WRITE hide NOTIFY hideChanged)
 
- protected:
+protected:
   mutable QReadWriteLock loadingLock, translationLock, enabledLock,
       initStatusLock;
   mutable QVector<resource_option> options_cache;
@@ -96,46 +80,39 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
     emit translationChanged(this, _translation);
   }
 
- signals:
-  void loadingChanged(Resource* self, bool loading);
-  void initStatusChanged(Resource* self, bool initializationStatus);
-  void enabledChanged(Resource* self, bool enabled);
-  void tempEnabledChanged(Resource* self, bool tmpEnabled);
-  void translationChanged(Resource* self, QString translation);
-  void hideChanged(Resource* self, bool ishidden);
+signals:
+  void loadingChanged(Resource *self, bool loading);
+  void initStatusChanged(Resource *self, bool initializationStatus);
+  void enabledChanged(Resource *self, bool enabled);
+  void tempEnabledChanged(Resource *self, bool tmpEnabled);
+  void translationChanged(Resource *self, QString translation);
+  void hideChanged(Resource *self, bool ishidden);
 
- public:
-  enum roles {
-    ROLE_KEY = Qt::UserRole,
-    ROLE_VALUE,
-    ROLE_TITLE,
-    ROLE_TYPE,
-    ROLE_CHOICES,
-    ROLE_OPTIONS_SWITCHER
-  };
+public:
   ~Resource() override = default;
 
   // Basic functionality:
-  int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-  QVariant data(const QModelIndex& index,
+  QVariant data(const QModelIndex &index,
                 int role = Qt::DisplayRole) const override;
 
   QHash<int, QByteArray> roleNames() const override;
 
   // Editable:
-  bool setData(const QModelIndex& index,
-               const QVariant& value,
+  bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole) override;
 
-  Qt::ItemFlags flags(const QModelIndex& index) const override;
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
 
   Q_INVOKABLE void componentComplete() override;
   Q_INVOKABLE void classBegin() override;
+  Q_INVOKABLE ResourceOptionsModel *availableOptionsModel(int index,
+                                                          QString const &key);
 
- public:
-  explicit Resource(QObject* parent = nullptr);
-  virtual void search(QString const& /* data */) {
+public:
+  explicit Resource(QObject *parent = nullptr);
+  virtual void search(QString const & /* data */) {
     // do nothing
   }
   Q_INVOKABLE virtual QString translation() const noexcept {
@@ -203,10 +180,10 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    * @param to a language
    * @return bool
    */
-  Q_INVOKABLE virtual bool isSupported(
-      QOnlineTranslator::Language /* from */,
-      QOnlineTranslator::Language /* to */) const noexcept {
-    return false;  // default value
+  Q_INVOKABLE virtual bool
+  isSupported(QOnlineTranslator::Language /* from */,
+              QOnlineTranslator::Language /* to */) const noexcept {
+    return false; // default value
   }
 
   Q_INVOKABLE virtual void clearTranslation() noexcept { setTranslation(""); }
@@ -248,7 +225,7 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    * @return
    */
   Q_INVOKABLE virtual QVector<QString> suggestions() const noexcept {
-    return {};  // empty result
+    return {}; // empty result
   }
 
   /**
@@ -277,36 +254,36 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
    * @param defaultValue
    * @return
    */
-  virtual const resource_option& option(QString const& _key) const;
+  virtual const resource_option &option(QString const &_key) const;
 
-  virtual bool optionExists(QString const& _key) const;
+  virtual bool optionExists(QString const &_key) const;
 
   /**
    * @brief returns a value of an option if exists
    * @param _key
    * @return
    */
-  virtual QVariant optionValue(QString const& _key,
-                               const QVariant& defaultValue = QVariant()) const;
+  virtual QVariant optionValue(QString const &_key,
+                               const QVariant &defaultValue = QVariant()) const;
 
   /**
    * @brief get a reference to all the options (options are cached in memory)
    * @return
    */
-  virtual const QVector<resource_option>& options() const;
+  virtual const QVector<resource_option> &options() const;
 
   /**
    * @brief set an option
    * @param _key
    * @param value
    */
-  virtual void setOption(resource_option const& the_option);
+  virtual void setOption(resource_option const &the_option);
 
   /**
    * @brief setOptionIfNotExists
    * @param the_option
    */
-  virtual void setOptionIfNotExists(resource_option const& the_option);
+  virtual void setOptionIfNotExists(resource_option const &the_option);
 
   /**
    * @brief reloadOptionsCache
@@ -317,18 +294,18 @@ class Resource : public QAbstractListModel, public QQmlParserStatus {
 
   virtual QOnlineTranslator::Language getToLang();
 
-  OnlineTranslator<QOnlineTranslator::Google>* toOnlineGoogle(Resource* res) {
-    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Google>*>(res);
+  OnlineTranslator<QOnlineTranslator::Google> *toOnlineGoogle(Resource *res) {
+    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Google> *>(res);
   }
-  OnlineTranslator<QOnlineTranslator::Bing>* toOnlineBing(Resource* res) {
-    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Bing>*>(res);
+  OnlineTranslator<QOnlineTranslator::Bing> *toOnlineBing(Resource *res) {
+    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Bing> *>(res);
   }
-  OnlineTranslator<QOnlineTranslator::Yandex>* toOnlineYandex(Resource* res) {
-    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Yandex>*>(res);
+  OnlineTranslator<QOnlineTranslator::Yandex> *toOnlineYandex(Resource *res) {
+    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Yandex> *>(res);
   }
 };
 
 // registering it for the qml
 // QML_DECLARE_TYPE(Resource)
 
-#endif  // RESOURCE_H
+#endif // RESOURCE_H

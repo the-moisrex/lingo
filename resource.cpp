@@ -1,7 +1,7 @@
 #include "resource.h"
 #include <QDebug>
 
-int Resource::rowCount(const QModelIndex& parent) const {
+int Resource::rowCount(const QModelIndex &parent) const {
   // For list models only the root node (an invalid parent) should return the
   // list's size. For all other (valid) parents, rowCount() should return 0 so
   // that it does not become a tree model.
@@ -11,7 +11,7 @@ int Resource::rowCount(const QModelIndex& parent) const {
   return options_cache.size() + 1;
 }
 
-QVariant Resource::data(const QModelIndex& index, int role) const {
+QVariant Resource::data(const QModelIndex &index, int role) const {
   if (!index.isValid())
     return QVariant();
 
@@ -25,24 +25,24 @@ QVariant Resource::data(const QModelIndex& index, int role) const {
     return QVariant();
   }
 
-  auto const& opt = options_cache.at(index.row() - 1);
+  auto const &opt = options_cache.at(index.row() - 1);
 
   switch (role) {
-    case ROLE_KEY:
-      return opt.key;
-    case ROLE_TYPE:
-      return opt.input_type;
-    case ROLE_TITLE:
-      return opt.title;
-    case ROLE_VALUE:
-      return opt.value;
-    case ROLE_CHOICES:
-      return opt.choices;
-    case ROLE_OPTIONS_SWITCHER:
-      QStringList list;
-      for (auto& item : opt.available_options.keys())
-        list.push_back(item);
-      return list;
+  case ROLE_KEY:
+    return opt.key;
+  case ROLE_TYPE:
+    return opt.input_type;
+  case ROLE_TITLE:
+    return opt.title;
+  case ROLE_VALUE:
+    return opt.value;
+  case ROLE_CHOICES:
+    return opt.choices;
+  case ROLE_OPTIONS_SWITCHER:
+    QStringList list;
+    for (auto &item : opt.available_options.keys())
+      list.push_back(item);
+    return list;
   }
 
   return QVariant();
@@ -59,20 +59,19 @@ QHash<int, QByteArray> Resource::roleNames() const {
   return data;
 }
 
-bool Resource::setData(const QModelIndex& index,
-                       const QVariant& value,
+bool Resource::setData(const QModelIndex &index, const QVariant &value,
                        int role) {
   if (index.row() == 0)
     return false;
   if (data(index, role) != value) {
-    auto const& opt = options_cache.at(index.row() - 1);
+    auto const &opt = options_cache.at(index.row() - 1);
     switch (role) {
-      case ROLE_VALUE:  // only value is mutable and thus makes scense to change
-        opt.value = value;
-        setOption(opt);
-        break;
-      default:
-        return false;
+    case ROLE_VALUE: // only value is mutable and thus makes scense to change
+      opt.value = value;
+      setOption(opt);
+      break;
+    default:
+      return false;
     }
     emit dataChanged(index, index, QVector<int>() << role);
     return true;
@@ -80,11 +79,11 @@ bool Resource::setData(const QModelIndex& index,
   return false;
 }
 
-Qt::ItemFlags Resource::flags(const QModelIndex& index) const {
+Qt::ItemFlags Resource::flags(const QModelIndex &index) const {
   if (!index.isValid())
     return Qt::NoItemFlags;
 
-  return Qt::ItemIsEditable;  // FIXME: Implement me!
+  return Qt::ItemIsEditable; // FIXME: Implement me!
 }
 
 void Resource::componentComplete() {
@@ -96,7 +95,22 @@ void Resource::componentComplete() {
 
 void Resource::classBegin() {}
 
-Resource::Resource(QObject* parent) : QAbstractListModel(parent) {}
+ResourceOptionsModel *Resource::availableOptionsModel(int index,
+                                                      const QString &key) {
+  auto opt = options_cache.at(index);
+  if (opt.input_type != resource_option::input_t::OPTIONS_SWITCHER)
+    return nullptr;
+  auto rom = new ResourceOptionsModel(this, &opt.available_options[key]);
+  qDebug() << index << key << opt.title << rom->rowCount() << [&] {
+    QString items;
+    for (auto &item : opt.available_options[key])
+      items.append(" --- " + item.key);
+    return items;
+  }();
+  return rom;
+}
+
+Resource::Resource(QObject *parent) : QAbstractListModel(parent) {}
 
 void Resource::setEnabled(bool enabled) {
   // QWriteLocker locker(&enabledLock);
@@ -106,41 +120,41 @@ void Resource::setEnabled(bool enabled) {
   emit enabledChanged(this, enabled);
 }
 
-const resource_option& Resource::option(const QString& _key) const {
+const resource_option &Resource::option(const QString &_key) const {
   auto opts = options();
-  for (auto const& opt : opts)
+  for (auto const &opt : opts)
     if (opt.key == _key)
       return opt;
   throw std::invalid_argument(
       "The specified key is not in the configutation file");
 }
 
-bool Resource::optionExists(const QString& _key) const {
+bool Resource::optionExists(const QString &_key) const {
   auto opts = options();
-  for (auto const& opt : opts)
+  for (auto const &opt : opts)
     if (opt.key == _key)
       return true;
   return false;
 }
 
-QVariant Resource::optionValue(const QString& _key,
-                               const QVariant& defaultValue) const {
+QVariant Resource::optionValue(const QString &_key,
+                               const QVariant &defaultValue) const {
   auto opts = options();
-  for (auto const& opt : opts)
+  for (auto const &opt : opts)
     if (opt.key == _key)
       return opt.value;
 
   return defaultValue;
 }
 
-const QVector<resource_option>& Resource::options() const {
+const QVector<resource_option> &Resource::options() const {
   if (options_cache.empty()) {
     reloadOptionsCache();
   }
   return options_cache;
 }
 
-void Resource::setOption(const resource_option& the_option) {
+void Resource::setOption(const resource_option &the_option) {
   default_options.insert(the_option);
 
   auto _settings = settings();
@@ -204,7 +218,7 @@ void Resource::setOption(const resource_option& the_option) {
     emit enabledChanged(this, the_option.value.toBool());
 }
 
-void Resource::setOptionIfNotExists(const resource_option& the_option) {
+void Resource::setOptionIfNotExists(const resource_option &the_option) {
   default_options.insert(the_option);
 
   // put it there if it's not there:
@@ -224,7 +238,7 @@ void Resource::reloadOptionsCache() const {
     auto value = _settings->value("value");
     if (auto found =
             std::find_if(default_options.cbegin(), default_options.cend(),
-                         [&](auto const& opt) { return opt.key == key; });
+                         [&](auto const &opt) { return opt.key == key; });
         found != default_options.cend()) {
       resource_option new_opt = *found;
       new_opt.value = std::move(value);

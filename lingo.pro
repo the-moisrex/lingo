@@ -21,6 +21,7 @@ SOURCES += \
         main.cpp \
         onlinetranslators.cpp \
         resource.cpp \
+        resource_options_model.cpp \
         settings.cpp \
         sqldictionary.cpp \
         txtdictionary.cpp
@@ -45,6 +46,7 @@ HEADERS += \
   icons.h \
   onlinetranslators.h \
   resource.h \
+  resource_options_model.h \
   settings.h \
   sqldictionary.h \
   txtdictionary.h

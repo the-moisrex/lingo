@@ -47,9 +47,19 @@ Page {
             model.componentComplete();
             update()
         }
+        delegate: options_delegate
 
-        delegate: Item {
+    }
+
+    /////////////////////////////////////////////////////////////////////
+
+    Component {
+        id: options_delegate
+
+
+        Item {
             id: childMaster
+
             anchors.right: parent.right
             anchors.left: parent.left
             anchors.leftMargin: 5
@@ -79,6 +89,7 @@ Page {
 
 
             Component.onCompleted: {
+                console.log(title, type, value, model);
                 let item = null;
                 switch (type) {
                 case 1:
@@ -105,7 +116,13 @@ Page {
                     return;
                 if (item.status === Component.Ready) {
                    let ref = item.createObject(childMaster, {
-                                                title, model, type, value, choices
+                                                title,
+                                                model,
+                                                type,
+                                                value,
+                                                choices,
+                                                available_options,
+                                                index: index - 1
                                             });
                     switch (type) {
                     case 3: // checkbox
@@ -127,9 +144,7 @@ Page {
             }
 
         }
-
     }
-
 
     /////////////////////////////////////////////////////////////////////////
 
@@ -290,16 +305,25 @@ Page {
         id: a_options_switcher
 
         Item {
+            id: optionSwitcherParent
+
             property var model: 0
             property var title: 0
             property var value: 0
             property var type: 0
             property var choices: 0
+            property var available_options: 0
+            property var index: 0
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+            implicitHeight: comboOptionsId.implicitHeight + colId.implicitHeight
+            height: comboOptionsId.height + colId.height
 
             ComboBox {
                 id: comboOptionsId
 
-                model: choices
+                model: available_options
                 anchors.right: parent.right
                 anchors.left: parent.left
                 anchors.rightMargin: 20
@@ -309,6 +333,24 @@ Page {
                     target: model
                     property: "value"
                     value: comboOptionsId.currentIndex
+                }
+            }
+
+            Column {
+                id: colId
+                anchors.top: comboOptionsId.bottom
+                anchors.topMargin: 20
+                anchors.left: parent.left
+                anchors.right: parent.right
+                spacing: 10
+
+                Repeater {
+                    model: optionsList.model.availableOptionsModel(index, comboOptionsId.currentText)
+                    delegate: options_delegate
+
+                    onModelChanged: {
+                        console.log("index: ", index, "text:", comboOptionsId.currentText, "currentIndex:", comboOptionsId.currentIndex, model)
+                    }
                 }
             }
 

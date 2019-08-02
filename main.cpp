@@ -1,14 +1,15 @@
+#include "dictionarieslistmodel.h"
+#include "icons.h"
+#include "onlinetranslators.h"
+#include "resource_options_model.h"
+#include "settings.h"
 #include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QTextToSpeech>
 #include <QtQml>
-#include "dictionarieslistmodel.h"
-#include "icons.h"
-#include "onlinetranslators.h"
-#include "settings.h"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
   QGuiApplication app(argc, argv);
@@ -29,6 +30,8 @@ int main(int argc, char* argv[]) {
   //                                         "DictionariesListModel");
   qmlRegisterUncreatableType<Resource>("Resource", 1, 0, "Resource",
                                        "Resource is not create able.");
+  qmlRegisterType<ResourceOptionsModel>("Resource", 1, 0,
+                                        "ResourceOptionsModel");
   //  qmlRegisterType<Resource>("Resource", 1, 0, "Resource");
   //  qmlRegisterType<OnlineTranslator<QOnlineTranslator::Google>>(
   //      "Resource.Online.Google", 1, 0, "OnlineTranslatorGoogle");
@@ -46,7 +49,7 @@ int main(int argc, char* argv[]) {
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,
-      [url](QObject* obj, const QUrl& objUrl) {
+      [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
           QCoreApplication::exit(-1);
       },
