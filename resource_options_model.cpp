@@ -15,7 +15,7 @@ int ResourceOptionsModel::rowCount(const QModelIndex &parent) const {
   if (parent.isValid())
     return 0;
 
-  return options->size();
+  return options.size();
 }
 
 QVariant ResourceOptionsModel::data(const QModelIndex &index, int role) const {
@@ -23,7 +23,7 @@ QVariant ResourceOptionsModel::data(const QModelIndex &index, int role) const {
   if (!index.isValid())
     return QVariant();
 
-  auto const &opt = options->at(index.row());
+  auto const &opt = options.at(index.row());
 
   switch (role) {
   case ROLE_KEY:

@@ -100,13 +100,14 @@ ResourceOptionsModel *Resource::availableOptionsModel(int index,
   auto opt = options_cache.at(index);
   if (opt.input_type != resource_option::input_t::OPTIONS_SWITCHER)
     return nullptr;
-  auto rom = new ResourceOptionsModel(this, &opt.available_options[key]);
-  qDebug() << index << key << opt.title << rom->rowCount() << [&] {
-    QString items;
-    for (auto &item : opt.available_options[key])
-      items.append(" --- " + item.key);
-    return items;
-  }();
+  auto rom = new ResourceOptionsModel(this, opt.available_options[key]);
+  //  qDebug() << index << key << opt.title <<
+  //  opt.available_options[key].size(); qDebug() << rom->rowCount() << [&] {
+  //    QString items;
+  //    for (auto &item : opt.available_options[key])
+  //      items.append(" --- " + item.key);
+  //    return items;
+  //  }();
   return rom;
 }
 

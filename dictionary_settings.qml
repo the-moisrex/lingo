@@ -60,8 +60,10 @@ Page {
         Item {
             id: childMaster
 
-            anchors.right: parent.right
-            anchors.left: parent.left
+            property var _parent: parent
+
+            anchors.right: _parent.right
+            anchors.left: _parent.left
             anchors.leftMargin: 5
             anchors.rightMargin: 5
 
@@ -89,7 +91,6 @@ Page {
 
 
             Component.onCompleted: {
-                console.log(title, type, value, model);
                 let item = null;
                 switch (type) {
                 case 1:
@@ -132,14 +133,23 @@ Page {
                         titleLabel.anchors.verticalCenter = Qt.binding(() => {
                             return childMaster.verticalCenter;
                         });
+                        ref.anchors.right = Qt.binding(() => childMaster.right);
+                        ref.anchors.verticalCenter = Qt.binding(() => childMaster.verticalCenter);
+                        ref.anchors.rightMargin = 10;
                         break;
                     default:
+                        ref.anchors.right = Qt.binding(() => childMaster.right);
+                        ref.anchors.left = Qt.binding(() => childMaster.left);
+                        ref.anchors.rightMargin = 20;
+                        ref.anchors.leftMargin = 20;
                         ref.anchors.top = titleLabel.bottom;
+                        ref.anchors.topMargin = 10;
                         titleLabel.anchors.top = Qt.binding(() => childMaster.top);
                         childMaster.height = Qt.binding(() => {
-                            return Math.max(ref.implicitHeight, ref.height)  + titleLabel.implicitHeight + 10;
+                            return Math.max(ref.implicitHeight, ref.height)  + titleLabel.implicitHeight + 30;
                         });
                     }
+
                 }
             }
 
@@ -158,9 +168,6 @@ Page {
             property var type: 0
 
             id: switchBtn
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
-            anchors.rightMargin: 10
             checked: value
             Binding {
                 target: model
@@ -189,10 +196,6 @@ Page {
             property var type: 0
 
             id: txtInpt
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.rightMargin: 20
-            anchors.leftMargin: 20
             text: value
             selectByMouse: true
             Binding {
@@ -220,8 +223,6 @@ Page {
             property var type: 0
 
             id: txtInpt
-            anchors.left: parent.left
-            anchors.right: parent.right
             text: value
             selectByMouse: true
             Binding {
@@ -250,12 +251,6 @@ Page {
             text: value
             wrapMode: Text.WordWrap
             textFormat: Qt.RichText
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.topMargin: 10
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
             lineHeight: 1.2
       }
 
@@ -268,8 +263,7 @@ Page {
         id: a_multichoice
 
         Item {
-            anchors.right: parent.right
-            anchors.left: parent.left
+            id: multichoiceParent
             implicitHeight: comboId.implicitHeight
             height: comboId.height
 
@@ -282,8 +276,8 @@ Page {
                 ComboBox {
                     id: comboId
                     model: choices
-                    anchors.right: parent.right
-                    anchors.left: parent.left
+                    anchors.right: multichoiceParent.right
+                    anchors.left: multichoiceParent.left
                     anchors.rightMargin: 20
                     anchors.leftMargin: 20
                     currentIndex: value
@@ -315,8 +309,6 @@ Page {
             property var available_options: 0
             property var index: 0
 
-            anchors.left: parent.left
-            anchors.right: parent.right
             implicitHeight: comboOptionsId.implicitHeight + colId.implicitHeight
             height: comboOptionsId.height + colId.height
 
@@ -324,8 +316,8 @@ Page {
                 id: comboOptionsId
 
                 model: available_options
-                anchors.right: parent.right
-                anchors.left: parent.left
+                anchors.right: optionSwitcherParent.right
+                anchors.left: optionSwitcherParent.left
                 anchors.rightMargin: 20
                 anchors.leftMargin: 20
                 currentIndex: value
@@ -340,17 +332,13 @@ Page {
                 id: colId
                 anchors.top: comboOptionsId.bottom
                 anchors.topMargin: 20
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors.left: optionSwitcherParent.left
+                anchors.right: optionSwitcherParent.right
                 spacing: 10
 
                 Repeater {
                     model: optionsList.model.availableOptionsModel(index, comboOptionsId.currentText)
                     delegate: options_delegate
-
-                    onModelChanged: {
-                        console.log("index: ", index, "text:", comboOptionsId.currentText, "currentIndex:", comboOptionsId.currentIndex, model)
-                    }
                 }
             }
 

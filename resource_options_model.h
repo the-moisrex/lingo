@@ -34,7 +34,7 @@ enum roles {
 class ResourceOptionsModel : public QAbstractListModel {
   Q_OBJECT
 
-  QVector<resource_option> *options;
+  QVector<resource_option> options;
 
 public:
   explicit ResourceOptionsModel(QObject *parent = nullptr);
