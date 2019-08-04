@@ -6,7 +6,14 @@
 #include <QVariant>
 
 struct resource_option {
-  enum input_t { TEXT = 1, TEXT_LONG, CHECKBOX, MULTICHOICE, OPTIONS_SWITCHER };
+  enum input_t {
+    TEXT = 1,
+    TEXT_LONG,
+    CHECKBOX,
+    MULTICHOICE,
+    OPTIONS_SWITCHER,
+    LANGUAGE_SELECTOR
+  };
   input_t input_type;
   QString key;
   mutable QVariant value;

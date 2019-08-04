@@ -54,6 +54,8 @@ public:
   Q_INVOKABLE int getUILanguage() const;
   Q_INVOKABLE void setUILanguage(int index);
   Q_INVOKABLE bool isRTL() const;
+
+  Q_INVOKABLE void restart();
 };
 
 #endif // SETTINGS_H

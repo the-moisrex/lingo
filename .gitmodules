@@ -1,3 +1,6 @@
 [submodule "src/third-party/qonlinetranslator"]
 	path = src/third-party/qonlinetranslator
 	url = https://github.com/Shatur95/QOnlineTranslator.git
+[submodule "android_openssl"]
+	path = android_openssl
+	url = https://github.com/KDAB/android_openssl.git

@@ -3,9 +3,11 @@
 #include "onlinetranslators.h"
 #include "resource_options_model.h"
 #include "settings.h"
+#include <QDebug>
 #include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QSslSocket>
 #include <QTextToSpeech>
 #include <QtQml>
 
@@ -18,6 +20,9 @@ int main(int argc, char *argv[]) {
   app.setApplicationName("lingo");
   app.setOrganizationDomain("lingo");
   QFontDatabase::addApplicationFont(":/materialdesignicons-webfont.ttf");
+
+  qDebug() << (QSslSocket::supportsSsl() ? "SSL is supported"
+                                         : "SSL is not supported.");
 
   MySettings settings(nullptr, &app);
   DictionariesListModel dicts;

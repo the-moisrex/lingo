@@ -1,4 +1,5 @@
 #include "settings.h"
+#include <QProcess>
 #include <QStandardPaths>
 
 std::shared_ptr<QSettings> settings() {
@@ -45,3 +46,8 @@ void MySettings::setUILanguage(int index) {
 }
 
 bool MySettings::isRTL() const { return getUILanguage() == 1; }
+
+void MySettings::restart() {
+  app->quit();
+  QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+}

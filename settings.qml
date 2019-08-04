@@ -25,12 +25,27 @@ Page {
             }
 
             ComboBox {
+                property bool inited: false
                 model: MySettings.getUILanguages()
                 currentIndex: MySettings.getUILanguage()
                 onCurrentIndexChanged:  {
-                    MySettings.setUILanguage(currentIndex);
+                    if (inited) {
+                        MySettings.setUILanguage(currentIndex);
+                        restartBtn.visible = true;
+                    }
                 }
+                Component.onCompleted: inited = true
                 anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Button {
+                id: restartBtn
+                visible: false
+                text: qsTr("You need to restart the app, click here.")
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClicked: {
+                    MySettings.restart();
+                }
             }
 
             Text {

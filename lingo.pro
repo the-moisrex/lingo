@@ -1,4 +1,4 @@
-QT += quick sql texttospeech
+QT += quick sql texttospeech network
 CONFIG += c++17
 INCLUDEPATH += .
 
@@ -72,7 +72,10 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
   ANDROID_PACKAGE_SOURCE_DIR = \
     $$PWD/android
 
-  ANDROID_EXTRA_LIBS =
+#  ANDROID_EXTRA_LIBS = \
+#  /moisrex/Projects/lingo/android_openssl/arm/libcrypto_1_1.so \
+#  /home/moisrex/Projects/lingo/android_openssl/arm/libssl_1_1.so
 }
 
 
+include(android_openssl/openssl.pri)

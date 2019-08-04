@@ -61,6 +61,8 @@ Item {
                       text: name
                       font.pointSize: translationId.font.pointSize * .7
                       color: Material.accent
+                      anchors.right: parent.right
+                      anchors.left: parent.left
                   }
 
                   Text {

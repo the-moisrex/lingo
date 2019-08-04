@@ -55,7 +55,13 @@ void txtDictionary::load(const QString &filepath) {
 void txtDictionary::setTheOptions() {
   if (!builtin) {
     setOptionIfNotExists(
-        {resource_option::TEXT, "filepath", QVariant(), "File Path"});
+        {resource_option::TEXT, "filepath", QVariant(), tr("File Path")});
+    setOptionIfNotExists({resource_option::LANGUAGE_SELECTOR, "from-lang",
+                          QOnlineTranslator::Language::Auto,
+                          tr("From Language")});
+    setOptionIfNotExists({resource_option::LANGUAGE_SELECTOR, "to-lang",
+                          QOnlineTranslator::Language::Spanish,
+                          tr("To Language")});
   }
 }
 
@@ -103,9 +109,25 @@ txtDictionary::txtDictionary(QObject *parent, QString builtinpath)
 
 QString txtDictionary::key() const noexcept { return "txt-dic"; }
 
-bool txtDictionary::isSupported(QOnlineTranslator::Language,
-                                QOnlineTranslator::Language) const noexcept {
-  return true; // TODO: chagne this
+bool txtDictionary::isSupported(QOnlineTranslator::Language _from,
+                                QOnlineTranslator::Language _to) const
+    noexcept {
+  if (builtin) {
+    if (_from == QOnlineTranslator::Language::English ||
+        _from == QOnlineTranslator::Auto)
+      if (_to == QOnlineTranslator::Language::Spanish)
+        return true;
+    return false;
+  }
+  auto from = static_cast<QOnlineTranslator::Language>(
+      optionValue("from-lang").toInt());
+  auto to =
+      static_cast<QOnlineTranslator::Language>(optionValue("to-lang").toInt());
+  if (from == QOnlineTranslator::Auto || from == _from) {
+    if (to == _to)
+      return true;
+  }
+  return false;
 }
 
 void txtDictionary::search(const QString &word) {
