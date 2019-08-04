@@ -48,6 +48,7 @@ Page {
                 }
             }
 
+            /*
             Text {
                 id: hist_header
                 text: qsTr("History:")
@@ -72,6 +73,7 @@ Page {
                     MySettings.clearHistory();
                 }
             }
+            */
 
             Text {
                 id: dic_header
