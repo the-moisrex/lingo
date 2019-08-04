@@ -117,18 +117,6 @@ QString OnlineTranslator::key() const noexcept {
   return "";
 }
 
-QString OnlineTranslator::name() const noexcept {
-  switch (engine) {
-  case QOnlineTranslator::Google:
-    return tr("Google Translator");
-  case QOnlineTranslator::Bing:
-    return tr("Bing Translator");
-  case QOnlineTranslator::Yandex:
-    return tr("Yandex Translator");
-  }
-  return tr("Unknown Translator");
-}
-
 bool OnlineTranslator::isSupported(QOnlineTranslator::Language from,
                                    QOnlineTranslator::Language to) const
     noexcept {

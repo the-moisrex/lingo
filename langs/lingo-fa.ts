@@ -4,12 +4,12 @@
 <context>
     <name>DictionariesListModel</name>
     <message>
-        <location filename="../dictionarieslistmodel.cpp" line="391"/>
+        <location filename="../dictionarieslistmodel.cpp" line="395"/>
         <source>Text format</source>
         <translation>فرمت متن</translation>
     </message>
     <message>
-        <location filename="../dictionarieslistmodel.cpp" line="392"/>
+        <location filename="../dictionarieslistmodel.cpp" line="396"/>
         <source>Sql database format</source>
         <translation>فرمت دیتابیس SQL</translation>
     </message>
@@ -30,27 +30,27 @@
 <context>
     <name>OnlineTranslator</name>
     <message>
-        <location filename="../onlinetranslators.h" line="59"/>
+        <location filename="../onlinetranslators.h" line="29"/>
         <source>Google Translator</source>
         <translation>مترجم گوگل</translation>
     </message>
     <message>
-        <location filename="../onlinetranslators.h" line="61"/>
+        <location filename="../onlinetranslators.h" line="31"/>
         <source>Bing Translator</source>
         <translation>مترجم Bing</translation>
     </message>
     <message>
-        <location filename="../onlinetranslators.h" line="63"/>
+        <location filename="../onlinetranslators.h" line="33"/>
         <source>Yandex Translator</source>
         <translation>مترجم Yandex</translation>
     </message>
     <message>
-        <location filename="../onlinetranslators.h" line="65"/>
+        <location filename="../onlinetranslators.h" line="35"/>
         <source>Unknown Translator</source>
         <translation>مترجم نامشخص</translation>
     </message>
     <message>
-        <location filename="../onlinetranslators.h" line="69"/>
+        <location filename="../onlinetranslators.h" line="39"/>
         <source>%1 is an online translator that requires internet connection. This translator sometimes may deny service for various reasons.</source>
         <translation>%1 یک مترجم آنلاین می‌باشد که نیاز به اینترنت برای اجرا دارد. این مترجم ممکن است در برخی مواقع به دلایل متفاوت از کار بیافتد.</translation>
     </message>
@@ -73,7 +73,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../dictionarieslistmodel.cpp" line="95"/>
+        <location filename="../dictionarieslistmodel.cpp" line="99"/>
         <source>English to Spanish (built-in)</source>
         <translation>مترجم انگلیسی به اسپانیایی</translation>
     </message>
@@ -93,7 +93,7 @@
         <translation>دو روش برای کانفیگ کردن این مترجم وجود دارد. روش اول اینگونه است که شما اسم جدول و نام‌های columnها را که دارای کلمات هستند را ارائه می‌دهید. در روش دوم، شما یک کوئری select ارائه داده که از علامت سوال به عنوان ورودی متن کاربر استفاده کرده و پاسخ درست را در column اول بر می‌گرداند.</translation>
     </message>
     <message>
-        <location filename="../txtdictionary.cpp" line="77"/>
+        <location filename="../txtdictionary.cpp" line="83"/>
         <source>Category: </source>
         <translation>دسته‌بندی: </translation>
     </message>
@@ -788,7 +788,7 @@
 <context>
     <name>ResultsPage</name>
     <message>
-        <location filename="../ResultsPage.qml" line="68"/>
+        <location filename="../ResultsPage.qml" line="70"/>
         <source>No result</source>
         <translation>بدون نتیجه</translation>
     </message>
@@ -975,27 +975,32 @@
         <translation>زبان نرم‌افزار:</translation>
     </message>
     <message>
-        <location filename="../settings.qml" line="38"/>
+        <location filename="../settings.qml" line="44"/>
+        <source>You need to restart the app, click here.</source>
+        <translation>نیاز به ری‌استارت کردن نرم‌افزار می‌باشد.</translation>
+    </message>
+    <message>
+        <location filename="../settings.qml" line="53"/>
         <source>History:</source>
         <translation>تاریخچه:</translation>
     </message>
     <message>
-        <location filename="../settings.qml" line="44"/>
+        <location filename="../settings.qml" line="59"/>
         <source>Remember search histories</source>
         <translation>تاریخچه جستجو را نگه‌دار</translation>
     </message>
     <message>
-        <location filename="../settings.qml" line="54"/>
+        <location filename="../settings.qml" line="69"/>
         <source>Clear search histories (%1)</source>
         <translation>پاک کردن تاریخچه جستجو (%1)</translation>
     </message>
     <message>
-        <location filename="../settings.qml" line="63"/>
+        <location filename="../settings.qml" line="78"/>
         <source>Dictionaries:</source>
         <translation>منابع:</translation>
     </message>
     <message>
-        <location filename="../settings.qml" line="69"/>
+        <location filename="../settings.qml" line="84"/>
         <source>Dictionaries</source>
         <translation>لیست دیکشنری‌ها</translation>
     </message>
@@ -1006,6 +1011,21 @@
         <location filename="../txtdictionary.h" line="21"/>
         <source>Comments format is any line that starts with pound sign. Each word in a separated line. Alternative words are seperated with semi-colon. Separator between translation and the word is a tab character. Examples can be found at: %1</source>
         <translation>هر خطی که با علامت # شروع شود یک کامنت به حساب می‌آید. هر کلمه می‌بایست در یک خط باشد. کلمات جایگزین با کاما از هم جدا می‌شوند. بین کلمات و معنی آنها از کاراکتر ‌tab استفاده می شود. می‌توانید مثال‌هایی در آدرس %1 پیدا کنید</translation>
+    </message>
+    <message>
+        <location filename="../txtdictionary.cpp" line="58"/>
+        <source>File Path</source>
+        <translation>آدرس فایل</translation>
+    </message>
+    <message>
+        <location filename="../txtdictionary.cpp" line="61"/>
+        <source>From Language</source>
+        <translation>از زبان</translation>
+    </message>
+    <message>
+        <location filename="../txtdictionary.cpp" line="64"/>
+        <source>To Language</source>
+        <translation>به زبان</translation>
     </message>
 </context>
 </TS>

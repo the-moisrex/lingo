@@ -108,6 +108,9 @@ Page {
                 case 5:
                     item = a_options_switcher;
                     break;
+                case 6:
+                    item = a_language_selector;
+                    break;
                 default:
                     item = a_simple_text;
                     titleLabel.visible = false;
@@ -353,4 +356,43 @@ Page {
 
 
     }
+
+    /////////////////////////////////////////////////////////////////////
+
+    Component {
+        id: a_language_selector
+
+        Item {
+            property var model: 0
+            property var title: 0
+            property var value: 0
+            property var type: 0
+            property var choices: 0
+            property var available_options: 0
+            property var index: 0
+
+            implicitHeight: the_lang.implicitHeight
+            height: the_lang.height
+
+
+            ComboBox {
+
+
+                id: the_lang
+                model: Dictionaries.fromLangsModel()
+                currentIndex: value
+                anchors.right: parent.right
+                anchors.left: parent.left
+
+                Binding {
+                    target: model
+                    property: "value"
+                    value: the_lang.currentIndex
+                }
+            }
+        }
+
+    }
+
+
 }

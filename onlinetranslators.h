@@ -23,7 +23,17 @@ public:
 
   QString key() const noexcept override;
 
-  QString name() const noexcept override;
+  QString name() const noexcept override {
+    switch (engine) {
+    case QOnlineTranslator::Google:
+      return tr("Google Translator");
+    case QOnlineTranslator::Bing:
+      return tr("Bing Translator");
+    case QOnlineTranslator::Yandex:
+      return tr("Yandex Translator");
+    }
+    return tr("Unknown Translator");
+  }
 
   QString description() const noexcept override {
     return tr("%1 is an online translator that requires internet connection. "
