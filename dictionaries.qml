@@ -65,6 +65,7 @@ Page {
                 Label {
                     anchors.top: data.bottom
                     anchors.left: data.left
+                    anchors.right: data.right
                     font.pointSize: data.font.pointSize * 0.6
                     textFormat: Qt.RichText
                     text:  (translatorEnabled ? ("<font color=darkgreen>" + qsTr("Enabled") + "</font>") : ("<font color=darkred>" + qsTr("Disabled") + "</font>"))

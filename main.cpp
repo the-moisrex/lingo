@@ -19,8 +19,8 @@ int main(int argc, char *argv[]) {
   app.setOrganizationDomain("lingo");
   QFontDatabase::addApplicationFont(":/materialdesignicons-webfont.ttf");
 
+  MySettings settings(nullptr, &app);
   DictionariesListModel dicts;
-  MySettings settings;
   QTextToSpeech speech;
   Icons icons;
 

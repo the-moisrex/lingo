@@ -19,12 +19,29 @@ Page {
             anchors.fill: parent
 
             Text {
+                text: qsTr("UI Language:")
+                anchors.right: parent.right
+                anchors.left: parent.left
+            }
+
+            ComboBox {
+                model: MySettings.getUILanguages()
+                currentIndex: MySettings.getUILanguage()
+                onCurrentIndexChanged:  {
+                    MySettings.setUILanguage(currentIndex);
+                }
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Text {
                 id: hist_header
                 text: qsTr("History:")
+                anchors.right: parent.right
+                anchors.left: parent.left
             }
 
             Switch {
-                text: "Remember search histories"
+                text: qsTr("Remember search histories")
                 anchors.right: parent.right
                 anchors.left: parent.left
                 checked: MySettings.rememberHistory
@@ -34,7 +51,7 @@ Page {
             }
 
             Button {
-                text: "Clear search histories (" + MySettings.historyCount + ")"
+                text: qsTr("Clear search histories (%1)").arg(MySettings.historyCount)
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
                     MySettings.clearHistory();
@@ -44,10 +61,12 @@ Page {
             Text {
                 id: dic_header
                 text: qsTr("Dictionaries:")
+                anchors.right: parent.right
+                anchors.left: parent.left
             }
 
             Button {
-                text: "Dictionaries"
+                text: qsTr("Dictionaries")
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
                     stackView.push("dictionaries.qml")

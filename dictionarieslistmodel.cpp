@@ -70,9 +70,13 @@ void DictionariesListModel::updateManuallyAddedResources(
 
 void DictionariesListModel::loadDefaults() {
   // Default online dictionaries:
-  auto google = new OnlineTranslator<QOnlineTranslator::Google>(this);
-  auto bing = new OnlineTranslator<QOnlineTranslator::Bing>(this);
-  auto yandex = new OnlineTranslator<QOnlineTranslator::Yandex>(this);
+  auto google = new OnlineTranslator(this);
+  auto bing = new OnlineTranslator(this);
+  auto yandex = new OnlineTranslator(this);
+
+  google->setEngine(QOnlineTranslator::Google);
+  bing->setEngine(QOnlineTranslator::Bing);
+  yandex->setEngine(QOnlineTranslator::Yandex);
 
   google->setDeletable(false);
   bing->setDeletable(false);

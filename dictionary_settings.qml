@@ -133,9 +133,14 @@ Page {
                         titleLabel.anchors.verticalCenter = Qt.binding(() => {
                             return childMaster.verticalCenter;
                         });
-                        ref.anchors.right = Qt.binding(() => childMaster.right);
+                        if (!MySettings.isRTL()) {
+                            ref.anchors.right = Qt.binding(() => childMaster.right);
+                            ref.anchors.rightMargin = 10;
+                        } else {
+                            ref.anchors.left = Qt.binding(() => childMaster.left);
+                            ref.anchors.leftMargin = 10;
+                        }
                         ref.anchors.verticalCenter = Qt.binding(() => childMaster.verticalCenter);
-                        ref.anchors.rightMargin = 10;
                         break;
                     default:
                         ref.anchors.right = Qt.binding(() => childMaster.right);

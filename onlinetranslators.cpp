@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QOnlineTranslator>
 
-QString formatData(const QOnlineTranslator& translator) {
+QString formatData(const QOnlineTranslator &translator) {
   QString tr;
   // Translation
   tr = translator.translation().toHtmlEscaped().replace("\n", "<br>");
@@ -30,7 +30,7 @@ QString formatData(const QOnlineTranslator& translator) {
               QObject::tr("translation options:") + "</font> ");
 
     // Print words for each type of speech
-    foreach (const QOption& option, translator.translationOptions()) {
+    foreach (const QOption &option, translator.translationOptions()) {
       tr.append(" <b>" + option.typeOfSpeech() + "</b> ");
       // TODO: indent
 
@@ -51,7 +51,7 @@ QString formatData(const QOnlineTranslator& translator) {
         }
       }
 
-      tr += "<br>";  // Add a new line before the next type of speech
+      tr += "<br>"; // Add a new line before the next type of speech
     }
   }
 
@@ -59,7 +59,7 @@ QString formatData(const QOnlineTranslator& translator) {
   if (!translator.examples().isEmpty()) {
     tr.append(" <font color=\"grey\"><i>" + translator.source() + "</i> – " +
               QObject::tr("examples:") + "</font> ");
-    foreach (const QExample& example, translator.examples()) {
+    foreach (const QExample &example, translator.examples()) {
       tr.append(" <b>" + example.typeOfSpeech() + "</b> ");
       for (int i = 0; i < example.count(); ++i) {
         tr.append(example.description(i));
@@ -72,4 +72,75 @@ QString formatData(const QOnlineTranslator& translator) {
 
   //  qDebug() << tr;
   return tr;
+}
+
+QOnlineTranslator::Engine OnlineTranslator::getEngine() const { return engine; }
+
+void OnlineTranslator::setEngine(const QOnlineTranslator::Engine &value) {
+  engine = value;
+}
+
+OnlineTranslator::OnlineTranslator(QObject *parent)
+    : Resource(parent), translator(new QOnlineTranslator(this)) {
+  QObject::connect(translator, &QOnlineTranslator::finished, [&] {
+    if (translator->error() == QOnlineTranslator::NoError) {
+      auto t = formatData(*translator);
+      //        qDebug() << t;
+      setTranslation(t);
+    } else {
+      clearTranslation();
+      hide(true);
+      qCritical() << engine << translator->errorString();
+    }
+
+    setLoading(false);
+  });
+}
+
+void OnlineTranslator::search(const QString &data) {
+  // loading changes so the ui gets affected
+  setLoading(true);
+  //    qDebug() << QOnlineTranslator::languageCode(getFromLang())
+  //             << QOnlineTranslator::languageCode(getToLang());
+  translator->translate(data, engine, getToLang(), getFromLang());
+}
+
+QString OnlineTranslator::key() const noexcept {
+  switch (engine) {
+  case QOnlineTranslator::Google:
+    return "google";
+  case QOnlineTranslator::Bing:
+    return "bing";
+  case QOnlineTranslator::Yandex:
+    return "yandex";
+  }
+  return "";
+}
+
+QString OnlineTranslator::name() const noexcept {
+  switch (engine) {
+  case QOnlineTranslator::Google:
+    return tr("Google Translator");
+  case QOnlineTranslator::Bing:
+    return tr("Bing Translator");
+  case QOnlineTranslator::Yandex:
+    return tr("Yandex Translator");
+  }
+  return tr("Unknown Translator");
+}
+
+bool OnlineTranslator::isSupported(QOnlineTranslator::Language from,
+                                   QOnlineTranslator::Language to) const
+    noexcept {
+  //    qDebug() << QOnlineTranslator::languageString(from)
+  //             << QOnlineTranslator::languageString(to)
+  //             << QOnlineTranslator::isSupportTranslation(Engine, from)
+  //             << QOnlineTranslator::isSupportTranslation(Engine, to);
+  return QOnlineTranslator::isSupportTranslation(engine, to) &&
+         QOnlineTranslator::isSupportTranslation(engine, from);
+}
+
+void OnlineTranslator::componentComplete() {
+  Resource::componentComplete();
+  setInitStatus(false);
 }

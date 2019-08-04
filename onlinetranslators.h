@@ -1,67 +1,29 @@
 #ifndef TRANSLATORMODEL_H
 #define TRANSLATORMODEL_H
 
+#include "resource.h"
 #include <QAbstractListModel>
 #include <QDebug>
 #include <QOnlineTranslator>
-#include "resource.h"
 
-QString formatData(const QOnlineTranslator& translator);
+QString formatData(const QOnlineTranslator &translator);
 
-template <QOnlineTranslator::Engine Engine>
 class OnlineTranslator : public Resource {
- private:
-  QOnlineTranslator* translator;
+  Q_OBJECT
 
- public:
-  explicit OnlineTranslator(QObject* parent = nullptr)
-      : Resource(parent), translator(new QOnlineTranslator(this)) {
-    QObject::connect(translator, &QOnlineTranslator::finished, [&] {
-      if (translator->error() == QOnlineTranslator::NoError) {
-        auto t = formatData(*translator);
-        //        qDebug() << t;
-        setTranslation(t);
-      } else {
-        clearTranslation();
-        hide(true);
-        qCritical() << Engine << translator->errorString();
-      }
+  QOnlineTranslator *translator;
+  QOnlineTranslator::Engine engine = QOnlineTranslator::Google;
 
-      setLoading(false);
-    });
-  }
+public:
+  explicit OnlineTranslator(QObject *parent);
 
-  void search(QString const& data) override {
-    // loading changes so the ui gets affected
-    setLoading(true);
-    //    qDebug() << QOnlineTranslator::languageCode(getFromLang())
-    //             << QOnlineTranslator::languageCode(getToLang());
-    translator->translate(data, Engine, getToLang(), getFromLang());
-  }
+  ~OnlineTranslator() override {}
 
-  QString key() const noexcept override {
-    switch (Engine) {
-      case QOnlineTranslator::Google:
-        return "google";
-      case QOnlineTranslator::Bing:
-        return "bing";
-      case QOnlineTranslator::Yandex:
-        return "yandex";
-    }
-    return "";
-  }
+  void search(QString const &data) override;
 
-  QString name() const noexcept override {
-    switch (Engine) {
-      case QOnlineTranslator::Google:
-        return tr("Google Translator");
-      case QOnlineTranslator::Bing:
-        return tr("Bing Translator");
-      case QOnlineTranslator::Yandex:
-        return tr("Yandex Translator");
-    }
-    return tr("Unknown Translator");
-  }
+  QString key() const noexcept override;
+
+  QString name() const noexcept override;
 
   QString description() const noexcept override {
     return tr("%1 is an online translator that requires internet connection. "
@@ -70,21 +32,13 @@ class OnlineTranslator : public Resource {
   }
 
   bool isSupported(QOnlineTranslator::Language from,
-                   QOnlineTranslator::Language to) const noexcept override {
-    //    qDebug() << QOnlineTranslator::languageString(from)
-    //             << QOnlineTranslator::languageString(to)
-    //             << QOnlineTranslator::isSupportTranslation(Engine, from)
-    //             << QOnlineTranslator::isSupportTranslation(Engine, to);
-    return QOnlineTranslator::isSupportTranslation(Engine, to) &&
-           QOnlineTranslator::isSupportTranslation(Engine, from);
-  }
+                   QOnlineTranslator::Language to) const noexcept override;
 
   bool canProvideSuggestions() const noexcept override { return false; }
 
-  void componentComplete() override {
-    Resource::componentComplete();
-    setInitStatus(false);
-  }
+  void componentComplete() override;
+  QOnlineTranslator::Engine getEngine() const;
+  void setEngine(const QOnlineTranslator::Engine &value);
 };
 
 // explicit template instanciations
@@ -97,4 +51,4 @@ class OnlineTranslator : public Resource {
 // QML_DECLARE_TYPE(OnlineTranslator<QOnlineTranslator::Bing>);
 // QML_DECLARE_TYPE(OnlineTranslator<QOnlineTranslator::Yandex>);
 
-#endif  // TRANSLATORMODEL_H
+#endif // TRANSLATORMODEL_H

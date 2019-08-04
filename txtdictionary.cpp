@@ -103,18 +103,6 @@ txtDictionary::txtDictionary(QObject *parent, QString builtinpath)
 
 QString txtDictionary::key() const noexcept { return "txt-dic"; }
 
-QString txtDictionary::description() const noexcept {
-  if (!builtin)
-    return tr("Plain text format.\n\n"
-              "Comments format: line that starts with # sign.\n"
-              "Each word in a separated line.\n"
-              "Alternative words are seperated with semi-colon.\n"
-              "Separator between translation and the word is a tab character.\n"
-              "\n"
-              "Examples can be found at: https://www.dicts.info/uddl.php");
-  return name();
-}
-
 bool txtDictionary::isSupported(QOnlineTranslator::Language,
                                 QOnlineTranslator::Language) const noexcept {
   return true; // TODO: chagne this

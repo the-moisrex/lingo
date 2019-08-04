@@ -28,7 +28,7 @@ inline uint qHash(const resource_option &key, uint seed) {
          }.operator()();
 }
 
-template <QOnlineTranslator::Engine Engine> class OnlineTranslator;
+class OnlineTranslator;
 
 class Resource : public QAbstractListModel, public QQmlParserStatus {
   Q_OBJECT
@@ -294,15 +294,20 @@ public:
 
   virtual QOnlineTranslator::Language getToLang();
 
-  OnlineTranslator<QOnlineTranslator::Google> *toOnlineGoogle(Resource *res) {
-    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Google> *>(res);
-  }
-  OnlineTranslator<QOnlineTranslator::Bing> *toOnlineBing(Resource *res) {
-    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Bing> *>(res);
-  }
-  OnlineTranslator<QOnlineTranslator::Yandex> *toOnlineYandex(Resource *res) {
-    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Yandex> *>(res);
-  }
+  //  OnlineTranslator<QOnlineTranslator::Google> *toOnlineGoogle(Resource *res)
+  //  {
+  //    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Google>
+  //    *>(res);
+  //  }
+  //  OnlineTranslator<QOnlineTranslator::Bing> *toOnlineBing(Resource *res) {
+  //    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Bing>
+  //    *>(res);
+  //  }
+  //  OnlineTranslator<QOnlineTranslator::Yandex> *toOnlineYandex(Resource *res)
+  //  {
+  //    return reinterpret_cast<OnlineTranslator<QOnlineTranslator::Yandex>
+  //    *>(res);
+  //  }
 };
 
 // registering it for the qml

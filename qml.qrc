@@ -13,5 +13,6 @@
         <file>english-spanish-2019-06-25.txt</file>
         <file>create_dictionary.qml</file>
         <file>LanguageSelector.qml</file>
+        <file>langs/lingo-fa.qm</file>
     </qresource>
 </RCC>
