@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>HomeForm.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>SearchInput.qml</file>
+        <file>ResultsPage.qml</file>
+        <file>settings.qml</file>
+        <file>dictionaries.qml</file>
+        <file>materialdesignicons-webfont.ttf</file>
+        <file>IconLabel.qml</file>
+        <file>dictionary_settings.qml</file>
+        <file>english-spanish-2019-06-25.txt</file>
+        <file>create_dictionary.qml</file>
+        <file>LanguageSelector.qml</file>
+        <file>langs/lingo-fa.qm</file>
+    </qresource>
+</RCC>
